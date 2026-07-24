@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chika — Brush Timer</title>
+<meta name="description" content="A free 2-minute brushing timer for kids. No install, no login.">
+<meta name="theme-color" content="#33b8a6">
+<style>
+  :root {
+    --mint: #33b8a6;
+    --mint-light: #e2f5f2;
+    --sky: #8cccfa;
+    --cream: #fff8e6;
+    --orange: #ff9f43;
+    --text: #2d3436;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", sans-serif;
+    background: linear-gradient(180deg, var(--mint-light) 0%, #ffffff 60%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  header { width: 100%; max-width: 420px; display: flex; justify-content: space-between; align-items: center; }
+  h1 { font-size: 1.3rem; color: var(--mint); }
+  #langBtn {
+    border: 2px solid var(--mint); background: #fff; color: var(--mint);
+    border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: .8rem; cursor: pointer;
+  }
+  #ring-wrap { position: relative; width: 260px; height: 260px; margin: 18px 0 6px; }
+  svg { transform: rotate(-90deg); }
+  #ring-bg { stroke: rgba(51,184,166,.15); }
+  #ring-fg { stroke: var(--mint); stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
+  #ring-center {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+  }
+  #tooth { font-size: 64px; transition: transform .2s; }
+  .bounce { animation: bounce .5s ease-in-out infinite alternate; }
+  @keyframes bounce { from { transform: scale(1) rotate(-4deg); } to { transform: scale(1.15) rotate(4deg); } }
+  #clock { font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #zone-card {
+    background: var(--mint-light); border-radius: 20px; padding: 16px;
+    width: 100%; max-width: 420px; min-height: 92px;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  }
+  #zone-title { font-size: 1.15rem; font-weight: 800; }
+  #zone-tip { font-size: .9rem; color: #636e72; }
+  #controls { display: flex; gap: 12px; margin-top: 16px; width: 100%; max-width: 420px; }
+  button.ctl {
+    flex: 1; border: none; border-radius: 16px; padding: 14px; font-size: 1.05rem;
+    font-weight: 800; cursor: pointer; transition: transform .1s;
+  }
+  button.ctl:active { transform: scale(.96); }
+  #startBtn { background: var(--mint); color: #fff; box-shadow: 0 4px 14px rgba(51,184,166,.4); }
+  #pauseBtn { background: var(--cream); color: var(--text); display: none; }
+  #stopBtn  { background: #ffe3e3; color: #d63031; display: none; }
+  #footer { margin-top: auto; padding-top: 20px; font-size: .75rem; color: #b2bec3; }
+  .confetti {
+    position: fixed; top: -40px; font-size: 26px; pointer-events: none; z-index: 50;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(720deg); }
+  }
+  #muteBtn {
+    border: none; background: transparent; font-size: 1.3rem; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🦷 Chika</h1>
+  <div>
+    <button id="muteBtn" aria-label="mute">🔊</button>
+    <button id="langBtn">한국어</button>
+  </div>
+</header>
+
+<div id="ring-wrap">
+  <svg width="260" height="260" viewBox="0 0 260 260">
+    <circle id="ring-bg" cx="130" cy="130" r="116" fill="none" stroke-width="16"/>
+    <circle id="ring-fg" cx="130" cy="130" r="116" fill="none" stroke-width="16"
+            stroke-dasharray="728.8" stroke-dashoffset="728.8"/>
+  </svg>
+  <div id="ring-center">
+    <div id="tooth">🦷</div>
+    <div id="clock">2:00</div>
+  </div>
+</div>
+
+<div id="zone-card">
+  <div id="zone-title"></div>
+  <div id="zone-tip"></div>
+</div>
+
+<div id="controls">
+  <button class="ctl" id="startBtn"></button>
+  <button class="ctl" id="pauseBtn"></button>
+  <button class="ctl" id="stopBtn"></button>
+</div>
+
+<div id="footer"></div>
+
+<script>
+"use strict";
+
+/* ---------- i18n ---------- */
+const STRINGS = {
+  en: {
+    idleTitle: "Brush for 2 minutes with Chika!",
+    idleTip: "Press start and follow the guide",
+    doneTitle: "Amazing! Sparkling clean! 🎉",
+    doneTip: "See you again tonight!",
+    start: "▶ Start Brushing",
+    again: "▶ Brush Again!",
+    pause: "⏸ Pause",
+    resume: "▶ Resume",
+    stop: "⏹ Stop",
+    now: "Now brushing:",
+    footer: "Free brushing timer from your neighborhood dental clinic 💚",
+    langBtn: "한국어",
+    zones: [
+      ["Upper Right 🪥", "Brush gently in small circles"],
+      ["Upper Left ✨", "Don't forget the back molars"],
+      ["Lower Left 🦷", "The tongue side too, nice and soft!"],
+      ["Lower Right 🌟", "Last one! Behind the front teeth!"],
+    ],
+  },
+  ko: {
+    idleTitle: "치카랑 2분 동안 양치해요!",
+    idleTip: "시작을 누르고 안내를 따라가요",
+    doneTitle: "최고예요! 반짝반짝 깨끗! 🎉",
+    doneTip: "오늘 밤에 또 만나요!",
+    start: "▶ 양치 시작",
+    again: "▶ 한 번 더!",
+    pause: "⏸ 잠깐 쉬기",
+    resume: "▶ 계속하기",
+    stop: "⏹ 그만하기",
+    now: "지금 닦는 곳:",
+    footer: "우리 동네 치과가 드리는 무료 양치 타이머 💚",
+    langBtn: "English",
+    zones: [
+      ["오른쪽 위 🪥", "칫솔을 살살 돌리면서 닦아요"],
+      ["왼쪽 위 ✨", "어금니 안쪽도 잊지 마세요"],
+      ["왼쪽 아래 🦷", "혀 쪽 면도 부드럽게!"],
+      ["오른쪽 아래 🌟", "마지막! 앞니 안쪽까지!"],
+    ],
+  },
+};
+let lang = "en"; // English by default; tap the top-right button for Korean
+
+/* ---------- Timer state ---------- */
+const TOTAL = 120, ZONE = 30;
+const CIRC = 728.8;
+let state = "idle";           // idle | running | paused | done
+let elapsed = 0;
+let tickHandle = null;
+
+const $ = (id) => document.getElementById(id);
+
+function t() { return STRINGS[lang]; }
+
+function render() {
+  const s = t();
+  $("langBtn").textContent = s.langBtn;
+  $("footer").textContent = s.footer;
+
+  const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
+  $("clock").textContent = Math.floor(remaining / 60) + ":" + String(remaining % 60).padStart(2, "0");
+  $("ring-fg").style.strokeDashoffset = CIRC * (1 - Math.min(elapsed / TOTAL, 1));
+
+  const zoneIndex = Math.min(Math.floor(elapsed / ZONE), 3);
+
+  if (state === "idle") {
+    $("zone-title").textContent = s.idleTitle;
+    $("zone-tip").textContent = s.idleTip;
+    $("tooth").textContent = "🦷";
+    $("tooth").classList.remove("bounce");
+    $("startBtn").textContent = s.start;
+    $("startBtn").style.display = "block";
+    $("pauseBtn").style.display = "none";
+    $("stopBtn").style.display = "none";
+  } else if (state === "done") {
+    $("zone-title").textContent = s.doneTitle;
+    $("zone-tip").textContent = s.doneTip;
+    $("tooth").textContent = "🎉";
+    $("tooth").classList.remove("bounce");
+    $("startBtn").textContent = s.again;
+    $("startBtn").style.display = "block";
+    $("pauseBtn").style.display = "none";
+    $("stopBtn").style.display = "none";
+  } else {
+    const [name, tip] = s.zones[zoneIndex];
+    $("zone-title").textContent = s.now + " " + name;
+    $("zone-tip").textContent = tip;
+    $("tooth").textContent = "🦷";
+    $("tooth").classList.toggle("bounce", state === "running");
+    $("startBtn").style.display = "none";
+    $("pauseBtn").textContent = state === "running" ? s.pause : s.resume;
+    $("pauseBtn").style.display = "block";
+    $("stopBtn").textContent = s.stop;
+    $("stopBtn").style.display = "block";
+  }
+}
+
+let lastZone = -1;
+function tick() {
+  if (state !== "running") return;
+  elapsed += 0.1;
+  const zoneIndex = Math.min(Math.floor(elapsed / ZONE), 3);
+  if (zoneIndex !== lastZone) {
+    lastZone = zoneIndex;
+    playChime();
+  }
+  if (elapsed >= TOTAL) {
+    state = "done";
+    stopMusic();
+    playFanfare();
+    confetti();
+  }
+  render();
+}
+
+function start() {
+  elapsed = 0;
+  lastZone = -1;
+  state = "running";
+  startMusic();
+  if (!tickHandle) tickHandle = setInterval(tick, 100);
+  render();
+}
+
+function togglePause() {
+  if (state === "running") { state = "paused"; stopMusic(); }
+  else if (state === "paused") { state = "running"; startMusic(); }
+  render();
+}
+
+function stopAll() {
+  state = "idle";
+  elapsed = 0;
+  stopMusic();
+  render();
+}
+
+$("startBtn").addEventListener("click", start);
+$("pauseBtn").addEventListener("click", togglePause);
+$("stopBtn").addEventListener("click", stopAll);
+$("langBtn").addEventListener("click", () => { lang = lang === "en" ? "ko" : "en"; render(); });
+
+/* ---------- Music (WebAudio, no files needed) ---------- */
+let audioCtx = null, musicTimer = null, muted = false;
+
+$("muteBtn").addEventListener("click", () => {
+  muted = !muted;
+  $("muteBtn").textContent = muted ? "🔇" : "🔊";
+  if (muted) stopMusic();
+  else if (state === "running") startMusic();
+});
+
+function ctx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+
+function note(freq, when, dur, type, gainVal) {
+  const c = ctx();
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+  osc.type = type || "triangle";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, when);
+  gain.gain.linearRampToValueAtTime(gainVal || 0.15, when + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, when + dur);
+  osc.connect(gain).connect(c.destination);
+  osc.start(when);
+  osc.stop(when + dur + 0.05);
+}
+
+/* A simple cheerful loop: C-E-G-E / F-A-C-A pattern with a little bass */
+const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
+const BASS   = [130.81, 130.81, 174.61, 174.61];
+
+function scheduleBar(startTime) {
+  const beat = 0.28;
+  MELODY.forEach((f, i) => note(f, startTime + i * beat, beat * 0.9, "triangle", 0.12));
+  BASS.forEach((f, i) => note(f, startTime + i * beat * 2, beat * 1.6, "sine", 0.10));
+  return MELODY.length * beat;
+}
+
+function startMusic() {
+  if (muted) return;
+  const c = ctx();
+  let nextBar = c.currentTime + 0.05;
+  nextBar += scheduleBar(nextBar);
+  stopMusicTimer();
+  musicTimer = setInterval(() => {
+    if (c.currentTime > nextBar - 0.5) {
+      nextBar += scheduleBar(nextBar);
+    }
+  }, 200);
+}
+
+function stopMusicTimer() {
+  if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
+
+function stopMusic() { stopMusicTimer(); }
+
+function playChime() {
+  if (muted) return;
+  const c = ctx();
+  note(1046.5, c.currentTime, 0.15, "sine", 0.2);
+  note(1318.5, c.currentTime + 0.12, 0.25, "sine", 0.2);
+}
+
+function playFanfare() {
+  if (muted) return;
+  const c = ctx();
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+    note(f, c.currentTime + i * 0.15, 0.4, "triangle", 0.2);
+  });
+}
+
+/* ---------- Confetti ---------- */
+function confetti() {
+  const emojis = ["🎉", "⭐", "✨", "🦷", "💚", "🎈"];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement("div");
+    el.className = "confetti";
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = 2.2 + Math.random() * 2 + "s";
+    el.style.animationDelay = Math.random() * 0.8 + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5500);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
