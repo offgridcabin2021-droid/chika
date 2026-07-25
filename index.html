@@ -79,19 +79,6 @@
   }
   .icon-btn:active { transform: scale(0.92); }
 
-  #pwaBtn {
-    background: var(--orange);
-    color: #fff;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: none;
-    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
-  }
-
   /* Main Display Container */
   .stage-wrapper {
     position: relative;
@@ -367,7 +354,6 @@
     <span>🦷</span> Chika
   </div>
   <div class="nav-btns">
-    <button id="pwaBtn" aria-label="Install App">📲 Install App</button>
     <button id="stickerBtn" class="icon-btn" aria-label="Sticker Book" title="Sticker Book">🖼️</button>
     <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
   </div>
@@ -1066,7 +1052,7 @@ function launchConfetti() {
 }
 
 /* ==========================================================================
-   9. STICKER BOOK MODAL & PWA SETUP
+   9. STICKER BOOK MODAL & PWA SERVICE WORKER
    ========================================================================== */
 const stickerModal = document.getElementById('stickerModal');
 
@@ -1110,20 +1096,6 @@ function renderStickerGrid() {
     grid.appendChild(item);
   });
 }
-
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const pwaBtn = document.getElementById('pwaBtn');
-  pwaBtn.style.display = 'block';
-  pwaBtn.addEventListener('click', () => {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      pwaBtn.style.display = 'none';
-    });
-  });
-});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Reg Error:', err));
