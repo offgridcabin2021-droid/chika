@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — 2-Min Race Car Brushing Game</title>
-<meta name="description" content="An exciting 2-minute racing game for kids while brushing teeth! Collect coins, boost nitro, and unlock awesome cars!">
+<title>Chika — 2-Min Supercar Racing Game</title>
+<meta name="description" content="An exciting 2-minute racing game for kids while brushing teeth! Overtake rivals, hit nitro boost, and jump ramps!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -76,7 +76,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease, background 0.2s;
+    transition: transform 0.15s ease;
   }
   .icon-btn:active { transform: scale(0.92); }
 
@@ -90,20 +90,21 @@
     border-radius: 32px;
     background: #ffffff;
     box-shadow: var(--shadow);
-    padding: 12px;
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: box-shadow 0.3s ease;
+    cursor: pointer;
   }
 
   .stage-wrapper.active-glow {
-    animation: stagePulse 2s ease-in-out infinite alternate;
+    animation: stagePulse 1.5s ease-in-out infinite alternate;
   }
 
   @keyframes stagePulse {
     0% { box-shadow: 0 10px 30px rgba(51, 184, 166, 0.3); }
-    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 25px rgba(255, 159, 67, 0.5); }
+    100% { box-shadow: 0 15px 45px rgba(255, 159, 67, 0.7), 0 0 30px rgba(0, 206, 201, 0.6); }
   }
 
   .canvas-stack {
@@ -112,7 +113,7 @@
     height: 100%;
     border-radius: 24px;
     overflow: hidden;
-    background: #1e272e;
+    background: #111;
   }
 
   canvas {
@@ -127,27 +128,62 @@
   #gameCanvas { z-index: 1; }
   #hudCanvas { z-index: 2; pointer-events: none; }
 
-  /* HUD Status Overlay Tag */
+  /* HUD Overlay Badges */
   .track-tag {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     padding: 6px 14px;
     border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 800;
     color: #ffd32a;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid rgba(255, 211, 42, 0.4);
+    border: 1px solid rgba(255, 211, 42, 0.5);
   }
 
-  /* Timer & Progress Row */
+  .nitro-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background: rgba(255, 77, 77, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.8);
+    display: none;
+    animation: flashNitro 0.3s infinite alternate;
+  }
+
+  @keyframes flashNitro {
+    from { transform: scale(0.95); opacity: 0.8; }
+    to { transform: scale(1.08); opacity: 1.0; }
+  }
+
+  .tap-prompt {
+    position: absolute;
+    bottom: 12px;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  /* Timer Row */
   .timer-row {
     width: 100%;
     max-width: 440px;
@@ -262,7 +298,7 @@
     line-height: 1.35;
   }
 
-  /* Control Buttons */
+  /* Controls */
   #controls {
     display: flex;
     gap: 12px;
@@ -416,7 +452,7 @@
 
 <header>
   <div class="brand">
-    <span>🏎️</span> Chika Race
+    <span>🏎️</span> Chika 3D Race
   </div>
   <div class="nav-btns">
     <button id="garageBtn" class="icon-btn" aria-label="Garage" title="Garage Showroom">🚗</button>
@@ -424,16 +460,18 @@
   </div>
 </header>
 
-<!-- Stage Area (Race Track Game Canvas Stack) -->
+<!-- Stage Area (3D Curved Race Track Stack) -->
 <div class="stage-wrapper" id="stageWrapper">
-  <div class="track-tag" id="trackTag"><span>🏙️</span> City Circuit</div>
+  <div class="track-tag" id="trackTag"><span>🏙️</span> City Highway</div>
+  <div class="nitro-tag" id="nitroTag">🔥 NITRO TURBO!</div>
+  <div class="tap-prompt">Tap Screen to Change Lane / Nitro Boost!</div>
   <div class="canvas-stack">
     <canvas id="gameCanvas" width="600" height="600"></canvas>
     <canvas id="hudCanvas" width="600" height="600"></canvas>
   </div>
 </div>
 
-<!-- Live Timer & Coin Bar -->
+<!-- Live Timer & Coins -->
 <div class="timer-row">
   <div class="clock-display" id="clock">2:00</div>
   <div class="progress-bar-bg">
@@ -452,7 +490,7 @@
   </div>
   <div class="zone-text-group">
     <div id="zone-title">Start Brushing to Race!</div>
-    <div id="zone-tip">Drive through 4 tracks in 2 minutes, collect coins & unlock supercars!</div>
+    <div id="zone-tip">Overtake rival cars, hit jump ramps & nitro boost in 2 minutes!</div>
   </div>
 </div>
 
@@ -464,7 +502,7 @@
 </div>
 
 <footer>
-  Free 2-minute brushing race game from your local dental clinic 💚
+  Free 2-minute 3D racing game from your local dental clinic 💚
 </footer>
 
 <!-- Garage Modal -->
@@ -474,7 +512,7 @@
       <div class="modal-title">🚗 My Car Garage</div>
       <button class="modal-close" id="closeModalBtn">&times;</button>
     </div>
-    <p style="font-size: 0.85rem; color: #718096;">Complete 2-minute races to earn coins and unlock supercars!</p>
+    <p style="font-size: 0.85rem; color: #718096;">Earn coins in 2-minute races to unlock supercars!</p>
     <div class="garage-grid" id="garageGrid"></div>
   </div>
 </div>
@@ -487,9 +525,9 @@
    ========================================================================== */
 const STRINGS = {
   idleTitle: "Start Brushing to Race!",
-  idleTip: "Drive through 4 tracks in 2 minutes, collect coins & unlock supercars!",
-  doneTitle: "VICTORY! Race Completed! 🏆",
-  doneTip: "2 minutes complete! You earned +500 Bonus Trophy Coins!",
+  idleTip: "Overtake rival cars, hit jump ramps & nitro boost in 2 minutes!",
+  doneTitle: "VICTORY CHAMPION! 🏆",
+  doneTip: "2 minutes complete! You earned +500 Trophy Coins & Grand Cup!",
   start: "▶ Start Racing",
   again: "▶ Race Again!",
   pause: "⏸ Pause",
@@ -497,18 +535,18 @@ const STRINGS = {
   stop: "⏹ Stop",
   now: "Now brushing:",
   zones: [
-    ["Upper Right 🪥", "City Circuit: Brush gently in small circles!"],
-    ["Upper Left ✨", "Space Galaxy: Don't forget back chewing surfaces!"],
-    ["Lower Left 🦷", "Jungle Safari: Softly clean tongue side!"],
-    ["Lower Right 🌟", "Rainbow Grand Prix: Final sprint behind front teeth!"]
+    ["Upper Right 🪥", "City Highway: Slalom through traffic & collect coins!"],
+    ["Upper Left ✨", "Cyber Tunnel: Hit blue neon nitro speed pads!"],
+    ["Lower Left 🦷", "Jungle Safari: Hit yellow jump ramps & flip in the air!"],
+    ["Lower Right 🌟", "Rainbow Grand Prix: Final supercharged nitro sprint!"]
   ]
 };
 
 const TRACK_THEMES = [
-  { name: "City Circuit 🏙️", bgTop: "#0f2027", bgBottom: "#2c5364", road: "#34495e", stripe: "#f1c40f" },
-  { name: "Space Galaxy 🚀", bgTop: "#0c2461", bgBottom: "#4a69bd", road: "#1e272e", stripe: "#00cec9" },
-  { name: "Jungle Safari 🌴", bgTop: "#11998e", bgBottom: "#38ef7d", road: "#2d3436", stripe: "#fdcb6e" },
-  { name: "Rainbow Grand Prix 🌈", bgTop: "#833ab4", bgBottom: "#fd1d1d", road: "#2c3e50", stripe: "#ff7675" }
+  { name: "City Highway 🏙️", sky: "#0f2027", horizon: "#2c5364", road: "#2c3e50", grass: "#10ac84", sideItem: "🏢" },
+  { name: "Cyber Tunnel 🚀", sky: "#0c2461", horizon: "#4a69bd", road: "#1e272e", grass: "#6c5ce7", sideItem: "⚡" },
+  { name: "Jungle Safari 🌴", sky: "#11998e", horizon: "#38ef7d", road: "#34495e", grass: "#00b894", sideItem: "🌴" },
+  { name: "Rainbow Grand Prix 🌈", sky: "#833ab4", horizon: "#fd1d1d", road: "#2d3436", grass: "#ff7675", sideItem: "🎆" }
 ];
 
 /* ==========================================================================
@@ -518,49 +556,40 @@ const CARS = [
   {
     id: "mint_racer",
     name: "Speedy Mint Racer 🏎️",
-    speed: 120,
+    baseSpeed: 160,
     cost: 0,
-    draw(ctx, x, y, scale=1, time=0) {
+    draw(ctx, x, y, scale=1, time=0, isNitro=false) {
       ctx.save();
       ctx.translate(x, y);
       ctx.scale(scale, scale);
 
-      // Nitro Exhaust Flame
-      const flame = Math.sin(time * 20) * 8;
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath();
-      ctx.moveTo(-45, 10);
-      ctx.lineTo(-65 - flame, 15);
-      ctx.lineTo(-45, 20);
-      ctx.fill();
+      // Nitro Flame
+      if (isNitro) {
+        const flame = 15 + Math.sin(time * 30) * 12;
+        ctx.fillStyle = '#ff4d4d';
+        ctx.beginPath(); ctx.moveTo(-45, 10); ctx.lineTo(-75 - flame, 15); ctx.lineTo(-45, 20); ctx.fill();
+        ctx.fillStyle = '#fffa65';
+        ctx.beginPath(); ctx.moveTo(-45, 12); ctx.lineTo(-60 - flame*0.7, 15); ctx.lineTo(-45, 18); ctx.fill();
+      }
 
       // Wheels
       ctx.fillStyle = '#1e272e';
-      ctx.fillRect(-35, -5, 22, 10);
-      ctx.fillRect(15, -5, 22, 10);
-      ctx.fillRect(-35, 25, 22, 10);
-      ctx.fillRect(15, 25, 22, 10);
+      ctx.fillRect(-35, -5, 22, 10); ctx.fillRect(15, -5, 22, 10);
+      ctx.fillRect(-35, 25, 22, 10); ctx.fillRect(15, 25, 22, 10);
 
-      // Body Body
+      // Body
       const grad = ctx.createLinearGradient(-40, 0, 40, 0);
-      grad.addColorStop(0, '#00b894');
-      grad.addColorStop(1, '#55efc4');
+      grad.addColorStop(0, '#00b894'); grad.addColorStop(1, '#55efc4');
       ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.roundRect(-40, 0, 80, 30, 10);
-      ctx.fill();
+      ctx.beginPath(); ctx.roundRect(-40, 0, 80, 30, 10); ctx.fill();
 
-      // Cockpit Window
+      // Window
       ctx.fillStyle = '#74b9ff';
-      ctx.beginPath();
-      ctx.roundRect(-10, 4, 30, 22, 6);
-      ctx.fill();
+      ctx.beginPath(); ctx.roundRect(-10, 4, 30, 22, 6); ctx.fill();
 
-      // Racing Stripe & Number
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(-40, 12, 80, 6);
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillStyle = '#2d3436';
+      // Number
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(-40, 12, 80, 6);
+      ctx.font = 'bold 12px sans-serif'; ctx.fillStyle = '#2d3436';
       ctx.fillText('01', -25, 21);
 
       ctx.restore();
@@ -569,31 +598,21 @@ const CARS = [
   {
     id: "rocket_car",
     name: "Rocket Thruster 3000 🚀",
-    speed: 160,
+    baseSpeed: 210,
     cost: 300,
-    draw(ctx, x, y, scale=1, time=0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
+    draw(ctx, x, y, scale=1, time=0, isNitro=false) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
 
-      // Dual Flames
-      const flame = Math.sin(time * 25) * 12;
-      ctx.fillStyle = '#00cec9';
-      ctx.beginPath();
-      ctx.moveTo(-45, 5); ctx.lineTo(-70 - flame, 8); ctx.lineTo(-45, 12); ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(-45, 18); ctx.lineTo(-70 - flame, 21); ctx.lineTo(-45, 25); ctx.fill();
+      const flame = (isNitro ? 25 : 10) + Math.sin(time * 30) * 10;
+      ctx.fillStyle = isNitro ? '#7d5fff' : '#00cec9';
+      ctx.beginPath(); ctx.moveTo(-45, 5); ctx.lineTo(-75 - flame, 8); ctx.lineTo(-45, 12); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-45, 18); ctx.lineTo(-75 - flame, 21); ctx.lineTo(-45, 25); ctx.fill();
 
-      // Cyber Body
       const grad = ctx.createLinearGradient(-40, 0, 40, 0);
-      grad.addColorStop(0, '#6c5ce7');
-      grad.addColorStop(1, '#a29bfe');
+      grad.addColorStop(0, '#6c5ce7'); grad.addColorStop(1, '#a29bfe');
       ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(-40, 0); ctx.lineTo(45, 15); ctx.lineTo(-40, 30);
-      ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-40, 0); ctx.lineTo(45, 15); ctx.lineTo(-40, 30); ctx.closePath(); ctx.fill();
 
-      // Neon Glass
       ctx.fillStyle = '#ffeaa7';
       ctx.beginPath(); ctx.arc(5, 15, 12, 0, Math.PI*2); ctx.fill();
 
@@ -603,25 +622,19 @@ const CARS = [
   {
     id: "monster_truck",
     name: "Monster Tooth Beast 🚜",
-    speed: 140,
+    baseSpeed: 190,
     cost: 600,
-    draw(ctx, x, y, scale=1, time=0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
+    draw(ctx, x, y, scale=1, time=0, isNitro=false) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
 
-      // Huge Wheels
       ctx.fillStyle = '#2d3436';
       ctx.beginPath(); ctx.arc(-25, -2, 16, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(25, -2, 16, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(-25, 32, 16, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(25, 32, 16, 0, Math.PI*2); ctx.fill();
 
-      // Body
-      ctx.fillStyle = '#e17055';
-      ctx.fillRect(-35, 2, 70, 26);
-      ctx.fillStyle = '#fdcb6e';
-      ctx.fillRect(-15, 6, 30, 18);
+      ctx.fillStyle = '#e17055'; ctx.fillRect(-35, 2, 70, 26);
+      ctx.fillStyle = '#fdcb6e'; ctx.fillRect(-15, 6, 30, 18);
 
       ctx.restore();
     }
@@ -629,23 +642,16 @@ const CARS = [
   {
     id: "cyber_neon",
     name: "Formula Cyber Neon ⚡",
-    speed: 180,
+    baseSpeed: 240,
     cost: 1000,
-    draw(ctx, x, y, scale=1, time=0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
+    draw(ctx, x, y, scale=1, time=0, isNitro=false) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
 
-      // Rainbow Glow Trail
-      const flame = Math.sin(time * 30) * 10;
-      ctx.fillStyle = '#fd79a8';
-      ctx.fillRect(-65 - flame, 10, 25, 10);
+      const flame = (isNitro ? 30 : 15) + Math.sin(time * 35) * 12;
+      ctx.fillStyle = '#fd79a8'; ctx.fillRect(-65 - flame, 10, 25, 10);
 
-      // Aerodynamic Body
-      ctx.fillStyle = '#0984e3';
-      ctx.fillRect(-45, 4, 90, 22);
-      ctx.fillStyle = '#00cec9';
-      ctx.fillRect(10, 8, 30, 14);
+      ctx.fillStyle = '#0984e3'; ctx.fillRect(-45, 4, 90, 22);
+      ctx.fillStyle = '#00cec9'; ctx.fillRect(10, 8, 30, 14);
 
       ctx.restore();
     }
@@ -653,27 +659,19 @@ const CARS = [
   {
     id: "golden_royal",
     name: "Golden Royal Crown 👑",
-    speed: 200,
+    baseSpeed: 280,
     cost: 2000,
-    draw(ctx, x, y, scale=1, time=0) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(scale, scale);
+    draw(ctx, x, y, scale=1, time=0, isNitro=false) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(scale, scale);
 
-      // Golden Sparkle Flame
-      ctx.fillStyle = '#ffeaa7';
-      ctx.fillRect(-60, 8, 20, 14);
+      const flame = (isNitro ? 35 : 15) + Math.sin(time * 40) * 12;
+      ctx.fillStyle = '#ffeaa7'; ctx.fillRect(-60 - flame, 8, 25, 14);
 
-      // Gold Body
       const grad = ctx.createLinearGradient(-40, 0, 40, 0);
-      grad.addColorStop(0, '#ffeaa7');
-      grad.addColorStop(1, '#fdcb6e');
+      grad.addColorStop(0, '#ffeaa7'); grad.addColorStop(1, '#fdcb6e');
       ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.roundRect(-40, 0, 80, 30, 12);
-      ctx.fill();
+      ctx.beginPath(); ctx.roundRect(-40, 0, 80, 30, 12); ctx.fill();
 
-      // Crown Motif
       ctx.fillStyle = '#d63031';
       ctx.beginPath(); ctx.arc(0, 15, 10, 0, Math.PI*2); ctx.fill();
 
@@ -683,7 +681,7 @@ const CARS = [
 ];
 
 /* ==========================================================================
-   3. APP STATE & GAME ENGINE
+   3. APP STATE & PSEUDO-3D RACING ENGINE
    ========================================================================== */
 const TOTAL = 120, ZONE_SEC = 30;
 let state = "idle"; // idle | running | paused | done
@@ -695,6 +693,20 @@ let coins = parseInt(localStorage.getItem('chika_race_coins') || '0');
 let unlockedCars = JSON.parse(localStorage.getItem('chika_unlocked_cars') || '["mint_racer"]');
 let activeCarId = localStorage.getItem('chika_active_car') || 'mint_racer';
 
+// Steering & Lane System (Lanes: 0 = Top, 1 = Center, 2 = Bottom)
+const LANES_Y = [190, 300, 410];
+let currentLane = 1;
+let targetCarY = LANES_Y[1];
+let actualCarY = LANES_Y[1];
+let carJumpZ = 0;
+let carJumpVy = 0;
+
+// Nitro System
+let nitroTime = 0;
+
+// Floating Score Popups
+let scorePopups = [];
+
 const gameCanvas = document.getElementById('gameCanvas');
 const gameCtx = gameCanvas.getContext('2d');
 const hudCanvas = document.getElementById('hudCanvas');
@@ -702,106 +714,254 @@ const hudCtx = hudCanvas.getContext('2d');
 
 let roadScroll = 0;
 let gameItems = [];
+let rivalCars = [];
 let particles = [];
 
 function getActiveCar() {
   return CARS.find(c => c.id === activeCarId) || CARS[0];
 }
 
-/* Spawn Floating Coins & Star Nitro Boosters on Road */
-function spawnTrackItems() {
-  if (Math.random() < 0.08) {
+/* Trigger Nitro Boost */
+function triggerNitro() {
+  nitroTime = 3.5; // 3.5 seconds of super nitro!
+  playNitroSound();
+}
+
+/* Interactive Tap Screen to Steering / Nitro */
+document.getElementById('stageWrapper').addEventListener('click', () => {
+  if (state === "running") {
+    currentLane = (currentLane + 1) % 3;
+    targetCarY = LANES_Y[currentLane];
+    if (Math.random() < 0.5) triggerNitro();
+  }
+});
+
+/* Spawn Items, Rivals & Jump Ramps */
+function spawnObjects() {
+  if (Math.random() < 0.07) {
+    const laneIdx = Math.floor(Math.random() * 3);
+    const rand = Math.random();
+    let type = 'coin';
+    if (rand < 0.5) type = 'coin';
+    else if (rand < 0.75) type = 'nitro';
+    else type = 'ramp';
+
     gameItems.push({
-      x: gameCanvas.width + 40,
-      y: 180 + Math.random() * 240,
-      type: Math.random() > 0.3 ? 'coin' : 'star',
-      size: 24,
+      x: gameCanvas.width + 50,
+      y: LANES_Y[laneIdx],
+      lane: laneIdx,
+      type: type,
       collected: false
+    });
+  }
+
+  // Spawn Rival Cars
+  if (Math.random() < 0.035 && rivalCars.length < 3) {
+    const laneIdx = Math.floor(Math.random() * 3);
+    rivalCars.push({
+      x: gameCanvas.width + 80,
+      y: LANES_Y[laneIdx],
+      lane: laneIdx,
+      speedOffset: -40 - Math.random()*40,
+      passed: false,
+      color: ['#ff7675', '#74b9ff', '#fdcb6e', '#a29bfe'][Math.floor(Math.random()*4)]
     });
   }
 }
 
-function updateAndRenderGame(dt) {
+function updateAndRender3DRacing(dt) {
   const W = gameCanvas.width, H = gameCanvas.height;
-  const currentThemeIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
-  const theme = TRACK_THEMES[currentThemeIndex];
+  const themeIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
+  const theme = TRACK_THEMES[themeIndex];
   const car = getActiveCar();
 
-  // Scroll Road
-  const currentSpeed = state === "running" ? car.speed * 3.5 : 40;
-  roadScroll += currentSpeed * dt;
+  // Nitro Decay & Speed Calculation
+  if (nitroTime > 0) nitroTime -= dt;
+  const isNitro = nitroTime > 0;
+  const currentSpeed = (car.baseSpeed * (isNitro ? 2.2 : 1.0));
+  roadScroll += currentSpeed * dt * 2.5;
 
-  // 1. Draw Background Sky & Horizon
-  const bgGrad = gameCtx.createLinearGradient(0, 0, 0, H * 0.45);
-  bgGrad.addColorStop(0, theme.bgTop);
-  bgGrad.addColorStop(1, theme.bgBottom);
+  // Auto-Steering AI towards coins if user hasn't steered recently
+  if (state === "running" && Math.random() < 0.02) {
+    const nearestItem = gameItems.find(it => !it.collected && it.x > 180 && it.x < 360);
+    if (nearestItem) {
+      currentLane = nearestItem.lane;
+      targetCarY = LANES_Y[currentLane];
+    }
+  }
+
+  // Smooth Car Y Interpolation
+  actualCarY += (targetCarY - actualCarY) * 0.15;
+
+  // Jump Physics
+  if (carJumpZ > 0 || carJumpVy !== 0) {
+    carJumpZ += carJumpVy;
+    carJumpVy -= 1.2; // Gravity
+    if (carJumpZ <= 0) {
+      carJumpZ = 0;
+      carJumpVy = 0;
+    }
+  }
+
+  // Screen Shake during Nitro
+  const shakeX = isNitro ? (Math.random() - 0.5) * 8 : 0;
+  const shakeY = isNitro ? (Math.random() - 0.5) * 8 : 0;
+
+  gameCtx.save();
+  gameCtx.translate(shakeX, shakeY);
+
+  // 1. Curved Pseudo-3D Horizon & Sky
+  const curveOffset = Math.sin(globalTime * 1.5) * 70;
+  const bgGrad = gameCtx.createLinearGradient(0, 0, 0, H * 0.38);
+  bgGrad.addColorStop(0, theme.sky);
+  bgGrad.addColorStop(1, theme.horizon);
   gameCtx.fillStyle = bgGrad;
-  gameCtx.fillRect(0, 0, W, H * 0.45);
+  gameCtx.fillRect(0, 0, W, H * 0.38);
 
-  // Distant Scenery (Mountains/Buildings)
-  gameCtx.fillStyle = 'rgba(255,255,255,0.15)';
+  // Distant Curved Scenery Objects
   for (let i = 0; i < 8; i++) {
-    const bx = ((i * 120) - (roadScroll * 0.2) % 120);
-    gameCtx.fillRect(bx, H*0.25, 80, H*0.2);
+    const objX = ((i * 120) - (roadScroll * 0.2) % 120) + curveOffset * 0.3;
+    gameCtx.font = '32px sans-serif';
+    gameCtx.fillText(theme.sideItem, objX, H * 0.34);
   }
 
-  // 2. Draw Scrolling Racing Track
+  // 2. Pseudo-3D Perspective Road (3 Lanes)
+  // Grass Shoulders
+  gameCtx.fillStyle = theme.grass;
+  gameCtx.fillRect(0, H * 0.38, W, H * 0.62);
+
+  // Road Surface (Curved Perspective Trapzoid)
   gameCtx.fillStyle = theme.road;
-  gameCtx.fillRect(0, H * 0.45, W, H * 0.55);
+  gameCtx.beginPath();
+  gameCtx.moveTo(W * 0.35 + curveOffset, H * 0.38);
+  gameCtx.lineTo(W * 0.65 + curveOffset, H * 0.38);
+  gameCtx.lineTo(W * 1.05, H);
+  gameCtx.lineTo(W * -0.05, H);
+  gameCtx.fill();
 
-  // Road Side Curb Borders
-  gameCtx.fillStyle = '#ff7675';
-  gameCtx.fillRect(0, H*0.45, W, 10);
-  gameCtx.fillRect(0, H - 10, W, 10);
+  // Road Lane Dividers (Dashed Perspective Lines)
+  gameCtx.strokeStyle = 'rgba(255,255,255,0.7)';
+  gameCtx.lineWidth = 4;
+  gameCtx.setLineDash([20, 20]);
+  gameCtx.lineDashOffset = -roadScroll * 0.8;
 
-  // Center Dash Lanes
-  gameCtx.fillStyle = theme.stripe;
-  const dashW = 60, dashGap = 40;
-  for (let x = -(roadScroll % (dashW + dashGap)); x < W; x += dashW + dashGap) {
-    gameCtx.fillRect(x, H * 0.7, dashW, 8);
+  // Lane 1 / 2 Dividers
+  gameCtx.beginPath();
+  gameCtx.moveTo(W * 0.45 + curveOffset * 0.5, H * 0.38);
+  gameCtx.lineTo(W * 0.3, H);
+  gameCtx.stroke();
+
+  gameCtx.beginPath();
+  gameCtx.moveTo(W * 0.55 + curveOffset * 0.5, H * 0.38);
+  gameCtx.lineTo(W * 0.7, H);
+  gameCtx.stroke();
+  gameCtx.setLineDash([]); // Reset line dash
+
+  // Warp-speed lines during Nitro
+  if (isNitro) {
+    gameCtx.strokeStyle = 'rgba(0, 206, 201, 0.6)';
+    gameCtx.lineWidth = 3;
+    for(let l=0; l<12; l++) {
+      const rx = Math.random() * W;
+      const ry = Math.random() * H;
+      gameCtx.beginPath();
+      gameCtx.moveTo(rx, ry);
+      gameCtx.lineTo(rx - 80, ry);
+      gameCtx.stroke();
+    }
   }
 
-  // 3. Update & Spawn Track Items (Coins/Stars)
-  if (state === "running") spawnTrackItems();
+  // 3. Update & Spawn Track Items (Coins, Nitro, Ramp)
+  if (state === "running") spawnObjects();
 
   const carX = 140;
-  const carY = H * 0.65 + Math.sin(globalTime * 6) * 6; // Car sway
 
   for (let i = gameItems.length - 1; i >= 0; i--) {
     const item = gameItems[i];
-    item.x -= currentSpeed * dt;
+    item.x -= currentSpeed * dt * 2.2;
 
-    if (!item.collected && Math.abs(item.x - carX) < 40 && Math.abs(item.y - carY) < 40) {
+    // Item Collision Check
+    if (!item.collected && Math.abs(item.x - carX) < 45 && Math.abs(item.y - actualCarY) < 35 && carJumpZ < 20) {
       item.collected = true;
-      coins += item.type === 'coin' ? 10 : 25;
+
+      if (item.type === 'coin') {
+        coins += 15;
+        scorePopups.push({ text: '+15 🪙', x: item.x, y: item.y, alpha: 1.0 });
+        playCoinSound();
+      } else if (item.type === 'nitro') {
+        triggerNitro();
+        coins += 50;
+        scorePopups.push({ text: '🔥 NITRO BOOST!', x: item.x, y: item.y, alpha: 1.0 });
+      } else if (item.type === 'ramp') {
+        carJumpVy = 18; // Jump Launch!
+        coins += 100;
+        scorePopups.push({ text: '🚀 HIGH JUMP! +100', x: item.x, y: item.y, alpha: 1.0 });
+        playJumpSound();
+      }
       localStorage.setItem('chika_race_coins', coins.toString());
-      playCoinSound();
-      
-      // Spawn collection sparkles
-      for(let p=0; p<8; p++) {
+
+      // Particles
+      for (let p=0; p<10; p++) {
         particles.push({
           x: item.x, y: item.y,
-          vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8,
-          alpha: 1.0, color: item.type==='coin'?'#ffd32a':'#00cec9'
+          vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10,
+          alpha: 1.0, color: item.type==='nitro'?'#ff4d4d':'#ffd32a'
         });
       }
     }
 
-    if (item.x < -40) {
+    if (item.x < -50) {
       gameItems.splice(i, 1);
       continue;
     }
 
     if (!item.collected) {
-      gameCtx.font = '24px sans-serif';
-      gameCtx.fillText(item.type === 'coin' ? '🪙' : '⭐', item.x, item.y);
+      gameCtx.save();
+      gameCtx.font = '30px sans-serif';
+      let icon = '🪙';
+      if (item.type === 'nitro') icon = '⚡';
+      else if (item.type === 'ramp') icon = '📐';
+      gameCtx.fillText(icon, item.x, item.y + 10);
+      gameCtx.restore();
     }
+  }
+
+  // 4. Update & Render Rival Cars
+  for (let i = rivalCars.length - 1; i >= 0; i--) {
+    const rival = rivalCars[i];
+    rival.x += (rival.speedOffset - currentSpeed*0.4) * dt;
+
+    // Overtake Check
+    if (!rival.passed && rival.x < carX) {
+      rival.passed = true;
+      coins += 30;
+      scorePopups.push({ text: '🏎️ OVERTAKE! +30', x: carX + 50, y: actualCarY - 20, alpha: 1.0 });
+      playPassSound();
+    }
+
+    if (rival.x < -60) {
+      rivalCars.splice(i, 1);
+      continue;
+    }
+
+    // Render Rival Car
+    gameCtx.save();
+    gameCtx.fillStyle = rival.color;
+    gameCtx.beginPath();
+    gameCtx.roundRect(rival.x, rival.y, 65, 24, 8);
+    gameCtx.fill();
+    gameCtx.fillStyle = '#2d3436';
+    gameCtx.fillRect(rival.x + 10, rival.y - 3, 16, 6);
+    gameCtx.fillRect(rival.x + 40, rival.y - 3, 16, 6);
+    gameCtx.fillRect(rival.x + 10, rival.y + 21, 16, 6);
+    gameCtx.fillRect(rival.x + 40, rival.y + 21, 16, 6);
+    gameCtx.restore();
   }
 
   // Render Collection Particles
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.035;
     if (p.alpha <= 0) { particles.splice(i, 1); continue; }
     gameCtx.fillStyle = p.color;
     gameCtx.globalAlpha = p.alpha;
@@ -809,12 +969,38 @@ function updateAndRenderGame(dt) {
     gameCtx.globalAlpha = 1.0;
   }
 
-  // 4. Draw Active Race Car
-  car.draw(gameCtx, carX, carY, 1.2, globalTime);
+  // Render Floating Score Text Popups
+  for (let i = scorePopups.length - 1; i >= 0; i--) {
+    const pop = scorePopups[i];
+    pop.y -= 1.5; pop.alpha -= 0.02;
+    if (pop.alpha <= 0) { scorePopups.splice(i, 1); continue; }
+    gameCtx.save();
+    gameCtx.globalAlpha = pop.alpha;
+    gameCtx.font = '900 18px sans-serif';
+    gameCtx.fillStyle = '#ffeaa7';
+    gameCtx.strokeStyle = '#2d3436';
+    gameCtx.lineWidth = 3;
+    gameCtx.strokeText(pop.text, pop.x, pop.y);
+    gameCtx.fillText(pop.text, pop.x, pop.y);
+    gameCtx.restore();
+  }
+
+  // 5. Draw Active Race Car (with Jump Shadow & Elevation)
+  // Car Shadow
+  gameCtx.fillStyle = 'rgba(0,0,0,0.3)';
+  gameCtx.beginPath();
+  gameCtx.ellipse(carX + 10, actualCarY + 28, 45 - carJumpZ*0.3, 10, 0, 0, Math.PI*2);
+  gameCtx.fill();
+
+  // Draw Car elevated by carJumpZ
+  car.draw(gameCtx, carX, actualCarY - carJumpZ, 1.25, globalTime, isNitro);
+
+  gameCtx.restore();
 
   // Update HUD
   document.getElementById('trackTag').innerHTML = `<span>🏎️</span> ${theme.name}`;
   document.getElementById('coinCount').textContent = `🪙 ${coins}`;
+  document.getElementById('nitroTag').style.display = isNitro ? 'block' : 'none';
 }
 
 /* ==========================================================================
@@ -843,7 +1029,7 @@ function loop(timestamp) {
     }
   }
 
-  updateAndRenderGame(dt);
+  updateAndRender3DRacing(dt);
   renderUI();
 
   if (state === "running" || state === "idle" || state === "done") {
@@ -856,6 +1042,10 @@ function startRace() {
     elapsed = 0;
     lastZoneIndex = -1;
     gameItems = [];
+    rivalCars = [];
+    currentLane = 1;
+    actualCarY = LANES_Y[1];
+    targetCarY = LANES_Y[1];
   }
 
   state = "running";
@@ -893,7 +1083,6 @@ function completeRace() {
   playFanfareSound();
   launchFireworks();
 
-  // Grand Trophy Bonus Coins (+500 Coins!)
   coins += 500;
   localStorage.setItem('chika_race_coins', coins.toString());
 
@@ -991,6 +1180,26 @@ function playCoinSound() {
   playNote(1318.51, c.currentTime + 0.06, 0.12, "sine", 0.18);
 }
 
+function playNitroSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  playNote(300, c.currentTime, 0.3, "sawtooth", 0.2);
+  playNote(600, c.currentTime + 0.1, 0.4, "sawtooth", 0.2);
+}
+
+function playJumpSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  playNote(400, c.currentTime, 0.2, "sine", 0.2);
+  playNote(800, c.currentTime + 0.1, 0.25, "sine", 0.2);
+}
+
+function playPassSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  playNote(523.25, c.currentTime, 0.1, "triangle", 0.15);
+}
+
 function playChimeSound() {
   if (muted) return;
   const c = getAudioCtx();
@@ -1008,7 +1217,7 @@ function playFanfareSound() {
 
 const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
 function scheduleBar(startTime) {
-  const beat = 0.22; // Energetic Race Tempo!
+  const beat = 0.22;
   MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "sawtooth", 0.06));
   return MELODY.length * beat;
 }
@@ -1117,7 +1326,7 @@ function renderGarageGrid() {
     canvas.width = 180;
     canvas.height = 120;
     const ctx = canvas.getContext('2d');
-    car.draw(ctx, 90, 60, 1.3, 0);
+    car.draw(ctx, 90, 60, 1.3, 0, false);
 
     const info = document.createElement('div');
     info.className = 'car-info';
@@ -1128,7 +1337,7 @@ function renderGarageGrid() {
 
     const stats = document.createElement('div');
     stats.className = 'car-stats';
-    stats.textContent = `Speed: ${car.speed} MPH | ${isUnlocked ? (isSelected ? 'Selected ✅' : 'Tap to Select') : `Unlock: 🪙 ${car.cost}`}`;
+    stats.textContent = `Speed: ${car.baseSpeed} MPH | ${isUnlocked ? (isSelected ? 'Selected ✅' : 'Tap to Select') : `Unlock: 🪙 ${car.cost}`}`;
 
     info.appendChild(name);
     info.appendChild(stats);
