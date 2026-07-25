@@ -449,7 +449,7 @@ function spawnWorldObjects() {
   if (Math.random() < 0.08) {
     worldItems.push({
       x: gameCanvas.width + 40,
-      y: GROUND_Y - 50 - Math.random() * 90,
+      y: GROUND_Y - 60 - Math.random() * 60,
       collected: false
     });
   }
@@ -547,8 +547,13 @@ function updateAndRenderDino(dt) {
     if (item.x < -40) { worldItems.splice(i, 1); continue; }
 
     if (!item.collected) {
-      gameCtx.font = '28px sans-serif';
-      gameCtx.fillText(world.item, item.x, item.y);
+      const bounce = Math.sin(globalTime * 6 + item.x * 0.01) * 6;
+      gameCtx.save();
+      gameCtx.font = '58px sans-serif';
+      gameCtx.shadowColor = '#ffd32a';
+      gameCtx.shadowBlur = 20;
+      gameCtx.fillText(world.item, item.x - 29, item.y + bounce);
+      gameCtx.restore();
     }
   }
 
