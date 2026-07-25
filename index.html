@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — 2-Min Magic Maze Quest</title>
-<meta name="description" content="A 2-minute kids brushing maze quest game! Explore 4 magic mazes, collect keys and open the grand treasure chest!">
+<title>Chika — 2-Min Cinematic Brushing Adventure</title>
+<meta name="description" content="A 100% hands-free 2-minute animated adventure show for kids while brushing teeth!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -23,7 +23,7 @@
     --purple: #9c27b0;
     --gold: #ffd32a;
     --text: #2d3436;
-    --shadow: 0 12px 30px rgba(51, 184, 166, 0.25);
+    --shadow: 0 12px 35px rgba(51, 184, 166, 0.25);
   }
   
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -98,7 +98,6 @@
     justify-content: center;
     align-items: center;
     transition: box-shadow 0.3s ease;
-    cursor: pointer;
   }
 
   .stage-wrapper.active-glow {
@@ -107,7 +106,7 @@
 
   @keyframes stagePulse {
     0% { box-shadow: 0 10px 30px rgba(51, 184, 166, 0.3); }
-    100% { box-shadow: 0 15px 45px rgba(255, 211, 42, 0.6), 0 0 25px rgba(51, 184, 166, 0.5); }
+    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 25px rgba(140, 204, 250, 0.6); }
   }
 
   .canvas-stack {
@@ -116,7 +115,7 @@
     height: 100%;
     border-radius: 24px;
     overflow: hidden;
-    background: #1e272e;
+    background: #0f2027;
   }
 
   canvas {
@@ -132,7 +131,7 @@
   #hudCanvas { z-index: 2; pointer-events: none; }
 
   /* HUD Overlay Badges */
-  .maze-tag {
+  .chapter-tag {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -150,15 +149,15 @@
     gap: 6px;
   }
 
-  .tap-prompt {
+  .hands-free-badge {
     position: absolute;
     bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    background: rgba(0,0,0,0.65);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(8px);
-    color: var(--gold);
+    color: #ffffff;
     font-size: 0.72rem;
     font-weight: 800;
     padding: 4px 14px;
@@ -204,13 +203,13 @@
   .progress-bar-fg {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--mint) 0%, var(--gold) 50%, var(--orange) 100%);
+    background: linear-gradient(90deg, var(--mint) 0%, var(--sky) 50%, var(--purple) 100%);
     border-radius: 999px;
     transition: width 0.1s linear;
     box-shadow: 0 0 10px rgba(51, 184, 166, 0.5);
   }
 
-  /* Brushing Zone Card */
+  /* Brushing Zone Guide Card */
   #zone-card {
     background: var(--mint-light);
     border: 2px solid rgba(51, 184, 166, 0.25);
@@ -322,87 +321,6 @@
     display: none;
   }
 
-  /* Treasure Codex Modal */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-
-  .modal-card {
-    background: #ffffff;
-    width: 100%;
-    max-width: 440px;
-    border-radius: 30px;
-    padding: 24px;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    text-align: center;
-    position: relative;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .modal-title {
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--mint-dark);
-  }
-
-  .modal-close {
-    border: none;
-    background: #edf2f7;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-  }
-
-  .treasure-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-top: 14px;
-  }
-
-  .treasure-item {
-    background: #f7fafc;
-    border: 2px dashed #cbd5e0;
-    border-radius: 20px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .treasure-item.unlocked {
-    background: #f0faf8;
-    border: 2px solid var(--mint);
-  }
-
-  .treasure-icon {
-    font-size: 3rem;
-  }
-
-  .treasure-name {
-    font-size: 0.88rem;
-    font-weight: 800;
-  }
-
   footer {
     margin-top: auto;
     padding-top: 16px;
@@ -415,31 +333,30 @@
 
 <header>
   <div class="brand">
-    <span>🌀</span> Magic Maze Quest
+    <span>🎬</span> Chika Show
   </div>
   <div class="nav-btns">
-    <button id="treasureBtn" class="icon-btn" aria-label="Treasure Vault" title="Treasure Vault">💎</button>
     <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
   </div>
 </header>
 
-<!-- Stage Area (2-Minute Magic Maze Quest) -->
+<!-- Stage Area (100% Hands-Free Animated Show) -->
 <div class="stage-wrapper" id="stageWrapper">
-  <div class="maze-tag" id="mazeTag"><span>🌳</span> Forest Maze</div>
-  <div class="tap-prompt">Tap Screen to Dash & Collect Magic Gems!</div>
+  <div class="chapter-tag" id="chapterTag"><span>🚀</span> Ch 1: Space Launch</div>
+  <div class="hands-free-badge">📱 100% Hands-Free Show while Brushing!</div>
   <div class="canvas-stack">
     <canvas id="gameCanvas" width="600" height="600"></canvas>
     <canvas id="hudCanvas" width="600" height="600"></canvas>
   </div>
 </div>
 
-<!-- Live Timer & Gem Count -->
+<!-- Live Timer Row -->
 <div class="timer-row">
   <div class="clock-display" id="clock">2:00</div>
   <div class="progress-bar-bg">
     <div class="progress-bar-fg" id="progressBar"></div>
   </div>
-  <div style="font-size: 1.3rem; font-weight: 900; color: var(--gold);" id="gemCount">💎 0</div>
+  <div style="font-size: 1.4rem;">✨</div>
 </div>
 
 <!-- Zone Guide Card -->
@@ -451,75 +368,56 @@
     <div class="quad-sector" id="quad-3">LR</div>
   </div>
   <div class="zone-text-group">
-    <div id="zone-title">Start Brushing to Begin Quest!</div>
-    <div id="zone-tip">Explore 4 magic mazes, collect keys & open the grand treasure chest in 2 minutes!</div>
+    <div id="zone-title">Start Brushing to Watch the Show!</div>
+    <div id="zone-tip">Place phone on mirror stand & watch the 2-minute animated adventure!</div>
   </div>
 </div>
 
 <!-- Controls -->
 <div id="controls">
-  <button class="ctl" id="startBtn">▶ Start Quest</button>
+  <button class="ctl" id="startBtn">▶ Start Brushing Show</button>
   <button class="ctl" id="pauseBtn">⏸ Pause</button>
   <button class="ctl" id="stopBtn">⏹ Stop</button>
 </div>
 
 <footer>
-  Free 2-minute maze quest brushing game from your local dental clinic 💚
+  Free 2-minute animated brushing show from your local dental clinic 💚
 </footer>
-
-<!-- Treasure Vault Modal -->
-<div class="modal-overlay" id="treasureModal">
-  <div class="modal-card">
-    <div class="modal-header">
-      <div class="modal-title">💎 Treasure Vault</div>
-      <button class="modal-close" id="closeModalBtn">&times;</button>
-    </div>
-    <p style="font-size: 0.85rem; color: #718096;">Complete 2-minute maze quests to unlock legendary artifacts!</p>
-    <div class="treasure-grid" id="treasureGrid"></div>
-  </div>
-</div>
 
 <script>
 "use strict";
 
 /* ==========================================================================
-   1. STRINGS & MAZE CHAPTERS
+   1. STRINGS & 4 ANIMATED CHAPTERS
    ========================================================================== */
 const STRINGS = {
-  idleTitle: "Start Brushing to Begin Quest!",
-  idleTip: "Explore 4 magic mazes, collect keys & open the grand treasure chest in 2 minutes!",
-  doneTitle: "VICTORY! Treasure Unlocked! 🏆",
-  doneTip: "2 minutes complete! You opened the Grand Royal Chest (+500 Gems)!",
-  start: "▶ Start Quest",
-  again: "▶ Play Again!",
+  idleTitle: "Start Brushing to Watch the Show!",
+  idleTip: "Place phone on mirror stand & watch the 2-minute animated adventure!",
+  doneTitle: "VICTORY! 2 Minutes Complete! 🎉",
+  doneTip: "Amazing job! Sparkling clean teeth! See you tonight!",
+  start: "▶ Start Brushing Show",
+  again: "▶ Watch Again!",
   pause: "⏸ Pause",
-  resume: "▶ Resume Quest",
+  resume: "▶ Resume Show",
   stop: "⏹ Stop",
   now: "Now brushing:",
   zones: [
-    ["Upper Right 🪥", "Forest Maze: Brush gently & find the Golden Key 🔑!"],
-    ["Upper Left ✨", "Castle Maze: Don't forget back chewing surfaces & Magic Wand 🪄!"],
-    ["Lower Left 🦷", "Galaxy Maze: Softly clean tongue side & Cosmic Crystal 💎!"],
-    ["Lower Right 🌟", "Royal Vault: Final sprint to open the Grand Chest 🗝️!"]
+    ["Upper Right 🪥", "Ch 1: Space Launch! Brush gently in small circles!"],
+    ["Upper Left ✨", "Ch 2: Defeat Germs! Don't forget back chewing surfaces!"],
+    ["Lower Left 🦷", "Ch 3: Crystal Castle! Softly clean tongue side!"],
+    ["Lower Right 🌟", "Ch 4: Grand Victory! Final sprint behind front teeth!"]
   ]
 };
 
-const MAZE_CHAPTERS = [
-  { name: "Forest Maze 🌳", wallColor: "#27ae60", pathColor: "#ebf5fb", bg: "#1e8449" },
-  { name: "Castle Maze 🏰", wallColor: "#8e44ad", pathColor: "#f4ecf7", bg: "#6c3483" },
-  { name: "Galaxy Maze 🌌", wallColor: "#2980b9", pathColor: "#eaf2f8", bg: "#1f618d" },
-  { name: "Royal Vault 👑", wallColor: "#f39c12", pathColor: "#fef9e7", bg: "#d35400" }
-];
-
-const ARTIFACTS = [
-  { id: "gold_key", name: "Golden Key 🔑", cost: 0, icon: "🔑" },
-  { id: "magic_wand", name: "Magic Tooth Wand 🪄", cost: 300, icon: "🪄" },
-  { id: "cosmic_gem", name: "Cosmic Crystal 💎", cost: 600, icon: "💎" },
-  { id: "royal_crown", name: "Royal Crown 👑", cost: 1200, icon: "👑" }
+const CHAPTERS = [
+  { name: "Ch 1: Space Launch 🚀", bgTop: "#0f2027", bgBottom: "#203a43" },
+  { name: "Ch 2: Zap the Germs 👾", bgTop: "#2c3e50", bgBottom: "#000000" },
+  { name: "Ch 3: Crystal Castle 🏰", bgTop: "#4a00e0", bgBottom: "#8e2de2" },
+  { name: "Ch 4: Grand Celebration 🎉", bgTop: "#11998e", bgBottom: "#38ef7d" }
 ];
 
 /* ==========================================================================
-   2. APP STATE & MAZE ENGINE
+   2. APP STATE & ANIMATION ENGINE
    ========================================================================== */
 const TOTAL = 120, ZONE_SEC = 30;
 let state = "idle";
@@ -527,126 +425,161 @@ let elapsed = 0;
 let animFrameId = null;
 let lastTime = null;
 let globalTime = 0;
-let gems = parseInt(localStorage.getItem('chika_maze_gems') || '0');
-let unlockedArtifacts = JSON.parse(localStorage.getItem('chika_unlocked_artifacts') || '["gold_key"]');
-
-// Hero Position & Path Follower in Maze Grid (8x8 Grid)
-const GRID_SIZE = 8;
-let heroGridX = 0, heroGridY = 0;
-let targetGridX = 0, targetGridY = 0;
-let heroDrawX = 50, heroDrawY = 50;
 
 const gameCanvas = document.getElementById('gameCanvas');
 const gameCtx = gameCanvas.getContext('2d');
 const hudCanvas = document.getElementById('hudCanvas');
 const hudCtx = hudCanvas.getContext('2d');
 
-let mazeItems = [];
 let particles = [];
-let scorePopups = [];
+let germMonsters = [];
 
-/* Generate Maze Grid Items */
-function generateMazeItems() {
-  mazeItems = [];
-  const cellW = gameCanvas.width / GRID_SIZE;
-  const cellH = gameCanvas.height / GRID_SIZE;
-
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if ((r + c) % 3 === 1 && Math.random() < 0.6) {
-        mazeItems.push({
-          x: c * cellW + cellW/2,
-          y: r * cellH + cellH/2,
-          type: Math.random() > 0.3 ? 'gem' : 'key',
-          collected: false
-        });
-      }
-    }
+function spawnGermMonsters() {
+  germMonsters = [];
+  for(let i=0; i<6; i++) {
+    germMonsters.push({
+      x: 100 + Math.random()*400,
+      y: 100 + Math.random()*250,
+      size: 20 + Math.random()*15,
+      zapped: false,
+      color: ['#ff7675', '#fd79a8', '#a29bfe', '#55efc4'][i%4]
+    });
   }
 }
 
-/* Tap to Dash Hero forward */
-document.getElementById('stageWrapper').addEventListener('click', () => {
-  if (state === "running") {
-    // Dash Hero towards next grid cell
-    heroGridX = (heroGridX + 1) % GRID_SIZE;
-    if (heroGridX === 0) heroGridY = (heroGridY + 1) % GRID_SIZE;
-    playDashSound();
-  }
-});
-
-function updateAndRenderMaze(dt) {
+function updateAndRenderShow(dt) {
   const W = gameCanvas.width, H = gameCanvas.height;
   const chapterIdx = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
-  const chapter = MAZE_CHAPTERS[chapterIdx];
+  const chapter = CHAPTERS[chapterIdx];
 
-  const cellW = W / GRID_SIZE;
-  const cellH = H / GRID_SIZE;
-
-  // Auto Pathing along Maze Grid based on Timer progress (0 to 100%)
-  const totalPathCells = GRID_SIZE * GRID_SIZE - 1;
-  const currentPathIdx = Math.floor((elapsed / TOTAL) * totalPathCells);
-  
-  targetGridX = currentPathIdx % GRID_SIZE;
-  targetGridY = Math.floor(currentPathIdx / GRID_SIZE);
-
-  // Smooth Hero Draw Interpolation
-  const targetX = targetGridX * cellW + cellW / 2;
-  const targetY = targetGridY * cellH + cellH / 2;
-  heroDrawX += (targetX - heroDrawX) * 0.15;
-  heroDrawY += (targetY - heroDrawY) * 0.15;
-
-  // 1. Draw Maze Background & Grid Walls
-  gameCtx.fillStyle = chapter.bg;
+  // 1. Draw Chapter Background Gradient
+  const grad = gameCtx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, chapter.bgTop);
+  grad.addColorStop(1, chapter.bgBottom);
+  gameCtx.fillStyle = grad;
   gameCtx.fillRect(0, 0, W, H);
 
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      const x = c * cellW;
-      const y = r * cellH;
-
-      // Draw Path Floor
-      gameCtx.fillStyle = chapter.pathColor;
-      gameCtx.fillRect(x + 3, y + 3, cellW - 6, cellH - 6);
-
-      // Draw Wall Borders
-      gameCtx.strokeStyle = chapter.wallColor;
-      gameCtx.lineWidth = 4;
-      gameCtx.strokeRect(x + 3, y + 3, cellW - 6, cellH - 6);
-    }
+  // Floating Background Stars / Dust
+  gameCtx.fillStyle = '#ffffff';
+  for(let i=0; i<25; i++) {
+    const sx = (i * 47 + globalTime * 30) % W;
+    const sy = (i * 31 + Math.sin(globalTime + i)*10) % H;
+    gameCtx.beginPath();
+    gameCtx.arc(sx, sy, 2 + (i%3), 0, Math.PI * 2);
+    gameCtx.fill();
   }
 
-  // 2. Draw Maze Items (Gems & Keys)
-  for (let i = 0; i < mazeItems.length; i++) {
-    const item = mazeItems[i];
+  // 2. Render Specific Animated Chapter Scenes
+  if (chapterIdx === 0) {
+    // CHAPTER 1: Space Rocket Launch
+    const rocketY = H*0.65 + Math.sin(globalTime*4)*12;
+    const rocketX = W*0.35 + Math.cos(globalTime*2)*20;
 
-    if (!item.collected && Math.abs(item.x - heroDrawX) < cellW*0.6 && Math.abs(item.y - heroDrawY) < cellH*0.6) {
-      item.collected = true;
-      gems += item.type === 'gem' ? 15 : 40;
-      localStorage.setItem('chika_maze_gems', gems.toString());
+    // Rocket Exhaust Thruster Flames
+    const flame = 20 + Math.sin(globalTime*30)*15;
+    gameCtx.fillStyle = '#ff7675';
+    gameCtx.beginPath(); gameCtx.moveTo(rocketX-30, rocketY+10); gameCtx.lineTo(rocketX-30-flame, rocketY+20); gameCtx.lineTo(rocketX-30, rocketY+30); gameCtx.fill();
+    gameCtx.fillStyle = '#ffeaa7';
+    gameCtx.beginPath(); gameCtx.moveTo(rocketX-30, rocketY+14); gameCtx.lineTo(rocketX-30-flame*0.6, rocketY+20); gameCtx.lineTo(rocketX-30, rocketY+26); gameCtx.fill();
 
-      scorePopups.push({ text: item.type === 'gem' ? '+15 💎' : '+40 🔑', x: item.x, y: item.y, alpha: 1.0 });
-      playGemSound();
+    // Rocket Ship Body
+    gameCtx.fillStyle = '#ffffff';
+    gameCtx.beginPath(); gameCtx.ellipse(rocketX, rocketY+20, 40, 22, 0, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.fillStyle = '#0984e3';
+    gameCtx.beginPath(); gameCtx.ellipse(rocketX+15, rocketY+20, 12, 12, 0, 0, Math.PI*2); gameCtx.fill();
 
-      for (let p = 0; p < 8; p++) {
-        particles.push({
-          x: item.x, y: item.y,
-          vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8,
-          alpha: 1.0, color: item.type === 'gem' ? '#00f2fe' : '#ffd32a'
-        });
+    // Tooth Hero inside Glass Dome
+    gameCtx.fillStyle = '#74b9ff';
+    gameCtx.beginPath(); gameCtx.arc(rocketX+15, rocketY+20, 10, 0, Math.PI*2); gameCtx.fill();
+
+  } else if (chapterIdx === 1) {
+    // CHAPTER 2: Defeat Cavity Germs with Toothbrush Laser
+    const heroX = 120;
+    const heroY = H*0.5 + Math.sin(globalTime*3)*15;
+
+    // Tooth Hero Body
+    gameCtx.fillStyle = '#ffffff';
+    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 40, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.fillStyle = '#2d3436';
+    gameCtx.beginPath(); gameCtx.arc(heroX-10, heroY-6, 5, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.beginPath(); gameCtx.arc(heroX+10, heroY-6, 5, 0, Math.PI*2); gameCtx.fill();
+
+    // Toothbrush Magic Laser Wand
+    gameCtx.strokeStyle = '#00cec9';
+    gameCtx.lineWidth = 6;
+    gameCtx.beginPath(); gameCtx.moveTo(heroX+30, heroY); gameCtx.lineTo(heroX+70, heroY-10); gameCtx.stroke();
+
+    // Laser Beam Firing
+    const laserBeamY = heroY - 10;
+    gameCtx.strokeStyle = '#ff7675';
+    gameCtx.lineWidth = 8;
+    gameCtx.shadowColor = '#ff7675';
+    gameCtx.shadowBlur = 15;
+    gameCtx.beginPath(); gameCtx.moveTo(heroX+70, laserBeamY); gameCtx.lineTo(W, laserBeamY); gameCtx.stroke();
+    gameCtx.shadowBlur = 0;
+
+    // Render Germ Monsters getting Zapped
+    if (germMonsters.length === 0) spawnGermMonsters();
+    germMonsters.forEach(monster => {
+      if (Math.abs(monster.y - laserBeamY) < 35 && !monster.zapped) {
+        monster.zapped = true;
+        playPopSound();
+        for(let p=0; p<8; p++) {
+          particles.push({
+            x: monster.x, y: monster.y,
+            vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10,
+            alpha: 1.0, color: monster.color
+          });
+        }
       }
-    }
 
-    if (!item.collected) {
-      gameCtx.font = '24px sans-serif';
-      gameCtx.fillText(item.type === 'gem' ? '💎' : '🔑', item.x - 12, item.y + 8);
-    }
+      if (!monster.zapped) {
+        gameCtx.fillStyle = monster.color;
+        gameCtx.beginPath(); gameCtx.arc(monster.x, monster.y, monster.size, 0, Math.PI*2); gameCtx.fill();
+        gameCtx.fillStyle = '#ffffff';
+        gameCtx.beginPath(); gameCtx.arc(monster.x-6, monster.y-4, 4, 0, Math.PI*2); gameCtx.fill();
+        gameCtx.beginPath(); gameCtx.arc(monster.x+6, monster.y-4, 4, 0, Math.PI*2); gameCtx.fill();
+      }
+    });
+
+  } else if (chapterIdx === 2) {
+    // CHAPTER 3: Crystal Castle & Flying Dragon
+    const heroX = W*0.5 + Math.cos(globalTime*2)*80;
+    const heroY = H*0.45 + Math.sin(globalTime*3)*30;
+
+    // Crystal Castle in background
+    gameCtx.fillStyle = 'rgba(255,255,255,0.2)';
+    gameCtx.fillRect(W*0.2, H*0.5, 60, H*0.5);
+    gameCtx.fillRect(W*0.6, H*0.4, 80, H*0.6);
+
+    // Hero Flying with Wings
+    gameCtx.fillStyle = 'rgba(255,255,255,0.7)';
+    gameCtx.beginPath(); ctx.ellipse(heroX-30, heroY, 40, 18, -0.4, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.beginPath(); ctx.ellipse(heroX+30, heroY, 40, 18, 0.4, 0, Math.PI*2); gameCtx.fill();
+
+    gameCtx.fillStyle = '#ffffff';
+    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 45, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.fillStyle = '#ffeaa7';
+    gameCtx.beginPath(); gameCtx.arc(heroX, heroY-45, 15, 0, Math.PI*2); gameCtx.fill(); // Crown
+
+  } else if (chapterIdx === 3) {
+    // CHAPTER 4: Grand Victory & Trophy Celebration
+    const heroX = W*0.5;
+    const heroY = H*0.5 + Math.sin(globalTime*5)*10;
+
+    // Hero Victory Stance
+    gameCtx.fillStyle = '#ffffff';
+    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 60, 0, Math.PI*2); gameCtx.fill();
+
+    // Giant Trophy Held High
+    gameCtx.font = '64px sans-serif';
+    gameCtx.fillText('🏆', heroX - 32, heroY - 70);
   }
 
-  // 3. Render Particles & Score Popups
+  // Render Sparkle Particles
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.035;
     if (p.alpha <= 0) { particles.splice(i, 1); continue; }
     gameCtx.fillStyle = p.color;
     gameCtx.globalAlpha = p.alpha;
@@ -654,46 +587,8 @@ function updateAndRenderMaze(dt) {
     gameCtx.globalAlpha = 1.0;
   }
 
-  for (let i = scorePopups.length - 1; i >= 0; i--) {
-    const pop = scorePopups[i];
-    pop.y -= 1.5; pop.alpha -= 0.025;
-    if (pop.alpha <= 0) { scorePopups.splice(i, 1); continue; }
-    gameCtx.save();
-    gameCtx.globalAlpha = pop.alpha;
-    gameCtx.font = '900 18px sans-serif';
-    gameCtx.fillStyle = '#ffd32a';
-    gameCtx.fillText(pop.text, pop.x, pop.y);
-    gameCtx.restore();
-  }
-
-  // 4. Draw Hero Character (Sparkling Tooth Hero)
-  const heroBob = Math.sin(globalTime * 8) * 4;
-  gameCtx.save();
-  gameCtx.translate(heroDrawX, heroDrawY + heroBob);
-
-  // Hero Glow
-  gameCtx.shadowColor = '#00f2fe';
-  gameCtx.shadowBlur = 15;
-
-  // Tooth Body
-  gameCtx.fillStyle = '#ffffff';
-  gameCtx.beginPath();
-  gameCtx.arc(0, 0, 22, 0, Math.PI * 2);
-  gameCtx.fill();
-
-  // Cute Face
-  gameCtx.shadowBlur = 0;
-  gameCtx.fillStyle = '#2d3436';
-  gameCtx.beginPath(); gameCtx.arc(-7, -4, 3, 0, Math.PI*2); gameCtx.fill();
-  gameCtx.beginPath(); gameCtx.arc(7, -4, 3, 0, Math.PI*2); gameCtx.fill();
-  gameCtx.fillStyle = '#ff7675';
-  gameCtx.beginPath(); gameCtx.arc(0, 4, 4, 0, Math.PI); gameCtx.fill();
-
-  gameCtx.restore();
-
-  // Update HUD
-  document.getElementById('mazeTag').innerHTML = `<span>🌀</span> ${chapter.name}`;
-  document.getElementById('gemCount').textContent = `💎 ${gems}`;
+  // Update HUD Tag
+  document.getElementById('chapterTag').innerHTML = `<span>🎬</span> ${chapter.name}`;
 }
 
 /* ==========================================================================
@@ -712,7 +607,7 @@ function loop(timestamp) {
 
     if (elapsed >= TOTAL) {
       elapsed = TOTAL;
-      completeQuest();
+      completeShow();
     }
 
     const currentZoneIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
@@ -722,7 +617,7 @@ function loop(timestamp) {
     }
   }
 
-  updateAndRenderMaze(dt);
+  updateAndRenderShow(dt);
   renderUI();
 
   if (state === "running" || state === "idle" || state === "done") {
@@ -730,13 +625,11 @@ function loop(timestamp) {
   }
 }
 
-function startQuest() {
+function startShow() {
   if (state === "idle" || state === "done") {
     elapsed = 0;
     lastZoneIndex = -1;
-    generateMazeItems();
-    heroGridX = 0; heroGridY = 0;
-    heroDrawX = 50; heroDrawY = 50;
+    spawnGermMonsters();
   }
 
   state = "running";
@@ -749,7 +642,7 @@ function startQuest() {
   renderUI();
 }
 
-function pauseQuest() {
+function pauseShow() {
   state = "paused";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
@@ -757,7 +650,7 @@ function pauseQuest() {
   renderUI();
 }
 
-function stopQuest() {
+function stopShow() {
   state = "idle";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   elapsed = 0;
@@ -766,17 +659,13 @@ function stopQuest() {
   renderUI();
 }
 
-function completeQuest() {
+function completeShow() {
   state = "done";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
   stopMusic();
   playFanfareSound();
   launchFireworks();
-
-  gems += 500;
-  localStorage.setItem('chika_maze_gems', gems.toString());
-
   renderUI();
 }
 
@@ -864,17 +753,10 @@ function playNote(freq, when, dur, type="triangle", gainVal=0.12) {
   osc.stop(when + dur + 0.05);
 }
 
-function playGemSound() {
+function playPopSound() {
   if (muted) return;
   const c = getAudioCtx();
-  playNote(987.77, c.currentTime, 0.08, "sine", 0.15);
-  playNote(1318.51, c.currentTime + 0.06, 0.12, "sine", 0.18);
-}
-
-function playDashSound() {
-  if (muted) return;
-  const c = getAudioCtx();
-  playNote(523.25, c.currentTime, 0.08, "sine", 0.15);
+  playNote(600, c.currentTime, 0.08, "sine", 0.12);
 }
 
 function playChimeSound() {
@@ -974,58 +856,20 @@ function launchFireworks() {
   setTimeout(renderFireworks, 50);
 }
 
-/* ==========================================================================
-   7. TREASURE VAULT MODAL
-   ========================================================================== */
-const treasureModal = document.getElementById('treasureModal');
-
-document.getElementById('treasureBtn').addEventListener('click', () => {
-  renderTreasureGrid();
-  treasureModal.style.display = 'flex';
-});
-document.getElementById('closeModalBtn').addEventListener('click', () => {
-  treasureModal.style.display = 'none';
-});
-
-function renderTreasureGrid() {
-  const grid = document.getElementById('treasureGrid');
-  grid.innerHTML = '';
-
-  ARTIFACTS.forEach(art => {
-    const isUnlocked = unlockedArtifacts.includes(art.id);
-
-    const card = document.createElement('div');
-    card.className = `treasure-item ${isUnlocked ? 'unlocked' : ''}`;
-
-    const icon = document.createElement('div');
-    icon.className = 'treasure-icon';
-    icon.textContent = isUnlocked ? art.icon : '🔒';
-
-    const name = document.createElement('div');
-    name.className = 'treasure-name';
-    name.textContent = isUnlocked ? art.name : '???';
-
-    card.appendChild(icon);
-    card.appendChild(name);
-
-    grid.appendChild(card);
-  });
-}
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').then(reg => {
     reg.update();
   }).catch(err => console.log('SW Reg Error:', err));
 }
 
-document.getElementById('startBtn').addEventListener('click', startQuest);
+document.getElementById('startBtn').addEventListener('click', startShow);
 document.getElementById('pauseBtn').addEventListener('click', () => {
-  if (state === "running") pauseQuest();
-  else if (state === "paused") startQuest();
+  if (state === "running") pauseShow();
+  else if (state === "paused") startShow();
 });
-document.getElementById('stopBtn').addEventListener('click', stopQuest);
+document.getElementById('stopBtn').addEventListener('click', stopShow);
 
-generateMazeItems();
+spawnGermMonsters();
 animFrameId = requestAnimationFrame(loop);
 renderUI();
 </script>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chika-timer-v9';
+const CACHE_NAME = 'chika-timer-v10';
 const ASSETS = [
   './',
   './index.html',
