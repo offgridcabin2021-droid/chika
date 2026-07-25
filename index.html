@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — Disney Magic Timer Style 2분 양치 타이머</title>
-<meta name="description" content="양치시간 2분 동안 거품을 지우며 비밀 캐릭터를 완성하는 PWA 키즈 양치 타이머!">
+<title>Chika — 2-Min Kids Brushing Timer</title>
+<meta name="description" content="A fun 2-minute kids brushing timer with foam masking and secret character rewards!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -79,25 +79,13 @@
   }
   .icon-btn:active { transform: scale(0.92); }
 
-  #langBtn {
-    border: 2px solid var(--mint);
-    background: #fff;
-    color: var(--mint-dark);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-weight: 800;
-    font-size: 0.82rem;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
-
   #pwaBtn {
     background: var(--orange);
     color: #fff;
     border: none;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 800;
     cursor: pointer;
     display: none;
@@ -148,7 +136,7 @@
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
     padding: 6px 14px;
     border-radius: 999px;
@@ -379,16 +367,15 @@
     <span>🦷</span> Chika
   </div>
   <div class="nav-btns">
-    <button id="pwaBtn" aria-label="Install App">📲 앱 설치</button>
-    <button id="stickerBtn" class="icon-btn" aria-label="Sticker Book" title="스티커 도감">🖼️</button>
+    <button id="pwaBtn" aria-label="Install App">📲 Install App</button>
+    <button id="stickerBtn" class="icon-btn" aria-label="Sticker Book" title="Sticker Book">🖼️</button>
     <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
-    <button id="langBtn">한국어</button>
   </div>
 </header>
 
 <!-- Stage Area (Disney Magic Timer Canvas Stack) -->
 <div class="stage-wrapper">
-  <div class="character-tag" id="characterTag">✨ 비밀 캐릭터가 숨어있어요!</div>
+  <div class="character-tag" id="characterTag">✨ Secret Character Hidden!</div>
   <div class="canvas-stack">
     <canvas id="bgCanvas" width="600" height="600"></canvas>
     <canvas id="foamCanvas" width="600" height="600"></canvas>
@@ -407,29 +394,29 @@
 
 <!-- Zone Guide Card -->
 <div id="zone-card">
-  <div id="zone-title">치카랑 2분 동안 양치해요!</div>
-  <div id="zone-tip">시작을 누르면 거품이 지워지면서 캐릭터가 나타나요!</div>
+  <div id="zone-title">Brush for 2 minutes with Chika!</div>
+  <div id="zone-tip">Press start to wipe the foam and reveal secret characters!</div>
 </div>
 
 <!-- Controls -->
 <div id="controls">
-  <button class="ctl" id="startBtn">▶ 양치 시작하기</button>
-  <button class="ctl" id="pauseBtn">⏸ 잠깐 쉬기</button>
-  <button class="ctl" id="stopBtn">⏹ 그만하기</button>
+  <button class="ctl" id="startBtn">▶ Start Brushing</button>
+  <button class="ctl" id="pauseBtn">⏸ Pause</button>
+  <button class="ctl" id="stopBtn">⏹ Stop</button>
 </div>
 
 <footer>
-  우리 동네 치과가 드리는 무료 2분 양치 타이머 💚
+  Free 2-minute brushing timer from your local dental clinic 💚
 </footer>
 
 <!-- Sticker Book Modal -->
 <div class="modal-overlay" id="stickerModal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">🖼️ 내 양치 스티커 도감</div>
+      <div class="modal-title">🖼️ My Sticker Book</div>
       <button class="modal-close" id="closeModalBtn">&times;</button>
     </div>
-    <p style="font-size: 0.85rem; color: #718096;" id="modalSubtitle">양치를 완성할 때마다 마법 스티커가 수집돼요!</p>
+    <p style="font-size: 0.85rem; color: #718096;">Complete 2-minute brushing sessions to collect magic stickers!</p>
     <div class="sticker-grid" id="stickerGrid"></div>
   </div>
 </div>
@@ -438,64 +425,28 @@
 "use strict";
 
 /* ==========================================================================
-   1. i18n & STRINGS
+   1. ENGLISH UI STRINGS
    ========================================================================== */
 const STRINGS = {
-  ko: {
-    brand: "Chika",
-    idleTitle: "치카랑 2분 동안 양치해요!",
-    idleTip: "시작을 누르면 거품이 지워지며 비밀 캐릭터가 나타나요!",
-    doneTitle: "축하해요! 마법 스티커 획득! 🎉",
-    doneTip: "2분 완료! 반짝반짝 깨끗한 이빨이 되었어요!",
-    start: "▶ 양치 시작하기",
-    again: "▶ 한 번 더 양치하기!",
-    pause: "⏸ 잠깐 쉬기",
-    resume: "▶ 계속 양치하기",
-    stop: "⏹ 그만하기",
-    now: "지금 닦는 곳:",
-    footer: "우리 동네 치과가 드리는 무료 2분 양치 타이머 💚",
-    langBtn: "English",
-    pwaBtn: "📲 앱 설치",
-    modalTitle: "🖼️ 내 양치 스티커 도감",
-    modalSubtitle: "양치를 완성할 때마다 마법 스티커가 수집돼요!",
-    hiddenTag: "✨ 비밀 캐릭터가 숨어있어요!",
-    unlockedTag: "🎉 스티커 완성!",
-    zones: [
-      ["오른쪽 위 🪥", "칫솔을 살살 둥글게 돌리며 닦아보세요!"],
-      ["왼쪽 위 ✨", "어금니 안쪽 씹는 면도 꼼꼼히 닦아주세요!"],
-      ["왼쪽 아래 🦷", "혀 쪽 안쪽 면도 부드럽게 싹싹!"],
-      ["오른쪽 아래 🌟", "마지막! 앞니 안쪽까지 반짝이게!"]
-    ]
-  },
-  en: {
-    brand: "Chika",
-    idleTitle: "Brush for 2 minutes with Chika!",
-    idleTip: "Press start to wipe the foam and reveal secret characters!",
-    doneTitle: "Congrats! New Sticker Unlocked! 🎉",
-    doneTip: "2 minutes complete! Sparkling clean teeth!",
-    start: "▶ Start Brushing",
-    again: "▶ Brush Again!",
-    pause: "⏸ Pause",
-    resume: "▶ Resume Brushing",
-    stop: "⏹ Stop",
-    now: "Now brushing:",
-    footer: "Free 2-minute brushing timer from your local dental clinic 💚",
-    langBtn: "한국어",
-    pwaBtn: "📲 Install App",
-    modalTitle: "🖼️ My Sticker Book",
-    modalSubtitle: "Complete 2 minutes to collect magic character stickers!",
-    hiddenTag: "✨ Secret Character Hidden!",
-    unlockedTag: "🎉 Sticker Unlocked!",
-    zones: [
-      ["Upper Right 🪥", "Brush gently in small circles!"],
-      ["Upper Left ✨", "Don't forget the back chewing surfaces!"],
-      ["Lower Left 🦷", "Softly clean the tongue side too!"],
-      ["Lower Right 🌟", "Final stretch! Clean behind front teeth!"]
-    ]
-  }
+  idleTitle: "Brush for 2 minutes with Chika!",
+  idleTip: "Press start to wipe the foam and reveal secret characters!",
+  doneTitle: "Congrats! Magic Sticker Unlocked! 🎉",
+  doneTip: "2 minutes complete! Sparkling clean teeth!",
+  start: "▶ Start Brushing",
+  again: "▶ Brush Again!",
+  pause: "⏸ Pause",
+  resume: "▶ Resume Brushing",
+  stop: "⏹ Stop",
+  now: "Now brushing:",
+  hiddenTag: "✨ Secret Character Hidden!",
+  unlockedTag: "🎉 Sticker Unlocked!",
+  zones: [
+    ["Upper Right 🪥", "Brush gently in small circles!"],
+    ["Upper Left ✨", "Don't forget the back chewing surfaces!"],
+    ["Lower Left 🦷", "Softly clean the tongue side too!"],
+    ["Lower Right 🌟", "Final stretch! Clean behind front teeth!"]
+  ]
 };
-let lang = "ko";
-function t() { return STRINGS[lang]; }
 
 /* ==========================================================================
    2. CHARACTERS (Vector Canvas Drawing Routines)
@@ -503,17 +454,14 @@ function t() { return STRINGS[lang]; }
 const CHARACTERS = [
   {
     id: "super_hero",
-    nameKo: "슈퍼 치카맨 🦸‍♂️",
-    nameEn: "Super Tooth Hero 🦸‍♂️",
+    name: "Super Tooth Hero 🦸‍♂️",
     draw(ctx, w, h) {
-      // Sky backdrop
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#74b9ff');
       grad.addColorStop(1, '#a29bfe');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Stars
       ctx.fillStyle = '#fff';
       for(let i=0; i<15; i++) {
         const x = (i * 37) % w;
@@ -521,7 +469,6 @@ const CHARACTERS = [
         ctx.beginPath(); ctx.arc(x, y, 3 + (i%3), 0, Math.PI*2); ctx.fill();
       }
 
-      // Cape
       ctx.fillStyle = '#ff7675';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.5);
@@ -530,7 +477,6 @@ const CHARACTERS = [
       ctx.quadraticCurveTo(w*0.9, h*0.8, w*0.7, h*0.5);
       ctx.fill();
 
-      // Tooth Body
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = '#dfe6e9';
       ctx.lineWidth = 8;
@@ -543,13 +489,11 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.75, w*0.15, h*0.45, w*0.3, h*0.3);
       ctx.fill(); ctx.stroke();
 
-      // Mask
       ctx.fillStyle = '#0984e3';
       ctx.beginPath();
       ctx.ellipse(w*0.5, h*0.36, w*0.22, h*0.07, 0, 0, Math.PI*2);
       ctx.fill();
 
-      // Eyes
       ctx.fillStyle = '#ffffff';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.36, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.58, h*0.36, 12, 0, Math.PI*2); ctx.fill();
@@ -557,14 +501,12 @@ const CHARACTERS = [
       ctx.beginPath(); ctx.arc(w*0.43, h*0.36, 6, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.57, h*0.36, 6, 0, Math.PI*2); ctx.fill();
 
-      // Big Smile
       ctx.lineWidth = 5;
       ctx.strokeStyle = '#d63031';
       ctx.beginPath();
       ctx.arc(w*0.5, h*0.46, 20, 0.1*Math.PI, 0.9*Math.PI);
       ctx.stroke();
 
-      // Hero Emblem
       ctx.fillStyle = '#fdcb6e';
       ctx.beginPath();
       ctx.arc(w*0.5, h*0.58, 22, 0, Math.PI*2);
@@ -578,21 +520,17 @@ const CHARACTERS = [
   },
   {
     id: "space_astro",
-    nameKo: "우주 탐험가 치카 🚀",
-    nameEn: "Space Astro Tooth 🚀",
+    name: "Space Astro Tooth 🚀",
     draw(ctx, w, h) {
-      // Cosmic dark gradient
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#0c2461');
       grad.addColorStop(1, '#4a69bd');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Planet
       ctx.fillStyle = '#e1b12c';
       ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 40, 0, Math.PI*2); ctx.fill();
 
-      // Tooth Body
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.35);
@@ -603,7 +541,6 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
-      // Helmet Glass
       ctx.fillStyle = 'rgba(120, 224, 143, 0.45)';
       ctx.strokeStyle = '#78e08f';
       ctx.lineWidth = 6;
@@ -611,7 +548,6 @@ const CHARACTERS = [
       ctx.arc(w*0.5, h*0.42, 85, 0, Math.PI*2);
       ctx.fill(); ctx.stroke();
 
-      // Eyes & Sparkle
       ctx.fillStyle = '#2c3e50';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 8, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 8, 0, Math.PI*2); ctx.fill();
@@ -621,24 +557,20 @@ const CHARACTERS = [
   },
   {
     id: "fairy_magic",
-    nameKo: "마법 요정 치카 🧚‍♀️",
-    nameEn: "Magic Fairy Tooth 🧚‍♀️",
+    name: "Magic Fairy Tooth 🧚‍♀️",
     draw(ctx, w, h) {
-      // Soft pink pastel gradient
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#ffafbd');
       grad.addColorStop(1, '#ffc3a0');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Wings
       ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
       ctx.beginPath();
       ctx.ellipse(w*0.25, h*0.4, 60, 30, -Math.PI*0.25, 0, Math.PI*2);
       ctx.ellipse(w*0.75, h*0.4, 60, 30, Math.PI*0.25, 0, Math.PI*2);
       ctx.fill();
 
-      // Tooth Body
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.35);
@@ -649,7 +581,6 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
-      // Crown
       ctx.fillStyle = '#f1c40f';
       ctx.beginPath();
       ctx.moveTo(w*0.38, h*0.22);
@@ -660,7 +591,6 @@ const CHARACTERS = [
       ctx.closePath();
       ctx.fill();
 
-      // Cheeks & Eyes
       ctx.fillStyle = '#ff7675';
       ctx.beginPath(); ctx.arc(w*0.36, h*0.46, 10, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.64, h*0.46, 10, 0, Math.PI*2); ctx.fill();
@@ -671,17 +601,14 @@ const CHARACTERS = [
   },
   {
     id: "dino_champ",
-    nameKo: "공룡 챔피언 치카 🦕",
-    nameEn: "Dino Champ Tooth 🦕",
+    name: "Dino Champ Tooth 🦕",
     draw(ctx, w, h) {
-      // Mint green gradient
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#55efc4');
       grad.addColorStop(1, '#00b894');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Dino Spikes
       ctx.fillStyle = '#fdcb6e';
       for(let i=0; i<4; i++) {
         ctx.beginPath();
@@ -691,7 +618,6 @@ const CHARACTERS = [
         ctx.fill();
       }
 
-      // Tooth Body
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.35);
@@ -702,7 +628,6 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
-      // Toothbrush held
       ctx.strokeStyle = '#e17055';
       ctx.lineWidth = 12;
       ctx.beginPath();
@@ -713,7 +638,6 @@ const CHARACTERS = [
       ctx.fillStyle = '#74b9ff';
       ctx.fillRect(w*0.84, h*0.3, 16, 24);
 
-      // Cute Face
       ctx.fillStyle = '#2d3436';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 7, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 7, 0, Math.PI*2); ctx.fill();
@@ -721,17 +645,14 @@ const CHARACTERS = [
   },
   {
     id: "king_royal",
-    nameKo: "국왕 치카 👑",
-    nameEn: "Royal King Tooth 👑",
+    name: "Royal King Tooth 👑",
     draw(ctx, w, h) {
-      // Royal Purple Gradient
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#a29bfe');
       grad.addColorStop(1, '#6c5ce7');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Golden Crown
       ctx.fillStyle = '#ffeaa7';
       ctx.strokeStyle = '#fdcb6e';
       ctx.lineWidth = 4;
@@ -744,7 +665,6 @@ const CHARACTERS = [
       ctx.closePath();
       ctx.fill(); ctx.stroke();
 
-      // Tooth Body
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.35);
@@ -755,7 +675,6 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
-      // Royal Glasses
       ctx.strokeStyle = '#2d3436';
       ctx.lineWidth = 5;
       ctx.beginPath(); ctx.arc(w*0.4, h*0.42, 16, 0, Math.PI*2); ctx.stroke();
@@ -783,7 +702,6 @@ const foamCtx = foamCanvas.getContext('2d');
 const effectCanvas = document.getElementById('effectCanvas');
 const effectCtx = effectCanvas.getContext('2d');
 
-/* Pre-generated bubble pop cell locations for foam erasing */
 let bubbleSchedule = [];
 
 function generateBubbleSchedule() {
@@ -791,7 +709,6 @@ function generateBubbleSchedule() {
   const W = foamCanvas.width;
   const H = foamCanvas.height;
 
-  // Grid + Random points
   const rows = 12, cols = 12;
   const cellW = W / cols, cellH = H / rows;
 
@@ -802,7 +719,6 @@ function generateBubbleSchedule() {
       const x = baseX + (Math.random() - 0.5) * cellW * 0.8;
       const y = baseY + (Math.random() - 0.5) * cellH * 0.8;
       const targetRadius = 35 + Math.random() * 30;
-      // Trigger threshold between 0.05 and 0.95
       const triggerPercent = 0.02 + Math.random() * 0.92;
       
       bubbleSchedule.push({
@@ -810,12 +726,11 @@ function generateBubbleSchedule() {
       });
     }
   }
-  // Sort schedule by trigger percentage
   bubbleSchedule.sort((a, b) => a.triggerPercent - b.triggerPercent);
 }
 
 /* ==========================================================================
-   4. CANVAS MASKING ENGINE (Disney Magic Timer Concept)
+   4. CANVAS MASKING ENGINE
    ========================================================================== */
 function drawCharacterBackground() {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
@@ -827,7 +742,6 @@ function initFoamLayer() {
   foamCtx.globalCompositeOperation = 'source-over';
   foamCtx.clearRect(0, 0, W, H);
 
-  // Soft white/mint soap foam base
   const foamGrad = foamCtx.createRadialGradient(W*0.5, H*0.5, 50, W*0.5, H*0.5, W*0.7);
   foamGrad.addColorStop(0, '#ffffff');
   foamGrad.addColorStop(0.7, '#f0faf8');
@@ -835,7 +749,6 @@ function initFoamLayer() {
   foamCtx.fillStyle = foamGrad;
   foamCtx.fillRect(0, 0, W, H);
 
-  // Draw initial soap bubbles pattern
   foamCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
   foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.6)';
   foamCtx.lineWidth = 3;
@@ -854,9 +767,6 @@ function initFoamLayer() {
 function updateFoamErasing(progress) {
   if (progress <= 0) return;
 
-  const W = foamCanvas.width, H = foamCanvas.height;
-  
-  // Use destination-out to erase soap foam!
   foamCtx.globalCompositeOperation = 'destination-out';
 
   for (let i = 0; i < bubbleSchedule.length; i++) {
@@ -866,7 +776,6 @@ function updateFoamErasing(progress) {
         item.popped = true;
         playPopSound();
       }
-      // Calculate smooth bubble expansion radius
       const timeSinceTrigger = (progress - item.triggerPercent) / (1 - item.triggerPercent + 0.001);
       const currentRadius = item.targetRadius * Math.min(1.2, 0.4 + timeSinceTrigger * 1.6);
 
@@ -880,7 +789,7 @@ function updateFoamErasing(progress) {
 }
 
 /* ==========================================================================
-   5. TIMER & ANIMATION LOOP (60fps requestAnimationFrame)
+   5. TIMER & ANIMATION LOOP
    ========================================================================== */
 let lastZoneIndex = -1;
 
@@ -916,7 +825,7 @@ function loop(timestamp) {
 function selectRandomCharacter() {
   const index = Math.floor(Math.random() * CHARACTERS.length);
   currentCharacter = CHARACTERS[index];
-  document.getElementById('characterTag').textContent = t().hiddenTag;
+  document.getElementById('characterTag').textContent = STRINGS.hiddenTag;
 }
 
 function startBrushing() {
@@ -963,15 +872,13 @@ function completeBrushing() {
   playFanfareSound();
   launchConfetti();
 
-  // Save unlocked sticker
   if (!unlockedIds.includes(currentCharacter.id)) {
     unlockedIds.push(currentCharacter.id);
     localStorage.setItem('chika_unlocked_stickers', JSON.stringify(unlockedIds));
   }
 
-  // Clear all foam layer completely!
   foamCtx.clearRect(0, 0, foamCanvas.width, foamCanvas.height);
-  document.getElementById('characterTag').textContent = t().unlockedTag + " " + (lang === "ko" ? currentCharacter.nameKo : currentCharacter.nameEn);
+  document.getElementById('characterTag').textContent = `${STRINGS.unlockedTag} ${currentCharacter.name}`;
 
   renderUI();
 }
@@ -980,7 +887,6 @@ function completeBrushing() {
    6. UI RENDERER
    ========================================================================== */
 function renderUI() {
-  const s = t();
   const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
   const mins = Math.floor(remaining / 60);
   const secs = String(remaining % 60).padStart(2, '0');
@@ -995,33 +901,33 @@ function renderUI() {
   const stopBtn = document.getElementById('stopBtn');
 
   if (state === "idle") {
-    document.getElementById('zone-title').textContent = s.idleTitle;
-    document.getElementById('zone-tip').textContent = s.idleTip;
-    startBtn.textContent = s.start;
+    document.getElementById('zone-title').textContent = STRINGS.idleTitle;
+    document.getElementById('zone-tip').textContent = STRINGS.idleTip;
+    startBtn.textContent = STRINGS.start;
     startBtn.style.display = "block";
     pauseBtn.style.display = "none";
     stopBtn.style.display = "none";
   } else if (state === "done") {
-    document.getElementById('zone-title').textContent = s.doneTitle;
-    document.getElementById('zone-tip').textContent = s.doneTip;
-    startBtn.textContent = s.again;
+    document.getElementById('zone-title').textContent = STRINGS.doneTitle;
+    document.getElementById('zone-tip').textContent = STRINGS.doneTip;
+    startBtn.textContent = STRINGS.again;
     startBtn.style.display = "block";
     pauseBtn.style.display = "none";
     stopBtn.style.display = "none";
   } else {
-    const [zoneName, tip] = s.zones[zoneIndex];
-    document.getElementById('zone-title').textContent = `${s.now} ${zoneName}`;
+    const [zoneName, tip] = STRINGS.zones[zoneIndex];
+    document.getElementById('zone-title').textContent = `${STRINGS.now} ${zoneName}`;
     document.getElementById('zone-tip').textContent = tip;
     startBtn.style.display = "none";
-    pauseBtn.textContent = state === "running" ? s.pause : s.resume;
+    pauseBtn.textContent = state === "running" ? STRINGS.pause : STRINGS.resume;
     pauseBtn.style.display = "block";
-    stopBtn.textContent = s.stop;
+    stopBtn.textContent = STRINGS.stop;
     stopBtn.style.display = "block";
   }
 }
 
 /* ==========================================================================
-   7. WEB AUDIO SYNTHESIZER (No Audio Files Required)
+   7. WEB AUDIO SYNTHESIZER
    ========================================================================== */
 let audioCtx = null, musicTimer = null, muted = false;
 
@@ -1139,7 +1045,7 @@ function launchConfetti() {
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.3; // gravity
+      p.vy += 0.3;
       p.rotation += p.vRot;
 
       if (p.y < effectCanvas.height) activeCount++;
@@ -1190,7 +1096,7 @@ function renderStickerGrid() {
 
     const name = document.createElement('div');
     name.className = 'sticker-name';
-    name.textContent = isUnlocked ? (lang === "ko" ? char.nameKo : char.nameEn) : "🔒 ???";
+    name.textContent = isUnlocked ? char.name : "🔒 Locked";
 
     item.appendChild(canvas);
     item.appendChild(name);
@@ -1198,14 +1104,13 @@ function renderStickerGrid() {
     if (isUnlocked) {
       const badge = document.createElement('div');
       badge.className = 'badge-new';
-      badge.textContent = '보유중';
+      badge.textContent = 'Unlocked';
       item.appendChild(badge);
     }
     grid.appendChild(item);
   });
 }
 
-/* PWA Installation Listener */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -1220,12 +1125,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
   });
 });
 
-/* Service Worker Registration */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Reg Error:', err));
 }
 
-/* Controls Event Listeners */
 document.getElementById('startBtn').addEventListener('click', startBrushing);
 document.getElementById('pauseBtn').addEventListener('click', () => {
   if (state === "running") pauseBrushing();
@@ -1233,16 +1136,6 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 });
 document.getElementById('stopBtn').addEventListener('click', stopBrushing);
 
-document.getElementById('langBtn').addEventListener('click', () => {
-  lang = lang === "ko" ? "en" : "ko";
-  document.getElementById('langBtn').textContent = STRINGS[lang].langBtn;
-  document.getElementById('pwaBtn').textContent = STRINGS[lang].pwaBtn;
-  document.getElementById('modalTitle').textContent = STRINGS[lang].modalTitle;
-  document.getElementById('modalSubtitle').textContent = STRINGS[lang].modalSubtitle;
-  renderUI();
-});
-
-// Initial Setup
 selectRandomCharacter();
 drawCharacterBackground();
 initFoamLayer();

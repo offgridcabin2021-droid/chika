@@ -1,7 +1,7 @@
 {
-  "name": "Chika — 2분 양치 타이머",
+  "name": "Chika — 2-Min Brushing Timer",
   "short_name": "Chika",
-  "description": "아이들을 위한 거품 마스킹 2분 양치 타이머 (Disney Magic Timer 스타일)",
+  "description": "Disney Magic Timer style 2-minute kids brushing timer with foam masking and secret character rewards!",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
