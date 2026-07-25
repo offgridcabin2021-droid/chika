@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — 2-Min Kids Brushing Timer</title>
-<meta name="description" content="A fun 2-minute kids brushing timer with foam masking and secret character rewards!">
+<title>Chika — 2-Min Race Car Brushing Game</title>
+<meta name="description" content="An exciting 2-minute racing game for kids while brushing teeth! Collect coins, boost nitro, and unlock awesome cars!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -103,7 +103,7 @@
 
   @keyframes stagePulse {
     0% { box-shadow: 0 10px 30px rgba(51, 184, 166, 0.3); }
-    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 20px rgba(140, 204, 250, 0.5); }
+    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 25px rgba(255, 159, 67, 0.5); }
   }
 
   .canvas-stack {
@@ -112,7 +112,7 @@
     height: 100%;
     border-radius: 24px;
     overflow: hidden;
-    background: #f0faf8;
+    background: #1e272e;
   }
 
   canvas {
@@ -124,27 +124,27 @@
     border-radius: 24px;
   }
 
-  #bgCanvas { z-index: 1; }
-  #foamCanvas { z-index: 2; }
-  #effectCanvas { z-index: 3; pointer-events: none; }
+  #gameCanvas { z-index: 1; }
+  #hudCanvas { z-index: 2; pointer-events: none; }
 
-  /* Overlay Info Badge */
-  .character-tag {
+  /* HUD Status Overlay Tag */
+  .track-tag {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(10px);
-    padding: 6px 16px;
+    padding: 6px 14px;
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 800;
-    color: var(--mint-dark);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    color: #ffd32a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     gap: 6px;
+    border: 1px solid rgba(255, 211, 42, 0.4);
   }
 
   /* Timer & Progress Row */
@@ -183,10 +183,10 @@
   .progress-bar-fg {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #33b8a6 0%, #00cec9 50%, #74b9ff 100%);
+    background: linear-gradient(90deg, #ff9f43 0%, #00cec9 50%, #ff5252 100%);
     border-radius: 999px;
     transition: width 0.1s linear;
-    box-shadow: 0 0 10px rgba(51, 184, 166, 0.5);
+    box-shadow: 0 0 10px rgba(255, 159, 67, 0.6);
   }
 
   /* Brushing Zone Card */
@@ -231,10 +231,10 @@
   }
 
   .quad-sector.active {
-    background: var(--mint);
+    background: var(--orange);
     color: #fff;
     font-weight: 900;
-    box-shadow: 0 0 8px rgba(51, 184, 166, 0.6);
+    box-shadow: 0 0 8px rgba(255, 159, 67, 0.8);
     animation: pulseSector 0.8s infinite alternate;
   }
 
@@ -284,9 +284,9 @@
   button.ctl:active { transform: scale(0.96); }
 
   #startBtn {
-    background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+    background: linear-gradient(135deg, var(--orange) 0%, #e67e22 100%);
     color: #fff;
-    box-shadow: 0 6px 22px rgba(51,184,166,0.45);
+    box-shadow: 0 6px 22px rgba(255,159,67,0.45);
   }
 
   #pauseBtn {
@@ -301,11 +301,11 @@
     display: none;
   }
 
-  /* Sticker Book Modal */
+  /* Garage Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(8px);
     z-index: 100;
     display: none;
@@ -322,7 +322,7 @@
     padding: 24px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     text-align: center;
     position: relative;
   }
@@ -350,55 +350,58 @@
     cursor: pointer;
   }
 
-  .sticker-grid {
+  .garage-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 14px;
     margin-top: 14px;
   }
 
-  .sticker-item {
+  .car-card {
     background: #f7fafc;
     border: 2px dashed #cbd5e0;
     border-radius: 20px;
-    padding: 12px;
+    padding: 14px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    position: relative;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
   }
 
-  .sticker-item.unlocked {
-    background: #f0faf8;
+  .car-card.selected {
+    background: #e6f9f6;
     border: 2px solid var(--mint);
+    box-shadow: 0 4px 14px rgba(51, 184, 166, 0.2);
   }
 
-  .sticker-canvas-preview {
-    width: 100px;
-    height: 100px;
-    border-radius: 16px;
+  .car-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
-  .sticker-item.locked .sticker-canvas-preview {
-    filter: brightness(0.2) blur(2px);
+  .car-preview-canvas {
+    width: 90px;
+    height: 60px;
+    border-radius: 12px;
+    background: #1e272e;
   }
 
-  .sticker-name {
-    font-size: 0.85rem;
-    font-weight: 800;
+  .car-info {
+    flex: 1;
   }
 
-  .badge-new {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: var(--orange);
-    color: #fff;
-    font-size: 0.65rem;
+  .car-name {
+    font-size: 1.05rem;
     font-weight: 900;
-    padding: 2px 8px;
-    border-radius: 999px;
+    color: var(--text);
+  }
+
+  .car-stats {
+    font-size: 0.78rem;
+    color: #718096;
+    margin-top: 2px;
   }
 
   footer {
@@ -413,34 +416,33 @@
 
 <header>
   <div class="brand">
-    <span>🦷</span> Chika
+    <span>🏎️</span> Chika Race
   </div>
   <div class="nav-btns">
-    <button id="stickerBtn" class="icon-btn" aria-label="Sticker Book" title="Sticker Book">🖼️</button>
+    <button id="garageBtn" class="icon-btn" aria-label="Garage" title="Garage Showroom">🚗</button>
     <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
   </div>
 </header>
 
-<!-- Stage Area (Disney Magic Timer Canvas Stack) -->
+<!-- Stage Area (Race Track Game Canvas Stack) -->
 <div class="stage-wrapper" id="stageWrapper">
-  <div class="character-tag" id="characterTag"><span>✨</span> Secret Character Hidden!</div>
+  <div class="track-tag" id="trackTag"><span>🏙️</span> City Circuit</div>
   <div class="canvas-stack">
-    <canvas id="bgCanvas" width="600" height="600"></canvas>
-    <canvas id="foamCanvas" width="600" height="600"></canvas>
-    <canvas id="effectCanvas" width="600" height="600"></canvas>
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <canvas id="hudCanvas" width="600" height="600"></canvas>
   </div>
 </div>
 
-<!-- Live Timer Row -->
+<!-- Live Timer & Coin Bar -->
 <div class="timer-row">
   <div class="clock-display" id="clock">2:00</div>
   <div class="progress-bar-bg">
     <div class="progress-bar-fg" id="progressBar"></div>
   </div>
-  <div style="font-size: 1.4rem;">🧼</div>
+  <div style="font-size: 1.3rem; font-weight: 900; color: #ffa801;" id="coinCount">🪙 0</div>
 </div>
 
-<!-- Zone Guide Card with Interactive Mouth Quadrant Map -->
+<!-- Zone Guide Card with Quadrant Map -->
 <div id="zone-card">
   <div class="quadrant-map">
     <div class="quad-sector" id="quad-1">UR</div>
@@ -449,31 +451,31 @@
     <div class="quad-sector" id="quad-3">LR</div>
   </div>
   <div class="zone-text-group">
-    <div id="zone-title">Brush for 2 minutes with Chika!</div>
-    <div id="zone-tip">Press start to wipe the foam and reveal secret characters!</div>
+    <div id="zone-title">Start Brushing to Race!</div>
+    <div id="zone-tip">Drive through 4 tracks in 2 minutes, collect coins & unlock supercars!</div>
   </div>
 </div>
 
 <!-- Controls -->
 <div id="controls">
-  <button class="ctl" id="startBtn">▶ Start Brushing</button>
+  <button class="ctl" id="startBtn">▶ Start Racing</button>
   <button class="ctl" id="pauseBtn">⏸ Pause</button>
   <button class="ctl" id="stopBtn">⏹ Stop</button>
 </div>
 
 <footer>
-  Free 2-minute brushing timer from your local dental clinic 💚
+  Free 2-minute brushing race game from your local dental clinic 💚
 </footer>
 
-<!-- Sticker Book Modal -->
-<div class="modal-overlay" id="stickerModal">
+<!-- Garage Modal -->
+<div class="modal-overlay" id="garageModal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">🖼️ My Sticker Book</div>
+      <div class="modal-title">🚗 My Car Garage</div>
       <button class="modal-close" id="closeModalBtn">&times;</button>
     </div>
-    <p style="font-size: 0.85rem; color: #718096;">Complete 2-minute brushing sessions to collect magic stickers!</p>
-    <div class="sticker-grid" id="stickerGrid"></div>
+    <p style="font-size: 0.85rem; color: #718096;">Complete 2-minute races to earn coins and unlock supercars!</p>
+    <div class="garage-grid" id="garageGrid"></div>
   </div>
 </div>
 
@@ -481,366 +483,199 @@
 "use strict";
 
 /* ==========================================================================
-   1. ENGLISH UI STRINGS
+   1. STRINGS & TRACK ENVIRONMENTS
    ========================================================================== */
 const STRINGS = {
-  idleTitle: "Brush for 2 minutes with Chika!",
-  idleTip: "Press start to wipe the foam and reveal secret characters!",
-  doneTitle: "Congrats! Magic Sticker Unlocked! 🎉",
-  doneTip: "2 minutes complete! Sparkling clean teeth!",
-  start: "▶ Start Brushing",
-  again: "▶ Brush Again!",
+  idleTitle: "Start Brushing to Race!",
+  idleTip: "Drive through 4 tracks in 2 minutes, collect coins & unlock supercars!",
+  doneTitle: "VICTORY! Race Completed! 🏆",
+  doneTip: "2 minutes complete! You earned +500 Bonus Trophy Coins!",
+  start: "▶ Start Racing",
+  again: "▶ Race Again!",
   pause: "⏸ Pause",
-  resume: "▶ Resume Brushing",
+  resume: "▶ Resume Race",
   stop: "⏹ Stop",
   now: "Now brushing:",
-  hiddenTag: "✨ Secret Character Hidden!",
-  unlockedTag: "🎉 Sticker Unlocked!",
   zones: [
-    ["Upper Right 🪥", "Brush gently in small circles!"],
-    ["Upper Left ✨", "Don't forget the back chewing surfaces!"],
-    ["Lower Left 🦷", "Softly clean the tongue side too!"],
-    ["Lower Right 🌟", "Final stretch! Clean behind front teeth!"]
+    ["Upper Right 🪥", "City Circuit: Brush gently in small circles!"],
+    ["Upper Left ✨", "Space Galaxy: Don't forget back chewing surfaces!"],
+    ["Lower Left 🦷", "Jungle Safari: Softly clean tongue side!"],
+    ["Lower Right 🌟", "Rainbow Grand Prix: Final sprint behind front teeth!"]
   ]
 };
 
+const TRACK_THEMES = [
+  { name: "City Circuit 🏙️", bgTop: "#0f2027", bgBottom: "#2c5364", road: "#34495e", stripe: "#f1c40f" },
+  { name: "Space Galaxy 🚀", bgTop: "#0c2461", bgBottom: "#4a69bd", road: "#1e272e", stripe: "#00cec9" },
+  { name: "Jungle Safari 🌴", bgTop: "#11998e", bgBottom: "#38ef7d", road: "#2d3436", stripe: "#fdcb6e" },
+  { name: "Rainbow Grand Prix 🌈", bgTop: "#833ab4", bgBottom: "#fd1d1d", road: "#2c3e50", stripe: "#ff7675" }
+];
+
 /* ==========================================================================
-   2. ADORABLE KIDS MASCOT CHARACTERS (Rich Detailed Canvas Vector Artwork)
+   2. CAR MODELS (Vector Drawing & Upgrades)
    ========================================================================== */
-const CHARACTERS = [
+const CARS = [
   {
-    id: "magic_unicorn",
-    name: "Sparkle Unicorn 🦄",
-    draw(ctx, w, h, time=0) {
-      // Magic Rainbow Sky Backdrop
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#ffafbd');
-      grad.addColorStop(0.5, '#ffc3a0');
-      grad.addColorStop(1, '#e0c3fc');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Floating Stars & Clouds
-      ctx.fillStyle = '#ffffff';
-      for(let i=0; i<16; i++) {
-        const x = (i * 41) % w;
-        const y = (i * 37 + Math.sin(time*2 + i)*6) % (h * 0.7);
-        ctx.beginPath(); ctx.arc(x, y, 4 + (i%4), 0, Math.PI*2); ctx.fill();
-      }
-
-      const floatY = Math.sin(time * 3) * 8;
+    id: "mint_racer",
+    name: "Speedy Mint Racer 🏎️",
+    speed: 120,
+    cost: 0,
+    draw(ctx, x, y, scale=1, time=0) {
       ctx.save();
-      ctx.translate(0, floatY);
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
 
-      // Cute Unicorn Head Body
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(w*0.5, h*0.52, 110, 0, Math.PI*2);
-      ctx.fill();
-
-      // Fluffy Ears
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.ellipse(w*0.35, h*0.28, 22, 45, -0.3, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(w*0.65, h*0.28, 22, 45, 0.3, 0, Math.PI*2); ctx.fill();
+      // Nitro Exhaust Flame
+      const flame = Math.sin(time * 20) * 8;
       ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.ellipse(w*0.35, h*0.28, 12, 28, -0.3, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(w*0.65, h*0.28, 12, 28, 0.3, 0, Math.PI*2); ctx.fill();
-
-      // Golden Magic Horn
-      const hornGrad = ctx.createLinearGradient(w*0.5, h*0.1, w*0.5, h*0.35);
-      hornGrad.addColorStop(0, '#ffeaa7');
-      hornGrad.addColorStop(1, '#fdcb6e');
-      ctx.fillStyle = hornGrad;
       ctx.beginPath();
-      ctx.moveTo(w*0.5, h*0.12);
-      ctx.lineTo(w*0.44, h*0.32);
-      ctx.lineTo(w*0.56, h*0.32);
-      ctx.closePath();
+      ctx.moveTo(-45, 10);
+      ctx.lineTo(-65 - flame, 15);
+      ctx.lineTo(-45, 20);
       ctx.fill();
 
-      // Rainbow Hair Mane
-      const hairColors = ['#ff7675', '#fdcb6e', '#55efc4', '#74b9ff', '#a29bfe'];
-      for(let i=0; i<5; i++) {
-        ctx.fillStyle = hairColors[i];
-        ctx.beginPath();
-        ctx.arc(w*0.36 + i*8, h*0.34 + i*4, 16, 0, Math.PI*2);
-        ctx.fill();
-      }
+      // Wheels
+      ctx.fillStyle = '#1e272e';
+      ctx.fillRect(-35, -5, 22, 10);
+      ctx.fillRect(15, -5, 22, 10);
+      ctx.fillRect(-35, 25, 22, 10);
+      ctx.fillRect(15, 25, 22, 10);
 
-      // Snout
+      // Body Body
+      const grad = ctx.createLinearGradient(-40, 0, 40, 0);
+      grad.addColorStop(0, '#00b894');
+      grad.addColorStop(1, '#55efc4');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(-40, 0, 80, 30, 10);
+      ctx.fill();
+
+      // Cockpit Window
+      ctx.fillStyle = '#74b9ff';
+      ctx.beginPath();
+      ctx.roundRect(-10, 4, 30, 22, 6);
+      ctx.fill();
+
+      // Racing Stripe & Number
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(-40, 12, 80, 6);
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillStyle = '#2d3436';
+      ctx.fillText('01', -25, 21);
+
+      ctx.restore();
+    }
+  },
+  {
+    id: "rocket_car",
+    name: "Rocket Thruster 3000 🚀",
+    speed: 160,
+    cost: 300,
+    draw(ctx, x, y, scale=1, time=0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+
+      // Dual Flames
+      const flame = Math.sin(time * 25) * 12;
+      ctx.fillStyle = '#00cec9';
+      ctx.beginPath();
+      ctx.moveTo(-45, 5); ctx.lineTo(-70 - flame, 8); ctx.lineTo(-45, 12); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-45, 18); ctx.lineTo(-70 - flame, 21); ctx.lineTo(-45, 25); ctx.fill();
+
+      // Cyber Body
+      const grad = ctx.createLinearGradient(-40, 0, 40, 0);
+      grad.addColorStop(0, '#6c5ce7');
+      grad.addColorStop(1, '#a29bfe');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(-40, 0); ctx.lineTo(45, 15); ctx.lineTo(-40, 30);
+      ctx.closePath(); ctx.fill();
+
+      // Neon Glass
       ctx.fillStyle = '#ffeaa7';
-      ctx.beginPath();
-      ctx.ellipse(w*0.5, h*0.62, 50, 32, 0, 0, Math.PI*2);
-      ctx.fill();
-
-      // Cute Eyes (Big Anime Eyes)
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.48, 14, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.48, 14, 0, Math.PI*2); ctx.fill();
-      // Eye Highlights
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.45, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.56, h*0.45, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.44, h*0.51, 3, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.51, 3, 0, Math.PI*2); ctx.fill();
-
-      // Rosy Cheeks
-      ctx.fillStyle = 'rgba(255, 118, 117, 0.45)';
-      ctx.beginPath(); ctx.arc(w*0.34, h*0.55, 14, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.66, h*0.55, 14, 0, Math.PI*2); ctx.fill();
-
-      // Smile
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#d63031';
-      ctx.beginPath();
-      ctx.arc(w*0.5, h*0.62, 12, 0.1*Math.PI, 0.9*Math.PI);
-      ctx.stroke();
+      ctx.beginPath(); ctx.arc(5, 15, 12, 0, Math.PI*2); ctx.fill();
 
       ctx.restore();
     }
   },
   {
-    id: "astro_bunny",
-    name: "Cosmic Astro Bunny 🚀",
-    draw(ctx, w, h, time=0) {
-      // Cosmic Space Gradient
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#0c2461');
-      grad.addColorStop(0.6, '#1e3799');
-      grad.addColorStop(1, '#4a69bd');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
+    id: "monster_truck",
+    name: "Monster Tooth Beast 🚜",
+    speed: 140,
+    cost: 600,
+    draw(ctx, x, y, scale=1, time=0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
 
-      // Stars & Saturn Planet
+      // Huge Wheels
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(-25, -2, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(25, -2, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(-25, 32, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(25, 32, 16, 0, Math.PI*2); ctx.fill();
+
+      // Body
+      ctx.fillStyle = '#e17055';
+      ctx.fillRect(-35, 2, 70, 26);
       ctx.fillStyle = '#fdcb6e';
-      ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 28, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = '#ffeaa7';
-      ctx.lineWidth = 6;
-      ctx.beginPath(); ctx.ellipse(w*0.8, h*0.2, 48, 12, -0.4, 0, Math.PI*2); ctx.stroke();
-
-      const floatY = Math.sin(time * 2.5) * 10;
-      ctx.save();
-      ctx.translate(0, floatY);
-
-      // Bunny Ears inside suit
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.ellipse(w*0.38, h*0.22, 18, 55, -0.2, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(w*0.62, h*0.22, 18, 55, 0.2, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.ellipse(w*0.38, h*0.22, 10, 38, -0.2, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(w*0.62, h*0.22, 10, 38, 0.2, 0, Math.PI*2); ctx.fill();
-
-      // Bunny Head
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 95, 0, Math.PI*2); ctx.fill();
-
-      // Glass Helmet Visor
-      ctx.fillStyle = 'rgba(120, 224, 143, 0.35)';
-      ctx.strokeStyle = '#78e08f';
-      ctx.lineWidth = 8;
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 115, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-
-      // Cute Eyes
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.48, 12, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.48, 12, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.45, 5, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.56, h*0.45, 5, 0, Math.PI*2); ctx.fill();
-
-      // Bunny Nose & Mouth
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.54, 7, 0, Math.PI*2); ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.46, h*0.58, 8, 0, Math.PI*0.8); ctx.stroke();
-      ctx.beginPath(); ctx.arc(w*0.54, h*0.58, 8, 0.2*Math.PI, Math.PI); ctx.stroke();
+      ctx.fillRect(-15, 6, 30, 18);
 
       ctx.restore();
     }
   },
   {
-    id: "teddy_captain",
-    name: "Teddy Captain 🧸",
-    draw(ctx, w, h, time=0) {
-      // Warm Yellow Sunburst Backdrop
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#ffeaa7');
-      grad.addColorStop(1, '#fab1a0');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      const floatY = Math.sin(time * 3) * 6;
+    id: "cyber_neon",
+    name: "Formula Cyber Neon ⚡",
+    speed: 180,
+    cost: 1000,
+    draw(ctx, x, y, scale=1, time=0) {
       ctx.save();
-      ctx.translate(0, floatY);
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
 
-      // Bear Ears
-      ctx.fillStyle = '#e17055';
-      ctx.beginPath(); ctx.arc(w*0.33, h*0.34, 34, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.67, h*0.34, 34, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#fab1a0';
-      ctx.beginPath(); ctx.arc(w*0.33, h*0.34, 20, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.67, h*0.34, 20, 0, Math.PI*2); ctx.fill();
+      // Rainbow Glow Trail
+      const flame = Math.sin(time * 30) * 10;
+      ctx.fillStyle = '#fd79a8';
+      ctx.fillRect(-65 - flame, 10, 25, 10);
 
-      // Bear Head
-      ctx.fillStyle = '#e17055';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.54, 100, 0, Math.PI*2); ctx.fill();
-
-      // Captain Hat
+      // Aerodynamic Body
       ctx.fillStyle = '#0984e3';
-      ctx.fillRect(w*0.36, h*0.22, w*0.28, 30);
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.32, 60, 12, 0, 0, Math.PI*2); ctx.fill();
-
-      // Snout
-      ctx.fillStyle = '#ffeaa7';
-      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.6, 42, 30, 0, 0, Math.PI*2); ctx.fill();
-
-      // Eyes & Nose
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 12, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 12, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.38, h*0.45, 5, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.45, 5, 0, Math.PI*2); ctx.fill();
-
-      ctx.fillStyle = '#6c5ce7';
-      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.56, 12, 8, 0, 0, Math.PI*2); ctx.fill();
-
-      // Smile
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.62, 14, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
+      ctx.fillRect(-45, 4, 90, 22);
+      ctx.fillStyle = '#00cec9';
+      ctx.fillRect(10, 8, 30, 14);
 
       ctx.restore();
     }
   },
   {
-    id: "baby_dino",
-    name: "Baby Dino Champ 🦕",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#55efc4');
-      grad.addColorStop(1, '#00b894');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Dino Spikes
-      ctx.fillStyle = '#fdcb6e';
-      for(let i=0; i<4; i++) {
-        const spikeWiggle = Math.sin(time*4 + i)*5;
-        ctx.beginPath();
-        ctx.moveTo(w*0.25, h*(0.3+i*0.12));
-        ctx.lineTo(w*0.12 + spikeWiggle, h*(0.34+i*0.12));
-        ctx.lineTo(w*0.25, h*(0.38+i*0.12));
-        ctx.fill();
-      }
-
-      const floatY = Math.sin(time * 3) * 8;
+    id: "golden_royal",
+    name: "Golden Royal Crown 👑",
+    speed: 200,
+    cost: 2000,
+    draw(ctx, x, y, scale=1, time=0) {
       ctx.save();
-      ctx.translate(0, floatY);
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
 
-      // Dino Head
-      ctx.fillStyle = '#81ecec';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.52, 100, 0, Math.PI*2); ctx.fill();
-
-      // Golden Crown
-      const crownBounce = Math.sin(time * 4) * 4;
+      // Golden Sparkle Flame
       ctx.fillStyle = '#ffeaa7';
-      ctx.strokeStyle = '#fdcb6e';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(w*0.38, h*0.28 + crownBounce);
-      ctx.lineTo(w*0.42, h*0.16 + crownBounce);
-      ctx.lineTo(w*0.5, h*0.24 + crownBounce);
-      ctx.lineTo(w*0.58, h*0.16 + crownBounce);
-      ctx.lineTo(w*0.62, h*0.28 + crownBounce);
-      ctx.closePath();
-      ctx.fill(); ctx.stroke();
+      ctx.fillRect(-60, 8, 20, 14);
 
-      // Big Cute Eyes
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 14, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 14, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.38, h*0.44, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.44, 6, 0, Math.PI*2); ctx.fill();
-
-      // Cheeks & Snout
-      ctx.fillStyle = 'rgba(255, 118, 117, 0.4)';
-      ctx.beginPath(); ctx.arc(w*0.32, h*0.55, 14, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.68, h*0.55, 14, 0, Math.PI*2); ctx.fill();
-
-      // Big Happy Smile with 1 Little Tooth
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.fillRect(w*0.48, h*0.6, 10, 10); ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.6, 18, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
-
-      ctx.restore();
-    }
-  },
-  {
-    id: "cat_hero",
-    name: "Sparkle Hero Cat 🐱",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#a29bfe');
-      grad.addColorStop(1, '#6c5ce7');
+      // Gold Body
+      const grad = ctx.createLinearGradient(-40, 0, 40, 0);
+      grad.addColorStop(0, '#ffeaa7');
+      grad.addColorStop(1, '#fdcb6e');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Hero Cape
-      const capeWave = Math.sin(time * 4) * 12;
-      ctx.fillStyle = '#ff7675';
       ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.5);
-      ctx.quadraticCurveTo(w*0.1 + capeWave, h*0.8, w*0.2, h*0.9);
-      ctx.lineTo(w*0.8 + capeWave*0.5, h*0.9);
-      ctx.quadraticCurveTo(w*0.9, h*0.8, w*0.7, h*0.5);
+      ctx.roundRect(-40, 0, 80, 30, 12);
       ctx.fill();
 
-      const floatY = Math.sin(time * 3) * 8;
-      ctx.save();
-      ctx.translate(0, floatY);
-
-      // Cat Ears
-      ctx.fillStyle = '#ffeaa7';
-      ctx.beginPath(); ctx.moveTo(w*0.28, h*0.4); ctx.lineTo(w*0.34, h*0.22); ctx.lineTo(w*0.44, h*0.34); ctx.closePath(); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(w*0.72, h*0.4); ctx.lineTo(w*0.66, h*0.22); ctx.lineTo(w*0.56, h*0.34); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.moveTo(w*0.3, h*0.38); ctx.lineTo(w*0.34, h*0.26); ctx.lineTo(w*0.42, h*0.34); ctx.closePath(); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(w*0.7, h*0.38); ctx.lineTo(w*0.66, h*0.26); ctx.lineTo(w*0.58, h*0.34); ctx.closePath(); ctx.fill();
-
-      // Cat Head
-      ctx.fillStyle = '#ffeaa7';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.52, 95, 0, Math.PI*2); ctx.fill();
-
-      // Big Eyes
-      ctx.fillStyle = '#00b894';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 16, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 16, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 8, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 8, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.37, h*0.44, 5, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.57, h*0.44, 5, 0, Math.PI*2); ctx.fill();
-
-      // Whiskers
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = '#2d3436';
-      ctx.beginPath(); ctx.moveTo(w*0.24, h*0.52); ctx.lineTo(w*0.34, h*0.54); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(w*0.24, h*0.6); ctx.lineTo(w*0.34, h*0.58); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(w*0.76, h*0.52); ctx.lineTo(w*0.66, h*0.54); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(w*0.76, h*0.6); ctx.lineTo(w*0.66, h*0.58); ctx.stroke();
-
-      // Nose & Smile
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.56, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.46, h*0.6, 8, 0, Math.PI*0.8); ctx.stroke();
-      ctx.beginPath(); ctx.arc(w*0.54, h*0.6, 8, 0.2*Math.PI, Math.PI); ctx.stroke();
+      // Crown Motif
+      ctx.fillStyle = '#d63031';
+      ctx.beginPath(); ctx.arc(0, 15, 10, 0, Math.PI*2); ctx.fill();
 
       ctx.restore();
     }
@@ -848,7 +683,7 @@ const CHARACTERS = [
 ];
 
 /* ==========================================================================
-   3. APP STATE & VARIABLES
+   3. APP STATE & GAME ENGINE
    ========================================================================== */
 const TOTAL = 120, ZONE_SEC = 30;
 let state = "idle"; // idle | running | paused | done
@@ -856,194 +691,149 @@ let elapsed = 0;
 let animFrameId = null;
 let lastTime = null;
 let globalTime = 0;
-let currentCharacter = CHARACTERS[0];
-let unlockedIds = JSON.parse(localStorage.getItem('chika_unlocked_stickers') || '[]');
+let coins = parseInt(localStorage.getItem('chika_race_coins') || '0');
+let unlockedCars = JSON.parse(localStorage.getItem('chika_unlocked_cars') || '["mint_racer"]');
+let activeCarId = localStorage.getItem('chika_active_car') || 'mint_racer';
 
-const bgCanvas = document.getElementById('bgCanvas');
-const bgCtx = bgCanvas.getContext('2d');
-const foamCanvas = document.getElementById('foamCanvas');
-const foamCtx = foamCanvas.getContext('2d');
-const effectCanvas = document.getElementById('effectCanvas');
-const effectCtx = effectCanvas.getContext('2d');
+const gameCanvas = document.getElementById('gameCanvas');
+const gameCtx = gameCanvas.getContext('2d');
+const hudCanvas = document.getElementById('hudCanvas');
+const hudCtx = hudCanvas.getContext('2d');
 
-let bubbleSchedule = [];
-let floatingParticles = [];
+let roadScroll = 0;
+let gameItems = [];
+let particles = [];
 
-function generateBubbleSchedule() {
-  bubbleSchedule = [];
-  const W = foamCanvas.width;
-  const H = foamCanvas.height;
-
-  const rows = 14, cols = 14;
-  const cellW = W / cols, cellH = H / rows;
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const baseX = c * cellW + cellW / 2;
-      const baseY = r * cellH + cellH / 2;
-      const x = baseX + (Math.random() - 0.5) * cellW * 0.85;
-      const y = baseY + (Math.random() - 0.5) * cellH * 0.85;
-      const targetRadius = 35 + Math.random() * 30;
-      const triggerPercent = 0.02 + Math.random() * 0.93;
-      
-      bubbleSchedule.push({
-        x, y, targetRadius, triggerPercent, popped: false
-      });
-    }
-  }
-  bubbleSchedule.sort((a, b) => a.triggerPercent - b.triggerPercent);
+function getActiveCar() {
+  return CARS.find(c => c.id === activeCarId) || CARS[0];
 }
 
-/* HIGHLY VISIBLE 3D SOAP BUBBLES & SHINING MAGIC SPARKLES */
-function spawnPoppingSparkles(x, y) {
-  // Spawn 12 large, highly visible soap bubbles & glowing stars per pop!
-  for (let i = 0; i < 12; i++) {
-    floatingParticles.push({
-      x: x + (Math.random() - 0.5) * 35,
-      y: y + (Math.random() - 0.5) * 35,
-      vx: (Math.random() - 0.5) * 6,
-      vy: -2.5 - Math.random() * 4,
-      size: 14 + Math.random() * 22,
-      alpha: 1.0,
-      rotation: Math.random() * 360,
-      vRot: (Math.random() - 0.5) * 8,
-      type: i % 3 === 0 ? 'star' : 'bubble',
-      color: ['#00cec9', '#74b9ff', '#ff7675', '#fdcb6e', '#a29bfe', '#ffffff'][Math.floor(Math.random()*6)]
+/* Spawn Floating Coins & Star Nitro Boosters on Road */
+function spawnTrackItems() {
+  if (Math.random() < 0.08) {
+    gameItems.push({
+      x: gameCanvas.width + 40,
+      y: 180 + Math.random() * 240,
+      type: Math.random() > 0.3 ? 'coin' : 'star',
+      size: 24,
+      collected: false
     });
   }
 }
 
-function updateAndRenderEffects() {
-  effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+function updateAndRenderGame(dt) {
+  const W = gameCanvas.width, H = gameCanvas.height;
+  const currentThemeIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
+  const theme = TRACK_THEMES[currentThemeIndex];
+  const car = getActiveCar();
 
-  for (let i = floatingParticles.length - 1; i >= 0; i--) {
-    const p = floatingParticles[i];
-    p.x += p.vx + Math.sin(globalTime * 4 + i) * 1.5;
-    p.y += p.vy;
-    p.alpha -= 0.014; // Longer visibility!
-    p.rotation += p.vRot;
+  // Scroll Road
+  const currentSpeed = state === "running" ? car.speed * 3.5 : 40;
+  roadScroll += currentSpeed * dt;
 
-    if (p.alpha <= 0 || p.y < -30) {
-      floatingParticles.splice(i, 1);
+  // 1. Draw Background Sky & Horizon
+  const bgGrad = gameCtx.createLinearGradient(0, 0, 0, H * 0.45);
+  bgGrad.addColorStop(0, theme.bgTop);
+  bgGrad.addColorStop(1, theme.bgBottom);
+  gameCtx.fillStyle = bgGrad;
+  gameCtx.fillRect(0, 0, W, H * 0.45);
+
+  // Distant Scenery (Mountains/Buildings)
+  gameCtx.fillStyle = 'rgba(255,255,255,0.15)';
+  for (let i = 0; i < 8; i++) {
+    const bx = ((i * 120) - (roadScroll * 0.2) % 120);
+    gameCtx.fillRect(bx, H*0.25, 80, H*0.2);
+  }
+
+  // 2. Draw Scrolling Racing Track
+  gameCtx.fillStyle = theme.road;
+  gameCtx.fillRect(0, H * 0.45, W, H * 0.55);
+
+  // Road Side Curb Borders
+  gameCtx.fillStyle = '#ff7675';
+  gameCtx.fillRect(0, H*0.45, W, 10);
+  gameCtx.fillRect(0, H - 10, W, 10);
+
+  // Center Dash Lanes
+  gameCtx.fillStyle = theme.stripe;
+  const dashW = 60, dashGap = 40;
+  for (let x = -(roadScroll % (dashW + dashGap)); x < W; x += dashW + dashGap) {
+    gameCtx.fillRect(x, H * 0.7, dashW, 8);
+  }
+
+  // 3. Update & Spawn Track Items (Coins/Stars)
+  if (state === "running") spawnTrackItems();
+
+  const carX = 140;
+  const carY = H * 0.65 + Math.sin(globalTime * 6) * 6; // Car sway
+
+  for (let i = gameItems.length - 1; i >= 0; i--) {
+    const item = gameItems[i];
+    item.x -= currentSpeed * dt;
+
+    if (!item.collected && Math.abs(item.x - carX) < 40 && Math.abs(item.y - carY) < 40) {
+      item.collected = true;
+      coins += item.type === 'coin' ? 10 : 25;
+      localStorage.setItem('chika_race_coins', coins.toString());
+      playCoinSound();
+      
+      // Spawn collection sparkles
+      for(let p=0; p<8; p++) {
+        particles.push({
+          x: item.x, y: item.y,
+          vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8,
+          alpha: 1.0, color: item.type==='coin'?'#ffd32a':'#00cec9'
+        });
+      }
+    }
+
+    if (item.x < -40) {
+      gameItems.splice(i, 1);
       continue;
     }
 
-    effectCtx.save();
-    effectCtx.globalAlpha = p.alpha;
-
-    if (p.type === 'bubble') {
-      // 3D Iridescent Soap Bubble with Shine Highlight
-      const bGrad = effectCtx.createRadialGradient(p.x - p.size*0.3, p.y - p.size*0.3, 2, p.x, p.y, p.size);
-      bGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      bGrad.addColorStop(0.4, p.color);
-      bGrad.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
-
-      effectCtx.fillStyle = bGrad;
-      effectCtx.beginPath();
-      effectCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      effectCtx.fill();
-
-      // Outer Bubble Ring
-      effectCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      effectCtx.lineWidth = 2.5;
-      effectCtx.stroke();
-
-      // Bubble Shine Specular Dot
-      effectCtx.fillStyle = '#ffffff';
-      effectCtx.beginPath();
-      effectCtx.arc(p.x - p.size*0.35, p.y - p.size*0.35, p.size*0.25, 0, Math.PI * 2);
-      effectCtx.fill();
-    } else {
-      // Sparkling Glowing Magic Star
-      effectCtx.fillStyle = p.color;
-      effectCtx.font = `bold ${Math.floor(p.size*1.8)}px sans-serif`;
-      effectCtx.textAlign = 'center';
-      effectCtx.textBaseline = 'middle';
-      effectCtx.fillText('✨', p.x, p.y);
-    }
-    effectCtx.restore();
-  }
-}
-
-/* ==========================================================================
-   4. CANVAS MASKING ENGINE
-   ========================================================================== */
-function drawCharacterBackground(time=0) {
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  currentCharacter.draw(bgCtx, bgCanvas.width, bgCanvas.height, time);
-}
-
-function initFoamLayer() {
-  const W = foamCanvas.width, H = foamCanvas.height;
-  foamCtx.globalCompositeOperation = 'source-over';
-  foamCtx.clearRect(0, 0, W, H);
-
-  const foamGrad = foamCtx.createRadialGradient(W*0.5, H*0.5, 50, W*0.5, H*0.5, W*0.75);
-  foamGrad.addColorStop(0, '#ffffff');
-  foamGrad.addColorStop(0.7, '#f0faf8');
-  foamGrad.addColorStop(1, '#d8f3ee');
-  foamCtx.fillStyle = foamGrad;
-  foamCtx.fillRect(0, 0, W, H);
-
-  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-  foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.65)';
-  foamCtx.lineWidth = 3.5;
-
-  for (let i = 0; i < 110; i++) {
-    const x = (i * 73) % W;
-    const y = (i * 91) % H;
-    const r = 14 + (i % 26);
-    foamCtx.beginPath();
-    foamCtx.arc(x, y, r, 0, Math.PI * 2);
-    foamCtx.fill();
-    foamCtx.stroke();
-  }
-}
-
-function updateFoamErasing(progress) {
-  if (progress <= 0) return;
-
-  foamCtx.globalCompositeOperation = 'destination-out';
-
-  for (let i = 0; i < bubbleSchedule.length; i++) {
-    const item = bubbleSchedule[i];
-    if (progress >= item.triggerPercent) {
-      if (!item.popped && state === "running") {
-        item.popped = true;
-        playPopSound();
-        spawnPoppingSparkles(item.x, item.y);
-      }
-      const timeSinceTrigger = (progress - item.triggerPercent) / (1 - item.triggerPercent + 0.001);
-      const currentRadius = item.targetRadius * Math.min(1.25, 0.35 + timeSinceTrigger * 1.7);
-
-      foamCtx.beginPath();
-      foamCtx.arc(item.x, item.y, currentRadius, 0, Math.PI * 2);
-      foamCtx.fill();
+    if (!item.collected) {
+      gameCtx.font = '24px sans-serif';
+      gameCtx.fillText(item.type === 'coin' ? '🪙' : '⭐', item.x, item.y);
     }
   }
 
-  foamCtx.globalCompositeOperation = 'source-over';
+  // Render Collection Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
+    if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+    gameCtx.fillStyle = p.color;
+    gameCtx.globalAlpha = p.alpha;
+    gameCtx.beginPath(); gameCtx.arc(p.x, p.y, 6, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.globalAlpha = 1.0;
+  }
+
+  // 4. Draw Active Race Car
+  car.draw(gameCtx, carX, carY, 1.2, globalTime);
+
+  // Update HUD
+  document.getElementById('trackTag').innerHTML = `<span>🏎️</span> ${theme.name}`;
+  document.getElementById('coinCount').textContent = `🪙 ${coins}`;
 }
 
 /* ==========================================================================
-   5. TIMER & ANIMATION LOOP
+   4. TIMER & ANIMATION LOOP
    ========================================================================== */
 let lastZoneIndex = -1;
 
 function loop(timestamp) {
   if (!lastTime) lastTime = timestamp;
-  const dt = (timestamp - lastTime) / 1000;
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
   lastTime = timestamp;
   globalTime += dt;
-
-  drawCharacterBackground(globalTime);
 
   if (state === "running") {
     elapsed += dt;
 
     if (elapsed >= TOTAL) {
       elapsed = TOTAL;
-      completeBrushing();
+      completeRace();
     }
 
     const currentZoneIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
@@ -1053,9 +843,7 @@ function loop(timestamp) {
     }
   }
 
-  const progress = Math.min(1, elapsed / TOTAL);
-  updateFoamErasing(progress);
-  updateAndRenderEffects();
+  updateAndRenderGame(dt);
   renderUI();
 
   if (state === "running" || state === "idle" || state === "done") {
@@ -1063,20 +851,11 @@ function loop(timestamp) {
   }
 }
 
-function selectRandomCharacter() {
-  const index = Math.floor(Math.random() * CHARACTERS.length);
-  currentCharacter = CHARACTERS[index];
-  document.getElementById('characterTag').innerHTML = `<span>✨</span> ${STRINGS.hiddenTag}`;
-}
-
-function startBrushing() {
+function startRace() {
   if (state === "idle" || state === "done") {
-    selectRandomCharacter();
-    drawCharacterBackground(0);
-    generateBubbleSchedule();
-    initFoamLayer();
     elapsed = 0;
     lastZoneIndex = -1;
+    gameItems = [];
   }
 
   state = "running";
@@ -1089,7 +868,7 @@ function startBrushing() {
   renderUI();
 }
 
-function pauseBrushing() {
+function pauseRace() {
   state = "paused";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
@@ -1097,17 +876,16 @@ function pauseBrushing() {
   renderUI();
 }
 
-function stopBrushing() {
+function stopRace() {
   state = "idle";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   elapsed = 0;
   releaseWakeLock();
   stopMusic();
-  initFoamLayer();
   renderUI();
 }
 
-function completeBrushing() {
+function completeRace() {
   state = "done";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
@@ -1115,19 +893,15 @@ function completeBrushing() {
   playFanfareSound();
   launchFireworks();
 
-  if (!unlockedIds.includes(currentCharacter.id)) {
-    unlockedIds.push(currentCharacter.id);
-    localStorage.setItem('chika_unlocked_stickers', JSON.stringify(unlockedIds));
-  }
-
-  foamCtx.clearRect(0, 0, foamCanvas.width, foamCanvas.height);
-  document.getElementById('characterTag').innerHTML = `<span>🎉</span> ${STRINGS.unlockedTag} ${currentCharacter.name}`;
+  // Grand Trophy Bonus Coins (+500 Coins!)
+  coins += 500;
+  localStorage.setItem('chika_race_coins', coins.toString());
 
   renderUI();
 }
 
 /* ==========================================================================
-   6. UI RENDERER & QUADRANT MAP
+   5. UI RENDERER & QUADRANT MAP
    ========================================================================== */
 function renderUI() {
   const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
@@ -1178,7 +952,7 @@ function renderUI() {
 }
 
 /* ==========================================================================
-   7. WEB AUDIO SYNTHESIZER
+   6. WEB AUDIO SYNTHESIZER
    ========================================================================== */
 let audioCtx = null, musicTimer = null, muted = false;
 
@@ -1210,11 +984,11 @@ function playNote(freq, when, dur, type="triangle", gainVal=0.12) {
   osc.stop(when + dur + 0.05);
 }
 
-function playPopSound() {
+function playCoinSound() {
   if (muted) return;
   const c = getAudioCtx();
-  const freq = 450 + Math.random() * 350;
-  playNote(freq, c.currentTime, 0.05, "sine", 0.04);
+  playNote(987.77, c.currentTime, 0.08, "sine", 0.15);
+  playNote(1318.51, c.currentTime + 0.06, 0.12, "sine", 0.18);
 }
 
 function playChimeSound() {
@@ -1234,8 +1008,8 @@ function playFanfareSound() {
 
 const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
 function scheduleBar(startTime) {
-  const beat = 0.26;
-  MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "triangle", 0.08));
+  const beat = 0.22; // Energetic Race Tempo!
+  MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "sawtooth", 0.06));
   return MELODY.length * beat;
 }
 
@@ -1257,7 +1031,7 @@ function stopMusic() {
 }
 
 /* ==========================================================================
-   8. WAKE LOCK & GRAND FIREWORKS ENGINE
+   7. WAKE LOCK & GRAND FIREWORKS
    ========================================================================== */
 let wakeLock = null;
 async function requestWakeLock() {
@@ -1272,47 +1046,40 @@ function releaseWakeLock() {
 }
 
 function launchFireworks() {
-  const colors = ['#ff7675', '#74b9ff', '#55efc4', '#fdcb6e', '#a29bfe', '#e84393'];
+  const colors = ['#ff7675', '#74b9ff', '#55efc4', '#fdcb6e', '#a29bfe'];
   const fireworks = [];
 
-  for (let f = 0; f < 5; f++) {
+  for (let f = 0; f < 6; f++) {
     setTimeout(() => {
-      const cx = effectCanvas.width * (0.2 + Math.random() * 0.6);
-      const cy = effectCanvas.height * (0.2 + Math.random() * 0.5);
+      const cx = hudCanvas.width * (0.2 + Math.random() * 0.6);
+      const cy = hudCanvas.height * (0.2 + Math.random() * 0.5);
       
       for (let i = 0; i < 40; i++) {
         const angle = (i / 40) * Math.PI * 2;
         const speed = 4 + Math.random() * 8;
         fireworks.push({
-          x: cx,
-          y: cy,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
+          x: cx, y: cy,
+          vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
           color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: 1.0,
-          size: 6 + Math.random() * 6
+          alpha: 1.0, size: 6 + Math.random() * 6
         });
       }
-    }, f * 300);
+    }, f * 250);
   }
 
   function renderFireworks() {
+    hudCtx.clearRect(0, 0, hudCanvas.width, hudCanvas.height);
     let active = 0;
     fireworks.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.15;
-      p.alpha -= 0.02;
+      p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.alpha -= 0.02;
 
       if (p.alpha > 0) {
         active++;
-        effectCtx.save();
-        effectCtx.globalAlpha = p.alpha;
-        effectCtx.fillStyle = p.color;
-        effectCtx.beginPath();
-        effectCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        effectCtx.fill();
-        effectCtx.restore();
+        hudCtx.save();
+        hudCtx.globalAlpha = p.alpha;
+        hudCtx.fillStyle = p.color;
+        hudCtx.beginPath(); hudCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); hudCtx.fill();
+        hudCtx.restore();
       }
     });
 
@@ -1322,48 +1089,71 @@ function launchFireworks() {
 }
 
 /* ==========================================================================
-   9. STICKER BOOK MODAL & PWA SERVICE WORKER
+   8. GARAGE MODAL & CAR UNLOCK SYSTEM
    ========================================================================== */
-const stickerModal = document.getElementById('stickerModal');
+const garageModal = document.getElementById('garageModal');
 
-document.getElementById('stickerBtn').addEventListener('click', () => {
-  renderStickerGrid();
-  stickerModal.style.display = 'flex';
+document.getElementById('garageBtn').addEventListener('click', () => {
+  renderGarageGrid();
+  garageModal.style.display = 'flex';
 });
 document.getElementById('closeModalBtn').addEventListener('click', () => {
-  stickerModal.style.display = 'none';
+  garageModal.style.display = 'none';
 });
 
-function renderStickerGrid() {
-  const grid = document.getElementById('stickerGrid');
+function renderGarageGrid() {
+  const grid = document.getElementById('garageGrid');
   grid.innerHTML = '';
 
-  CHARACTERS.forEach(char => {
-    const isUnlocked = unlockedIds.includes(char.id);
-    const item = document.createElement('div');
-    item.className = `sticker-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+  CARS.forEach(car => {
+    const isUnlocked = unlockedCars.includes(car.id);
+    const isSelected = activeCarId === car.id;
+
+    const card = document.createElement('div');
+    card.className = `car-card ${isSelected ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
 
     const canvas = document.createElement('canvas');
-    canvas.className = 'sticker-canvas-preview';
-    canvas.width = 160;
-    canvas.height = 160;
+    canvas.className = 'car-preview-canvas';
+    canvas.width = 180;
+    canvas.height = 120;
     const ctx = canvas.getContext('2d');
-    char.draw(ctx, 160, 160, 0);
+    car.draw(ctx, 90, 60, 1.3, 0);
+
+    const info = document.createElement('div');
+    info.className = 'car-info';
 
     const name = document.createElement('div');
-    name.className = 'sticker-name';
-    name.textContent = isUnlocked ? char.name : "🔒 Locked";
+    name.className = 'car-name';
+    name.textContent = car.name;
 
-    item.appendChild(canvas);
-    item.appendChild(name);
+    const stats = document.createElement('div');
+    stats.className = 'car-stats';
+    stats.textContent = `Speed: ${car.speed} MPH | ${isUnlocked ? (isSelected ? 'Selected ✅' : 'Tap to Select') : `Unlock: 🪙 ${car.cost}`}`;
 
-    if (isUnlocked) {
-      const badge = document.createElement('div');
-      badge.className = 'badge-new';
-      badge.textContent = 'Unlocked';
-      item.appendChild(badge);
-    }
-    grid.appendChild(item);
+    info.appendChild(name);
+    info.appendChild(stats);
+    card.appendChild(canvas);
+    card.appendChild(info);
+
+    card.addEventListener('click', () => {
+      if (isUnlocked) {
+        activeCarId = car.id;
+        localStorage.setItem('chika_active_car', activeCarId);
+        renderGarageGrid();
+      } else if (coins >= car.cost) {
+        coins -= car.cost;
+        unlockedCars.push(car.id);
+        activeCarId = car.id;
+        localStorage.setItem('chika_race_coins', coins.toString());
+        localStorage.setItem('chika_unlocked_cars', JSON.stringify(unlockedCars));
+        localStorage.setItem('chika_active_car', activeCarId);
+        renderGarageGrid();
+      } else {
+        alert(`You need 🪙 ${car.cost - coins} more coins! Complete races to earn coins!`);
+      }
+    });
+
+    grid.appendChild(card);
   });
 }
 
@@ -1373,16 +1163,13 @@ if ('serviceWorker' in navigator) {
   }).catch(err => console.log('SW Reg Error:', err));
 }
 
-document.getElementById('startBtn').addEventListener('click', startBrushing);
+document.getElementById('startBtn').addEventListener('click', startRace);
 document.getElementById('pauseBtn').addEventListener('click', () => {
-  if (state === "running") pauseBrushing();
-  else if (state === "paused") startBrushing();
+  if (state === "running") pauseRace();
+  else if (state === "paused") startRace();
 });
-document.getElementById('stopBtn').addEventListener('click', stopBrushing);
+document.getElementById('stopBtn').addEventListener('click', stopRace);
 
-selectRandomCharacter();
-drawCharacterBackground(0);
-initFoamLayer();
 animFrameId = requestAnimationFrame(loop);
 renderUI();
 </script>
