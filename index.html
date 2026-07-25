@@ -153,14 +153,19 @@
   .tap-prompt {
     position: absolute;
     bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
     color: var(--gold);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
     padding: 4px 14px;
     border-radius: 999px;
+    white-space: nowrap;
     pointer-events: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
 
   /* Timer Row */
@@ -680,7 +685,7 @@ function updateAndRenderMaze(dt) {
   gameCtx.shadowBlur = 0;
   gameCtx.fillStyle = '#2d3436';
   gameCtx.beginPath(); gameCtx.arc(-7, -4, 3, 0, Math.PI*2); gameCtx.fill();
-  gameCtx.beginPath(); gameCtx.arc(7, -4, 3, 0, Math.PI*2); ctx.fill();
+  gameCtx.beginPath(); gameCtx.arc(7, -4, 3, 0, Math.PI*2); gameCtx.fill();
   gameCtx.fillStyle = '#ff7675';
   gameCtx.beginPath(); gameCtx.arc(0, 4, 4, 0, Math.PI); gameCtx.fill();
 
