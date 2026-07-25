@@ -322,10 +322,19 @@
   }
 
   .sponsor-tag {
-    margin-top: 8px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: var(--mint-dark);
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(9, 132, 227, 0.15);
+    border: 1px solid rgba(9, 132, 227, 0.25);
     letter-spacing: 0.2px;
   }
 
@@ -388,7 +397,40 @@
   <button class="ctl" id="stopBtn">⏹ Stop</button>
 </div>
 
-<div class="sponsor-tag">Sponsored by Bristol Circle Dental</div>
+<div class="sponsor-tag">
+  <svg class="sponsor-logo" viewBox="0 0 100 100" width="20" height="20" style="flex-shrink:0;">
+    <defs>
+      <linearGradient id="leafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#80e600" />
+        <stop offset="100%" stop-color="#a8f000" />
+      </linearGradient>
+      <linearGradient id="toothBlue1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00d2d3" />
+        <stop offset="100%" stop-color="#54a0ff" />
+      </linearGradient>
+      <linearGradient id="toothBlue2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2e86de" />
+        <stop offset="100%" stop-color="#0984e3" />
+      </linearGradient>
+      <linearGradient id="toothBlue3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00a8ff" />
+        <stop offset="100%" stop-color="#0097e6" />
+      </linearGradient>
+      <linearGradient id="toothBlue4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1b4f72" />
+        <stop offset="100%" stop-color="#0b2545" />
+      </linearGradient>
+    </defs>
+    <!-- Top right Swoop -->
+    <path d="M 42 10 C 62 2, 90 10, 96 34 C 86 20, 68 12, 42 20 Z" fill="url(#leafGrad)"/>
+    <!-- Tooth facets in blue tones -->
+    <path d="M 50 24 C 36 24, 20 26, 16 38 C 12 50, 16 64, 25 76 C 29 82, 32 90, 35 94 C 37 90, 41 78, 44 68 C 47 58, 50 42, 50 24 Z" fill="url(#toothBlue1)" />
+    <path d="M 50 24 C 50 42, 47 58, 44 68 C 55 60, 68 54, 82 44 C 84 34, 78 24, 64 24 C 58 24, 53 24, 50 24 Z" fill="url(#toothBlue3)" />
+    <path d="M 44 68 C 41 78, 37 90, 35 94 C 39 96, 46 82, 50 72 C 54 82, 61 96, 65 94 C 68 90, 63 76, 57 65 C 52 67, 48 68, 44 68 Z" fill="url(#toothBlue4)" />
+    <path d="M 82 44 C 68 54, 55 60, 44 68 C 48 68, 52 67, 57 65 C 63 76, 68 90, 65 94 C 71 88, 77 76, 81 64 C 85 54, 84 48, 82 44 Z" fill="url(#toothBlue2)" />
+  </svg>
+  <span>Sponsored by <strong style="color: #0984e3;">Bristol Circle Dental</strong></span>
+</div>
 
 <footer>
   Free 2-minute Dino runner brushing show from your local dental clinic 💚
