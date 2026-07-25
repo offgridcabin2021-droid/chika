@@ -1,352 +1,1252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Chika — Brush Timer</title>
-<meta name="description" content="A free 2-minute brushing timer for kids. No install, no login.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chika — Disney Magic Timer Style 2분 양치 타이머</title>
+<meta name="description" content="양치시간 2분 동안 거품을 지우며 비밀 캐릭터를 완성하는 PWA 키즈 양치 타이머!">
 <meta name="theme-color" content="#33b8a6">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <style>
   :root {
     --mint: #33b8a6;
+    --mint-dark: #239485;
     --mint-light: #e2f5f2;
     --sky: #8cccfa;
     --cream: #fff8e6;
     --orange: #ff9f43;
+    --purple: #9c27b0;
     --text: #2d3436;
+    --shadow: 0 10px 25px rgba(51, 184, 166, 0.2);
   }
+  
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", sans-serif;
-    background: linear-gradient(180deg, var(--mint-light) 0%, #ffffff 60%);
+    background: linear-gradient(180deg, #dcf4f0 0%, #f7fdfc 50%, #ffffff 100%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
+    padding: 14px;
     text-align: center;
     overflow-x: hidden;
   }
-  header { width: 100%; max-width: 420px; display: flex; justify-content: space-between; align-items: center; }
-  h1 { font-size: 1.3rem; color: var(--mint); }
+
+  header {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--mint-dark);
+  }
+
+  .nav-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+  }
+  .icon-btn:active { transform: scale(0.92); }
+
   #langBtn {
-    border: 2px solid var(--mint); background: #fff; color: var(--mint);
-    border-radius: 999px; padding: 4px 12px; font-weight: 700; font-size: .8rem; cursor: pointer;
+    border: 2px solid var(--mint);
+    background: #fff;
+    color: var(--mint-dark);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 800;
+    font-size: 0.82rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   }
-  #ring-wrap { position: relative; width: 260px; height: 260px; margin: 18px 0 6px; }
-  svg { transform: rotate(-90deg); }
-  #ring-bg { stroke: rgba(51,184,166,.15); }
-  #ring-fg { stroke: var(--mint); stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
-  #ring-center {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 4px;
+
+  #pwaBtn {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
   }
-  #tooth { font-size: 64px; transition: transform .2s; }
-  .bounce { animation: bounce .5s ease-in-out infinite alternate; }
-  @keyframes bounce { from { transform: scale(1) rotate(-4deg); } to { transform: scale(1.15) rotate(4deg); } }
-  #clock { font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+  /* Main Display Container */
+  .stage-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1;
+    margin: 8px 0;
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .canvas-stack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #f0faf8;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+  }
+
+  #bgCanvas { z-index: 1; }
+  #foamCanvas { z-index: 2; }
+  #effectCanvas { z-index: 3; pointer-events: none; }
+
+  /* Overlay Info Badge */
+  .character-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--mint-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  /* Timer & Progress Row */
+  .timer-row {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+
+  .clock-display {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--mint-dark);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 14px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    margin: 0 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar-fg {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--mint), var(--sky));
+    border-radius: 999px;
+    transition: width 0.1s linear;
+  }
+
+  /* Brushing Zone Guide Card */
   #zone-card {
-    background: var(--mint-light); border-radius: 20px; padding: 16px;
-    width: 100%; max-width: 420px; min-height: 92px;
-    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    background: var(--mint-light);
+    border: 2px solid rgba(51, 184, 166, 0.2);
+    border-radius: 20px;
+    padding: 14px 16px;
+    width: 100%;
+    max-width: 440px;
+    min-height: 84px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 12px;
   }
-  #zone-title { font-size: 1.15rem; font-weight: 800; }
-  #zone-tip { font-size: .9rem; color: #636e72; }
-  #controls { display: flex; gap: 12px; margin-top: 16px; width: 100%; max-width: 420px; }
+
+  #zone-title {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--text);
+  }
+
+  #zone-tip {
+    font-size: 0.88rem;
+    color: #4a5568;
+  }
+
+  /* Control Buttons */
+  #controls {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    max-width: 440px;
+  }
+
   button.ctl {
-    flex: 1; border: none; border-radius: 16px; padding: 14px; font-size: 1.05rem;
-    font-weight: 800; cursor: pointer; transition: transform .1s;
+    flex: 1;
+    border: none;
+    border-radius: 18px;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
   }
-  button.ctl:active { transform: scale(.96); }
-  #startBtn { background: var(--mint); color: #fff; box-shadow: 0 4px 14px rgba(51,184,166,.4); }
-  #pauseBtn { background: var(--cream); color: var(--text); display: none; }
-  #stopBtn  { background: #ffe3e3; color: #d63031; display: none; }
-  #footer { margin-top: auto; padding-top: 20px; font-size: .75rem; color: #b2bec3; }
-  .confetti {
-    position: fixed; top: -40px; font-size: 26px; pointer-events: none; z-index: 50;
-    animation: fall linear forwards;
+  button.ctl:active { transform: scale(0.96); }
+
+  #startBtn {
+    background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(51,184,166,0.4);
   }
-  @keyframes fall {
-    to { transform: translateY(110vh) rotate(720deg); }
+
+  #pauseBtn {
+    background: var(--cream);
+    color: var(--text);
+    display: none;
   }
-  #muteBtn {
-    border: none; background: transparent; font-size: 1.3rem; cursor: pointer;
+
+  #stopBtn {
+    background: #ffe3e3;
+    color: #e53e3e;
+    display: none;
+  }
+
+  /* Sticker Book Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .modal-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 440px;
+    border-radius: 28px;
+    padding: 24px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--mint-dark);
+  }
+
+  .modal-close {
+    border: none;
+    background: #edf2f7;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .sticker-item {
+    background: #f7fafc;
+    border: 2px dashed #cbd5e0;
+    border-radius: 18px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .sticker-item.unlocked {
+    background: #f0faf8;
+    border: 2px solid var(--mint);
+  }
+
+  .sticker-canvas-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 14px;
+  }
+
+  .sticker-item.locked .sticker-canvas-preview {
+    filter: brightness(0.2) blur(2px);
+  }
+
+  .sticker-name {
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  .badge-new {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  footer {
+    margin-top: auto;
+    padding-top: 16px;
+    font-size: 0.78rem;
+    color: #a0aec0;
   }
 </style>
 </head>
 <body>
+
 <header>
-  <h1>🦷 Chika</h1>
-  <div>
-    <button id="muteBtn" aria-label="mute">🔊</button>
+  <div class="brand">
+    <span>🦷</span> Chika
+  </div>
+  <div class="nav-btns">
+    <button id="pwaBtn" aria-label="Install App">📲 앱 설치</button>
+    <button id="stickerBtn" class="icon-btn" aria-label="Sticker Book" title="스티커 도감">🖼️</button>
+    <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
     <button id="langBtn">한국어</button>
   </div>
 </header>
 
-<div id="ring-wrap">
-  <svg width="260" height="260" viewBox="0 0 260 260">
-    <circle id="ring-bg" cx="130" cy="130" r="116" fill="none" stroke-width="16"/>
-    <circle id="ring-fg" cx="130" cy="130" r="116" fill="none" stroke-width="16"
-            stroke-dasharray="728.8" stroke-dashoffset="728.8"/>
-  </svg>
-  <div id="ring-center">
-    <div id="tooth">🦷</div>
-    <div id="clock">2:00</div>
+<!-- Stage Area (Disney Magic Timer Canvas Stack) -->
+<div class="stage-wrapper">
+  <div class="character-tag" id="characterTag">✨ 비밀 캐릭터가 숨어있어요!</div>
+  <div class="canvas-stack">
+    <canvas id="bgCanvas" width="600" height="600"></canvas>
+    <canvas id="foamCanvas" width="600" height="600"></canvas>
+    <canvas id="effectCanvas" width="600" height="600"></canvas>
   </div>
 </div>
 
+<!-- Live Timer Row -->
+<div class="timer-row">
+  <div class="clock-display" id="clock">2:00</div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fg" id="progressBar"></div>
+  </div>
+  <div style="font-size: 1.4rem;">🧼</div>
+</div>
+
+<!-- Zone Guide Card -->
 <div id="zone-card">
-  <div id="zone-title"></div>
-  <div id="zone-tip"></div>
+  <div id="zone-title">치카랑 2분 동안 양치해요!</div>
+  <div id="zone-tip">시작을 누르면 거품이 지워지면서 캐릭터가 나타나요!</div>
 </div>
 
+<!-- Controls -->
 <div id="controls">
-  <button class="ctl" id="startBtn"></button>
-  <button class="ctl" id="pauseBtn"></button>
-  <button class="ctl" id="stopBtn"></button>
+  <button class="ctl" id="startBtn">▶ 양치 시작하기</button>
+  <button class="ctl" id="pauseBtn">⏸ 잠깐 쉬기</button>
+  <button class="ctl" id="stopBtn">⏹ 그만하기</button>
 </div>
 
-<div id="footer"></div>
+<footer>
+  우리 동네 치과가 드리는 무료 2분 양치 타이머 💚
+</footer>
+
+<!-- Sticker Book Modal -->
+<div class="modal-overlay" id="stickerModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title">🖼️ 내 양치 스티커 도감</div>
+      <button class="modal-close" id="closeModalBtn">&times;</button>
+    </div>
+    <p style="font-size: 0.85rem; color: #718096;" id="modalSubtitle">양치를 완성할 때마다 마법 스티커가 수집돼요!</p>
+    <div class="sticker-grid" id="stickerGrid"></div>
+  </div>
+</div>
 
 <script>
 "use strict";
 
-/* ---------- i18n ---------- */
+/* ==========================================================================
+   1. i18n & STRINGS
+   ========================================================================== */
 const STRINGS = {
+  ko: {
+    brand: "Chika",
+    idleTitle: "치카랑 2분 동안 양치해요!",
+    idleTip: "시작을 누르면 거품이 지워지며 비밀 캐릭터가 나타나요!",
+    doneTitle: "축하해요! 마법 스티커 획득! 🎉",
+    doneTip: "2분 완료! 반짝반짝 깨끗한 이빨이 되었어요!",
+    start: "▶ 양치 시작하기",
+    again: "▶ 한 번 더 양치하기!",
+    pause: "⏸ 잠깐 쉬기",
+    resume: "▶ 계속 양치하기",
+    stop: "⏹ 그만하기",
+    now: "지금 닦는 곳:",
+    footer: "우리 동네 치과가 드리는 무료 2분 양치 타이머 💚",
+    langBtn: "English",
+    pwaBtn: "📲 앱 설치",
+    modalTitle: "🖼️ 내 양치 스티커 도감",
+    modalSubtitle: "양치를 완성할 때마다 마법 스티커가 수집돼요!",
+    hiddenTag: "✨ 비밀 캐릭터가 숨어있어요!",
+    unlockedTag: "🎉 스티커 완성!",
+    zones: [
+      ["오른쪽 위 🪥", "칫솔을 살살 둥글게 돌리며 닦아보세요!"],
+      ["왼쪽 위 ✨", "어금니 안쪽 씹는 면도 꼼꼼히 닦아주세요!"],
+      ["왼쪽 아래 🦷", "혀 쪽 안쪽 면도 부드럽게 싹싹!"],
+      ["오른쪽 아래 🌟", "마지막! 앞니 안쪽까지 반짝이게!"]
+    ]
+  },
   en: {
+    brand: "Chika",
     idleTitle: "Brush for 2 minutes with Chika!",
-    idleTip: "Press start and follow the guide",
-    doneTitle: "Amazing! Sparkling clean! 🎉",
-    doneTip: "See you again tonight!",
+    idleTip: "Press start to wipe the foam and reveal secret characters!",
+    doneTitle: "Congrats! New Sticker Unlocked! 🎉",
+    doneTip: "2 minutes complete! Sparkling clean teeth!",
     start: "▶ Start Brushing",
     again: "▶ Brush Again!",
     pause: "⏸ Pause",
-    resume: "▶ Resume",
+    resume: "▶ Resume Brushing",
     stop: "⏹ Stop",
     now: "Now brushing:",
-    footer: "Free brushing timer from your neighborhood dental clinic 💚",
+    footer: "Free 2-minute brushing timer from your local dental clinic 💚",
     langBtn: "한국어",
+    pwaBtn: "📲 Install App",
+    modalTitle: "🖼️ My Sticker Book",
+    modalSubtitle: "Complete 2 minutes to collect magic character stickers!",
+    hiddenTag: "✨ Secret Character Hidden!",
+    unlockedTag: "🎉 Sticker Unlocked!",
     zones: [
-      ["Upper Right 🪥", "Brush gently in small circles"],
-      ["Upper Left ✨", "Don't forget the back molars"],
-      ["Lower Left 🦷", "The tongue side too, nice and soft!"],
-      ["Lower Right 🌟", "Last one! Behind the front teeth!"],
-    ],
-  },
-  ko: {
-    idleTitle: "치카랑 2분 동안 양치해요!",
-    idleTip: "시작을 누르고 안내를 따라가요",
-    doneTitle: "최고예요! 반짝반짝 깨끗! 🎉",
-    doneTip: "오늘 밤에 또 만나요!",
-    start: "▶ 양치 시작",
-    again: "▶ 한 번 더!",
-    pause: "⏸ 잠깐 쉬기",
-    resume: "▶ 계속하기",
-    stop: "⏹ 그만하기",
-    now: "지금 닦는 곳:",
-    footer: "우리 동네 치과가 드리는 무료 양치 타이머 💚",
-    langBtn: "English",
-    zones: [
-      ["오른쪽 위 🪥", "칫솔을 살살 돌리면서 닦아요"],
-      ["왼쪽 위 ✨", "어금니 안쪽도 잊지 마세요"],
-      ["왼쪽 아래 🦷", "혀 쪽 면도 부드럽게!"],
-      ["오른쪽 아래 🌟", "마지막! 앞니 안쪽까지!"],
-    ],
-  },
+      ["Upper Right 🪥", "Brush gently in small circles!"],
+      ["Upper Left ✨", "Don't forget the back chewing surfaces!"],
+      ["Lower Left 🦷", "Softly clean the tongue side too!"],
+      ["Lower Right 🌟", "Final stretch! Clean behind front teeth!"]
+    ]
+  }
 };
-let lang = "en"; // English by default; tap the top-right button for Korean
-
-/* ---------- Timer state ---------- */
-const TOTAL = 120, ZONE = 30;
-const CIRC = 728.8;
-let state = "idle";           // idle | running | paused | done
-let elapsed = 0;
-let tickHandle = null;
-
-const $ = (id) => document.getElementById(id);
-
+let lang = "ko";
 function t() { return STRINGS[lang]; }
 
-function render() {
+/* ==========================================================================
+   2. CHARACTERS (Vector Canvas Drawing Routines)
+   ========================================================================== */
+const CHARACTERS = [
+  {
+    id: "super_hero",
+    nameKo: "슈퍼 치카맨 🦸‍♂️",
+    nameEn: "Super Tooth Hero 🦸‍♂️",
+    draw(ctx, w, h) {
+      // Sky backdrop
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#74b9ff');
+      grad.addColorStop(1, '#a29bfe');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Stars
+      ctx.fillStyle = '#fff';
+      for(let i=0; i<15; i++) {
+        const x = (i * 37) % w;
+        const y = (i * 41) % (h * 0.7);
+        ctx.beginPath(); ctx.arc(x, y, 3 + (i%3), 0, Math.PI*2); ctx.fill();
+      }
+
+      // Cape
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.5);
+      ctx.quadraticCurveTo(w*0.1, h*0.8, w*0.2, h*0.9);
+      ctx.lineTo(w*0.8, h*0.9);
+      ctx.quadraticCurveTo(w*0.9, h*0.8, w*0.7, h*0.5);
+      ctx.fill();
+
+      // Tooth Body
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#dfe6e9';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.3);
+      ctx.bezierCurveTo(w*0.3, h*0.15, w*0.7, h*0.15, w*0.7, h*0.3);
+      ctx.bezierCurveTo(w*0.85, h*0.45, w*0.8, h*0.75, w*0.65, h*0.85);
+      ctx.lineTo(w*0.5, h*0.65);
+      ctx.lineTo(w*0.35, h*0.85);
+      ctx.bezierCurveTo(w*0.2, h*0.75, w*0.15, h*0.45, w*0.3, h*0.3);
+      ctx.fill(); ctx.stroke();
+
+      // Mask
+      ctx.fillStyle = '#0984e3';
+      ctx.beginPath();
+      ctx.ellipse(w*0.5, h*0.36, w*0.22, h*0.07, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // Eyes
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.36, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.36, 12, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.43, h*0.36, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.57, h*0.36, 6, 0, Math.PI*2); ctx.fill();
+
+      // Big Smile
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#d63031';
+      ctx.beginPath();
+      ctx.arc(w*0.5, h*0.46, 20, 0.1*Math.PI, 0.9*Math.PI);
+      ctx.stroke();
+
+      // Hero Emblem
+      ctx.fillStyle = '#fdcb6e';
+      ctx.beginPath();
+      ctx.arc(w*0.5, h*0.58, 22, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#d63031';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('★', w*0.5, h*0.59);
+    }
+  },
+  {
+    id: "space_astro",
+    nameKo: "우주 탐험가 치카 🚀",
+    nameEn: "Space Astro Tooth 🚀",
+    draw(ctx, w, h) {
+      // Cosmic dark gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#0c2461');
+      grad.addColorStop(1, '#4a69bd');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Planet
+      ctx.fillStyle = '#e1b12c';
+      ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 40, 0, Math.PI*2); ctx.fill();
+
+      // Tooth Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.35);
+      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
+      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
+      ctx.lineTo(w*0.5, h*0.7);
+      ctx.lineTo(w*0.35, h*0.88);
+      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
+      ctx.fill();
+
+      // Helmet Glass
+      ctx.fillStyle = 'rgba(120, 224, 143, 0.45)';
+      ctx.strokeStyle = '#78e08f';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(w*0.5, h*0.42, 85, 0, Math.PI*2);
+      ctx.fill(); ctx.stroke();
+
+      // Eyes & Sparkle
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 8, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 8, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#e84118';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 12, 0, Math.PI); ctx.fill();
+    }
+  },
+  {
+    id: "fairy_magic",
+    nameKo: "마법 요정 치카 🧚‍♀️",
+    nameEn: "Magic Fairy Tooth 🧚‍♀️",
+    draw(ctx, w, h) {
+      // Soft pink pastel gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#ffafbd');
+      grad.addColorStop(1, '#ffc3a0');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Wings
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.beginPath();
+      ctx.ellipse(w*0.25, h*0.4, 60, 30, -Math.PI*0.25, 0, Math.PI*2);
+      ctx.ellipse(w*0.75, h*0.4, 60, 30, Math.PI*0.25, 0, Math.PI*2);
+      ctx.fill();
+
+      // Tooth Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.35);
+      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
+      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
+      ctx.lineTo(w*0.5, h*0.7);
+      ctx.lineTo(w*0.35, h*0.88);
+      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
+      ctx.fill();
+
+      // Crown
+      ctx.fillStyle = '#f1c40f';
+      ctx.beginPath();
+      ctx.moveTo(w*0.38, h*0.22);
+      ctx.lineTo(w*0.42, h*0.14);
+      ctx.lineTo(w*0.5, h*0.22);
+      ctx.lineTo(w*0.58, h*0.14);
+      ctx.lineTo(w*0.62, h*0.22);
+      ctx.closePath();
+      ctx.fill();
+
+      // Cheeks & Eyes
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.arc(w*0.36, h*0.46, 10, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.64, h*0.46, 10, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 6, 0, Math.PI*2); ctx.fill();
+    }
+  },
+  {
+    id: "dino_champ",
+    nameKo: "공룡 챔피언 치카 🦕",
+    nameEn: "Dino Champ Tooth 🦕",
+    draw(ctx, w, h) {
+      // Mint green gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#55efc4');
+      grad.addColorStop(1, '#00b894');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Dino Spikes
+      ctx.fillStyle = '#fdcb6e';
+      for(let i=0; i<4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(w*0.25, h*(0.3+i*0.12));
+        ctx.lineTo(w*0.15, h*(0.34+i*0.12));
+        ctx.lineTo(w*0.25, h*(0.38+i*0.12));
+        ctx.fill();
+      }
+
+      // Tooth Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.35);
+      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
+      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
+      ctx.lineTo(w*0.5, h*0.7);
+      ctx.lineTo(w*0.35, h*0.88);
+      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
+      ctx.fill();
+
+      // Toothbrush held
+      ctx.strokeStyle = '#e17055';
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.moveTo(w*0.65, h*0.6);
+      ctx.lineTo(w*0.88, h*0.35);
+      ctx.stroke();
+
+      ctx.fillStyle = '#74b9ff';
+      ctx.fillRect(w*0.84, h*0.3, 16, 24);
+
+      // Cute Face
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 7, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 7, 0, Math.PI*2); ctx.fill();
+    }
+  },
+  {
+    id: "king_royal",
+    nameKo: "국왕 치카 👑",
+    nameEn: "Royal King Tooth 👑",
+    draw(ctx, w, h) {
+      // Royal Purple Gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#a29bfe');
+      grad.addColorStop(1, '#6c5ce7');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Golden Crown
+      ctx.fillStyle = '#ffeaa7';
+      ctx.strokeStyle = '#fdcb6e';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.25);
+      ctx.lineTo(w*0.35, h*0.12);
+      ctx.lineTo(w*0.5, h*0.22);
+      ctx.lineTo(w*0.65, h*0.12);
+      ctx.lineTo(w*0.7, h*0.25);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      // Tooth Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w*0.3, h*0.35);
+      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
+      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
+      ctx.lineTo(w*0.5, h*0.7);
+      ctx.lineTo(w*0.35, h*0.88);
+      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
+      ctx.fill();
+
+      // Royal Glasses
+      ctx.strokeStyle = '#2d3436';
+      ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.42, 16, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.42, 16, 0, Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.46, h*0.42); ctx.lineTo(w*0.54, h*0.42); ctx.stroke();
+    }
+  }
+];
+
+/* ==========================================================================
+   3. APP STATE & VARIABLES
+   ========================================================================== */
+const TOTAL = 120, ZONE_SEC = 30;
+let state = "idle"; // idle | running | paused | done
+let elapsed = 0;
+let animFrameId = null;
+let lastTime = null;
+let currentCharacter = CHARACTERS[0];
+let unlockedIds = JSON.parse(localStorage.getItem('chika_unlocked_stickers') || '[]');
+
+const bgCanvas = document.getElementById('bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+const foamCanvas = document.getElementById('foamCanvas');
+const foamCtx = foamCanvas.getContext('2d');
+const effectCanvas = document.getElementById('effectCanvas');
+const effectCtx = effectCanvas.getContext('2d');
+
+/* Pre-generated bubble pop cell locations for foam erasing */
+let bubbleSchedule = [];
+
+function generateBubbleSchedule() {
+  bubbleSchedule = [];
+  const W = foamCanvas.width;
+  const H = foamCanvas.height;
+
+  // Grid + Random points
+  const rows = 12, cols = 12;
+  const cellW = W / cols, cellH = H / rows;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const baseX = c * cellW + cellW / 2;
+      const baseY = r * cellH + cellH / 2;
+      const x = baseX + (Math.random() - 0.5) * cellW * 0.8;
+      const y = baseY + (Math.random() - 0.5) * cellH * 0.8;
+      const targetRadius = 35 + Math.random() * 30;
+      // Trigger threshold between 0.05 and 0.95
+      const triggerPercent = 0.02 + Math.random() * 0.92;
+      
+      bubbleSchedule.push({
+        x, y, targetRadius, triggerPercent, popped: false
+      });
+    }
+  }
+  // Sort schedule by trigger percentage
+  bubbleSchedule.sort((a, b) => a.triggerPercent - b.triggerPercent);
+}
+
+/* ==========================================================================
+   4. CANVAS MASKING ENGINE (Disney Magic Timer Concept)
+   ========================================================================== */
+function drawCharacterBackground() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  currentCharacter.draw(bgCtx, bgCanvas.width, bgCanvas.height);
+}
+
+function initFoamLayer() {
+  const W = foamCanvas.width, H = foamCanvas.height;
+  foamCtx.globalCompositeOperation = 'source-over';
+  foamCtx.clearRect(0, 0, W, H);
+
+  // Soft white/mint soap foam base
+  const foamGrad = foamCtx.createRadialGradient(W*0.5, H*0.5, 50, W*0.5, H*0.5, W*0.7);
+  foamGrad.addColorStop(0, '#ffffff');
+  foamGrad.addColorStop(0.7, '#f0faf8');
+  foamGrad.addColorStop(1, '#d8f3ee');
+  foamCtx.fillStyle = foamGrad;
+  foamCtx.fillRect(0, 0, W, H);
+
+  // Draw initial soap bubbles pattern
+  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.6)';
+  foamCtx.lineWidth = 3;
+
+  for (let i = 0; i < 90; i++) {
+    const x = (i * 73) % W;
+    const y = (i * 91) % H;
+    const r = 12 + (i % 25);
+    foamCtx.beginPath();
+    foamCtx.arc(x, y, r, 0, Math.PI * 2);
+    foamCtx.fill();
+    foamCtx.stroke();
+  }
+}
+
+function updateFoamErasing(progress) {
+  if (progress <= 0) return;
+
+  const W = foamCanvas.width, H = foamCanvas.height;
+  
+  // Use destination-out to erase soap foam!
+  foamCtx.globalCompositeOperation = 'destination-out';
+
+  for (let i = 0; i < bubbleSchedule.length; i++) {
+    const item = bubbleSchedule[i];
+    if (progress >= item.triggerPercent) {
+      if (!item.popped && state === "running") {
+        item.popped = true;
+        playPopSound();
+      }
+      // Calculate smooth bubble expansion radius
+      const timeSinceTrigger = (progress - item.triggerPercent) / (1 - item.triggerPercent + 0.001);
+      const currentRadius = item.targetRadius * Math.min(1.2, 0.4 + timeSinceTrigger * 1.6);
+
+      foamCtx.beginPath();
+      foamCtx.arc(item.x, item.y, currentRadius, 0, Math.PI * 2);
+      foamCtx.fill();
+    }
+  }
+
+  foamCtx.globalCompositeOperation = 'source-over';
+}
+
+/* ==========================================================================
+   5. TIMER & ANIMATION LOOP (60fps requestAnimationFrame)
+   ========================================================================== */
+let lastZoneIndex = -1;
+
+function loop(timestamp) {
+  if (!lastTime) lastTime = timestamp;
+  const dt = (timestamp - lastTime) / 1000;
+  lastTime = timestamp;
+
+  if (state === "running") {
+    elapsed += dt;
+
+    if (elapsed >= TOTAL) {
+      elapsed = TOTAL;
+      completeBrushing();
+    }
+
+    const currentZoneIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
+    if (currentZoneIndex !== lastZoneIndex) {
+      lastZoneIndex = currentZoneIndex;
+      playChimeSound();
+    }
+  }
+
+  const progress = Math.min(1, elapsed / TOTAL);
+  updateFoamErasing(progress);
+  renderUI();
+
+  if (state === "running") {
+    animFrameId = requestAnimationFrame(loop);
+  }
+}
+
+function selectRandomCharacter() {
+  const index = Math.floor(Math.random() * CHARACTERS.length);
+  currentCharacter = CHARACTERS[index];
+  document.getElementById('characterTag').textContent = t().hiddenTag;
+}
+
+function startBrushing() {
+  if (state === "idle" || state === "done") {
+    selectRandomCharacter();
+    drawCharacterBackground();
+    generateBubbleSchedule();
+    initFoamLayer();
+    elapsed = 0;
+    lastZoneIndex = -1;
+  }
+
+  state = "running";
+  lastTime = performance.now();
+  requestWakeLock();
+  startMusic();
+  animFrameId = requestAnimationFrame(loop);
+  renderUI();
+}
+
+function pauseBrushing() {
+  state = "paused";
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  releaseWakeLock();
+  stopMusic();
+  renderUI();
+}
+
+function stopBrushing() {
+  state = "idle";
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  elapsed = 0;
+  releaseWakeLock();
+  stopMusic();
+  initFoamLayer();
+  renderUI();
+}
+
+function completeBrushing() {
+  state = "done";
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  releaseWakeLock();
+  stopMusic();
+  playFanfareSound();
+  launchConfetti();
+
+  // Save unlocked sticker
+  if (!unlockedIds.includes(currentCharacter.id)) {
+    unlockedIds.push(currentCharacter.id);
+    localStorage.setItem('chika_unlocked_stickers', JSON.stringify(unlockedIds));
+  }
+
+  // Clear all foam layer completely!
+  foamCtx.clearRect(0, 0, foamCanvas.width, foamCanvas.height);
+  document.getElementById('characterTag').textContent = t().unlockedTag + " " + (lang === "ko" ? currentCharacter.nameKo : currentCharacter.nameEn);
+
+  renderUI();
+}
+
+/* ==========================================================================
+   6. UI RENDERER
+   ========================================================================== */
+function renderUI() {
   const s = t();
-  $("langBtn").textContent = s.langBtn;
-  $("footer").textContent = s.footer;
-
   const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
-  $("clock").textContent = Math.floor(remaining / 60) + ":" + String(remaining % 60).padStart(2, "0");
-  $("ring-fg").style.strokeDashoffset = CIRC * (1 - Math.min(elapsed / TOTAL, 1));
+  const mins = Math.floor(remaining / 60);
+  const secs = String(remaining % 60).padStart(2, '0');
+  document.getElementById('clock').textContent = `${mins}:${secs}`;
 
-  const zoneIndex = Math.min(Math.floor(elapsed / ZONE), 3);
+  const progressPercent = (elapsed / TOTAL) * 100;
+  document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+  const zoneIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const stopBtn = document.getElementById('stopBtn');
 
   if (state === "idle") {
-    $("zone-title").textContent = s.idleTitle;
-    $("zone-tip").textContent = s.idleTip;
-    $("tooth").textContent = "🦷";
-    $("tooth").classList.remove("bounce");
-    $("startBtn").textContent = s.start;
-    $("startBtn").style.display = "block";
-    $("pauseBtn").style.display = "none";
-    $("stopBtn").style.display = "none";
+    document.getElementById('zone-title').textContent = s.idleTitle;
+    document.getElementById('zone-tip').textContent = s.idleTip;
+    startBtn.textContent = s.start;
+    startBtn.style.display = "block";
+    pauseBtn.style.display = "none";
+    stopBtn.style.display = "none";
   } else if (state === "done") {
-    $("zone-title").textContent = s.doneTitle;
-    $("zone-tip").textContent = s.doneTip;
-    $("tooth").textContent = "🎉";
-    $("tooth").classList.remove("bounce");
-    $("startBtn").textContent = s.again;
-    $("startBtn").style.display = "block";
-    $("pauseBtn").style.display = "none";
-    $("stopBtn").style.display = "none";
+    document.getElementById('zone-title').textContent = s.doneTitle;
+    document.getElementById('zone-tip').textContent = s.doneTip;
+    startBtn.textContent = s.again;
+    startBtn.style.display = "block";
+    pauseBtn.style.display = "none";
+    stopBtn.style.display = "none";
   } else {
-    const [name, tip] = s.zones[zoneIndex];
-    $("zone-title").textContent = s.now + " " + name;
-    $("zone-tip").textContent = tip;
-    $("tooth").textContent = "🦷";
-    $("tooth").classList.toggle("bounce", state === "running");
-    $("startBtn").style.display = "none";
-    $("pauseBtn").textContent = state === "running" ? s.pause : s.resume;
-    $("pauseBtn").style.display = "block";
-    $("stopBtn").textContent = s.stop;
-    $("stopBtn").style.display = "block";
+    const [zoneName, tip] = s.zones[zoneIndex];
+    document.getElementById('zone-title').textContent = `${s.now} ${zoneName}`;
+    document.getElementById('zone-tip').textContent = tip;
+    startBtn.style.display = "none";
+    pauseBtn.textContent = state === "running" ? s.pause : s.resume;
+    pauseBtn.style.display = "block";
+    stopBtn.textContent = s.stop;
+    stopBtn.style.display = "block";
   }
 }
 
-let lastZone = -1;
-function tick() {
-  if (state !== "running") return;
-  elapsed += 0.1;
-  const zoneIndex = Math.min(Math.floor(elapsed / ZONE), 3);
-  if (zoneIndex !== lastZone) {
-    lastZone = zoneIndex;
-    playChime();
-  }
-  if (elapsed >= TOTAL) {
-    state = "done";
-    stopMusic();
-    playFanfare();
-    confetti();
-  }
-  render();
-}
-
-function start() {
-  elapsed = 0;
-  lastZone = -1;
-  state = "running";
-  startMusic();
-  if (!tickHandle) tickHandle = setInterval(tick, 100);
-  render();
-}
-
-function togglePause() {
-  if (state === "running") { state = "paused"; stopMusic(); }
-  else if (state === "paused") { state = "running"; startMusic(); }
-  render();
-}
-
-function stopAll() {
-  state = "idle";
-  elapsed = 0;
-  stopMusic();
-  render();
-}
-
-$("startBtn").addEventListener("click", start);
-$("pauseBtn").addEventListener("click", togglePause);
-$("stopBtn").addEventListener("click", stopAll);
-$("langBtn").addEventListener("click", () => { lang = lang === "en" ? "ko" : "en"; render(); });
-
-/* ---------- Music (WebAudio, no files needed) ---------- */
+/* ==========================================================================
+   7. WEB AUDIO SYNTHESIZER (No Audio Files Required)
+   ========================================================================== */
 let audioCtx = null, musicTimer = null, muted = false;
 
-$("muteBtn").addEventListener("click", () => {
+document.getElementById('muteBtn').addEventListener('click', () => {
   muted = !muted;
-  $("muteBtn").textContent = muted ? "🔇" : "🔊";
+  document.getElementById('muteBtn').textContent = muted ? "🔇" : "🔊";
   if (muted) stopMusic();
   else if (state === "running") startMusic();
 });
 
-function ctx() {
+function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === "suspended") audioCtx.resume();
   return audioCtx;
 }
 
-function note(freq, when, dur, type, gainVal) {
-  const c = ctx();
+function playNote(freq, when, dur, type="triangle", gainVal=0.12) {
+  if (muted) return;
+  const c = getAudioCtx();
   const osc = c.createOscillator();
   const gain = c.createGain();
-  osc.type = type || "triangle";
+  osc.type = type;
   osc.frequency.value = freq;
   gain.gain.setValueAtTime(0, when);
-  gain.gain.linearRampToValueAtTime(gainVal || 0.15, when + 0.02);
+  gain.gain.linearRampToValueAtTime(gainVal, when + 0.02);
   gain.gain.exponentialRampToValueAtTime(0.001, when + dur);
   osc.connect(gain).connect(c.destination);
   osc.start(when);
   osc.stop(when + dur + 0.05);
 }
 
-/* A simple cheerful loop: C-E-G-E / F-A-C-A pattern with a little bass */
-const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
-const BASS   = [130.81, 130.81, 174.61, 174.61];
+function playPopSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  const freq = 400 + Math.random() * 400;
+  playNote(freq, c.currentTime, 0.06, "sine", 0.05);
+}
 
+function playChimeSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  playNote(783.99, c.currentTime, 0.15, "sine", 0.2);
+  playNote(1046.5, c.currentTime + 0.12, 0.25, "sine", 0.2);
+}
+
+function playFanfareSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => {
+    playNote(f, c.currentTime + i * 0.12, 0.4, "triangle", 0.22);
+  });
+}
+
+const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
 function scheduleBar(startTime) {
-  const beat = 0.28;
-  MELODY.forEach((f, i) => note(f, startTime + i * beat, beat * 0.9, "triangle", 0.12));
-  BASS.forEach((f, i) => note(f, startTime + i * beat * 2, beat * 1.6, "sine", 0.10));
+  const beat = 0.26;
+  MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "triangle", 0.08));
   return MELODY.length * beat;
 }
 
 function startMusic() {
   if (muted) return;
-  const c = ctx();
+  const c = getAudioCtx();
   let nextBar = c.currentTime + 0.05;
   nextBar += scheduleBar(nextBar);
-  stopMusicTimer();
+  if (musicTimer) clearInterval(musicTimer);
   musicTimer = setInterval(() => {
-    if (c.currentTime > nextBar - 0.5) {
+    if (c.currentTime > nextBar - 0.4) {
       nextBar += scheduleBar(nextBar);
     }
   }, 200);
 }
 
-function stopMusicTimer() {
+function stopMusic() {
   if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
 }
 
-function stopMusic() { stopMusicTimer(); }
-
-function playChime() {
-  if (muted) return;
-  const c = ctx();
-  note(1046.5, c.currentTime, 0.15, "sine", 0.2);
-  note(1318.5, c.currentTime + 0.12, 0.25, "sine", 0.2);
+/* ==========================================================================
+   8. WAKE LOCK & CONFETTI ENGINE
+   ========================================================================== */
+let wakeLock = null;
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (err) { console.log('Wake Lock Error:', err); }
+}
+function releaseWakeLock() {
+  if (wakeLock) { wakeLock.release(); wakeLock = null; }
 }
 
-function playFanfare() {
-  if (muted) return;
-  const c = ctx();
-  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
-    note(f, c.currentTime + i * 0.15, 0.4, "triangle", 0.2);
+function launchConfetti() {
+  effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+  const particles = [];
+  const colors = ['#ff7675', '#74b9ff', '#55efc4', '#fdcb6e', '#a29bfe'];
+
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      x: effectCanvas.width * 0.5,
+      y: effectCanvas.height * 0.5,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.7) * 16,
+      size: 8 + Math.random() * 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 10
+    });
+  }
+
+  function renderParticles() {
+    effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+    let activeCount = 0;
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.3; // gravity
+      p.rotation += p.vRot;
+
+      if (p.y < effectCanvas.height) activeCount++;
+
+      effectCtx.save();
+      effectCtx.translate(p.x, p.y);
+      effectCtx.rotate((p.rotation * Math.PI) / 180);
+      effectCtx.fillStyle = p.color;
+      effectCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      effectCtx.restore();
+    });
+
+    if (activeCount > 0 && state === "done") {
+      requestAnimationFrame(renderParticles);
+    }
+  }
+  renderParticles();
+}
+
+/* ==========================================================================
+   9. STICKER BOOK MODAL & PWA SETUP
+   ========================================================================== */
+const stickerModal = document.getElementById('stickerModal');
+
+document.getElementById('stickerBtn').addEventListener('click', () => {
+  renderStickerGrid();
+  stickerModal.style.display = 'flex';
+});
+document.getElementById('closeModalBtn').addEventListener('click', () => {
+  stickerModal.style.display = 'none';
+});
+
+function renderStickerGrid() {
+  const grid = document.getElementById('stickerGrid');
+  grid.innerHTML = '';
+
+  CHARACTERS.forEach(char => {
+    const isUnlocked = unlockedIds.includes(char.id);
+    const item = document.createElement('div');
+    item.className = `sticker-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'sticker-canvas-preview';
+    canvas.width = 160;
+    canvas.height = 160;
+    const ctx = canvas.getContext('2d');
+    char.draw(ctx, 160, 160);
+
+    const name = document.createElement('div');
+    name.className = 'sticker-name';
+    name.textContent = isUnlocked ? (lang === "ko" ? char.nameKo : char.nameEn) : "🔒 ???";
+
+    item.appendChild(canvas);
+    item.appendChild(name);
+
+    if (isUnlocked) {
+      const badge = document.createElement('div');
+      badge.className = 'badge-new';
+      badge.textContent = '보유중';
+      item.appendChild(badge);
+    }
+    grid.appendChild(item);
   });
 }
 
-/* ---------- Confetti ---------- */
-function confetti() {
-  const emojis = ["🎉", "⭐", "✨", "🦷", "💚", "🎈"];
-  for (let i = 0; i < 28; i++) {
-    const el = document.createElement("div");
-    el.className = "confetti";
-    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    el.style.left = Math.random() * 100 + "vw";
-    el.style.animationDuration = 2.2 + Math.random() * 2 + "s";
-    el.style.animationDelay = Math.random() * 0.8 + "s";
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5500);
-  }
+/* PWA Installation Listener */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const pwaBtn = document.getElementById('pwaBtn');
+  pwaBtn.style.display = 'block';
+  pwaBtn.addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      pwaBtn.style.display = 'none';
+    });
+  });
+});
+
+/* Service Worker Registration */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Reg Error:', err));
 }
 
-render();
+/* Controls Event Listeners */
+document.getElementById('startBtn').addEventListener('click', startBrushing);
+document.getElementById('pauseBtn').addEventListener('click', () => {
+  if (state === "running") pauseBrushing();
+  else if (state === "paused") startBrushing();
+});
+document.getElementById('stopBtn').addEventListener('click', stopBrushing);
+
+document.getElementById('langBtn').addEventListener('click', () => {
+  lang = lang === "ko" ? "en" : "ko";
+  document.getElementById('langBtn').textContent = STRINGS[lang].langBtn;
+  document.getElementById('pwaBtn').textContent = STRINGS[lang].pwaBtn;
+  document.getElementById('modalTitle').textContent = STRINGS[lang].modalTitle;
+  document.getElementById('modalSubtitle').textContent = STRINGS[lang].modalSubtitle;
+  renderUI();
+});
+
+// Initial Setup
+selectRandomCharacter();
+drawCharacterBackground();
+initFoamLayer();
+renderUI();
 </script>
 </body>
 </html>
