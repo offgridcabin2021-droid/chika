@@ -13,21 +13,21 @@
 <style>
   :root {
     --mint: #33b8a6;
-    --mint-dark: #239485;
+    --mint-dark: #1b7a6d;
     --mint-light: #e2f5f2;
     --sky: #8cccfa;
     --cream: #fff8e6;
     --orange: #ff9f43;
     --purple: #9c27b0;
     --text: #2d3436;
-    --shadow: 0 10px 25px rgba(51, 184, 166, 0.2);
+    --shadow: 0 12px 30px rgba(51, 184, 166, 0.25);
   }
   
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Apple SD Gothic Neo", sans-serif;
-    background: linear-gradient(180deg, #dcf4f0 0%, #f7fdfc 50%, #ffffff 100%);
+    background: radial-gradient(circle at 50% 10%, #e6f9f6 0%, #f7fdfc 60%, #e2f3f0 100%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
@@ -44,16 +44,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .brand {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: var(--mint-dark);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 
   .nav-btns {
@@ -64,42 +65,52 @@
 
   .icon-btn {
     border: none;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    width: 40px;
-    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, background 0.2s;
   }
   .icon-btn:active { transform: scale(0.92); }
 
-  /* Main Display Container */
+  /* Main Display Stage Container with Glow Ring */
   .stage-wrapper {
     position: relative;
     width: 100%;
     max-width: 340px;
     aspect-ratio: 1;
-    margin: 8px 0;
-    border-radius: 28px;
+    margin: 6px 0 10px;
+    border-radius: 32px;
     background: #ffffff;
     box-shadow: var(--shadow);
     padding: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .stage-wrapper.active-glow {
+    animation: stagePulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes stagePulse {
+    0% { box-shadow: 0 10px 30px rgba(51, 184, 166, 0.3); }
+    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 20px rgba(140, 204, 250, 0.5); }
   }
 
   .canvas-stack {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     background: #f0faf8;
   }
@@ -110,7 +121,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   #bgCanvas { z-index: 1; }
@@ -123,14 +134,17 @@
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(10px);
-    padding: 6px 14px;
+    padding: 6px 16px;
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 800;
     color: var(--mint-dark);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   /* Timer & Progress Row */
@@ -140,24 +154,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
-    border-radius: 20px;
+    border-radius: 22px;
     padding: 10px 20px;
-    margin: 10px 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    margin: 8px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
   }
 
   .clock-display {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
     font-weight: 900;
     color: var(--mint-dark);
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5px;
   }
 
   .progress-bar-bg {
     flex: 1;
-    height: 14px;
+    height: 16px;
     background: #e2e8f0;
     border-radius: 999px;
     margin: 0 16px;
@@ -168,29 +183,76 @@
   .progress-bar-fg {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--mint), var(--sky));
+    background: linear-gradient(90deg, #33b8a6 0%, #00cec9 50%, #74b9ff 100%);
     border-radius: 999px;
     transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(51, 184, 166, 0.5);
   }
 
-  /* Brushing Zone Guide Card */
+  /* Brushing Zone Map & Guide Card */
   #zone-card {
     background: var(--mint-light);
-    border: 2px solid rgba(51, 184, 166, 0.2);
-    border-radius: 20px;
-    padding: 14px 16px;
+    border: 2px solid rgba(51, 184, 166, 0.25);
+    border-radius: 24px;
+    padding: 14px 18px;
     width: 100%;
     max-width: 440px;
-    min-height: 84px;
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  }
+
+  /* 4-Quadrant Mouth Map Visualizer */
+  .quadrant-map {
+    width: 56px;
+    height: 56px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+  }
+
+  .quad-sector {
+    background: #edf2f7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .quad-sector.active {
+    background: var(--mint);
+    color: #fff;
+    font-weight: 900;
+    box-shadow: 0 0 8px rgba(51, 184, 166, 0.6);
+    animation: pulseSector 0.8s infinite alternate;
+  }
+
+  @keyframes pulseSector {
+    from { transform: scale(0.96); }
+    to { transform: scale(1.04); }
+  }
+
+  .zone-text-group {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 4px;
-    margin-bottom: 12px;
   }
 
   #zone-title {
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     font-weight: 900;
     color: var(--text);
   }
@@ -198,6 +260,7 @@
   #zone-tip {
     font-size: 0.88rem;
     color: #4a5568;
+    line-height: 1.35;
   }
 
   /* Control Buttons */
@@ -211,20 +274,20 @@
   button.ctl {
     flex: 1;
     border: none;
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 16px;
-    font-size: 1.1rem;
+    font-size: 1.12rem;
     font-weight: 900;
     cursor: pointer;
     transition: all 0.15s ease;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   }
   button.ctl:active { transform: scale(0.96); }
 
   #startBtn {
     background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
     color: #fff;
-    box-shadow: 0 6px 20px rgba(51,184,166,0.4);
+    box-shadow: 0 6px 22px rgba(51,184,166,0.45);
   }
 
   #pauseBtn {
@@ -244,7 +307,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
     z-index: 100;
     display: none;
     align-items: center;
@@ -256,11 +319,11 @@
     background: #ffffff;
     width: 100%;
     max-width: 440px;
-    border-radius: 28px;
+    border-radius: 30px;
     padding: 24px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     text-align: center;
     position: relative;
   }
@@ -298,7 +361,7 @@
   .sticker-item {
     background: #f7fafc;
     border: 2px dashed #cbd5e0;
-    border-radius: 18px;
+    border-radius: 20px;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -315,7 +378,7 @@
   .sticker-canvas-preview {
     width: 100px;
     height: 100px;
-    border-radius: 14px;
+    border-radius: 16px;
   }
 
   .sticker-item.locked .sticker-canvas-preview {
@@ -360,8 +423,8 @@
 </header>
 
 <!-- Stage Area (Disney Magic Timer Canvas Stack) -->
-<div class="stage-wrapper">
-  <div class="character-tag" id="characterTag">✨ Secret Character Hidden!</div>
+<div class="stage-wrapper" id="stageWrapper">
+  <div class="character-tag" id="characterTag"><span>✨</span> Secret Character Hidden!</div>
   <div class="canvas-stack">
     <canvas id="bgCanvas" width="600" height="600"></canvas>
     <canvas id="foamCanvas" width="600" height="600"></canvas>
@@ -378,10 +441,18 @@
   <div style="font-size: 1.4rem;">🧼</div>
 </div>
 
-<!-- Zone Guide Card -->
+<!-- Zone Guide Card with Interactive Mouth Quadrant Map -->
 <div id="zone-card">
-  <div id="zone-title">Brush for 2 minutes with Chika!</div>
-  <div id="zone-tip">Press start to wipe the foam and reveal secret characters!</div>
+  <div class="quadrant-map">
+    <div class="quad-sector" id="quad-1">UR</div>
+    <div class="quad-sector" id="quad-0">UL</div>
+    <div class="quad-sector" id="quad-2">LL</div>
+    <div class="quad-sector" id="quad-3">LR</div>
+  </div>
+  <div class="zone-text-group">
+    <div id="zone-title">Brush for 2 minutes with Chika!</div>
+    <div id="zone-tip">Press start to wipe the foam and reveal secret characters!</div>
+  </div>
 </div>
 
 <!-- Controls -->
@@ -441,27 +512,35 @@ const CHARACTERS = [
   {
     id: "super_hero",
     name: "Super Tooth Hero 🦸‍♂️",
-    draw(ctx, w, h) {
+    draw(ctx, w, h, time=0) {
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#74b9ff');
       grad.addColorStop(1, '#a29bfe');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
+      // Sparkling Background Stars
       ctx.fillStyle = '#fff';
-      for(let i=0; i<15; i++) {
+      for(let i=0; i<18; i++) {
         const x = (i * 37) % w;
-        const y = (i * 41) % (h * 0.7);
+        const y = (i * 41 + Math.sin(time*2 + i)*5) % (h * 0.7);
         ctx.beginPath(); ctx.arc(x, y, 3 + (i%3), 0, Math.PI*2); ctx.fill();
       }
 
+      // Waving Cape
+      const capeWave = Math.sin(time * 4) * 12;
       ctx.fillStyle = '#ff7675';
       ctx.beginPath();
       ctx.moveTo(w*0.3, h*0.5);
-      ctx.quadraticCurveTo(w*0.1, h*0.8, w*0.2, h*0.9);
-      ctx.lineTo(w*0.8, h*0.9);
+      ctx.quadraticCurveTo(w*0.1 + capeWave, h*0.8, w*0.2, h*0.9);
+      ctx.lineTo(w*0.8 + capeWave*0.5, h*0.9);
       ctx.quadraticCurveTo(w*0.9, h*0.8, w*0.7, h*0.5);
       ctx.fill();
+
+      // Floating Tooth Body
+      const floatY = Math.sin(time * 3) * 8;
+      ctx.save();
+      ctx.translate(0, floatY);
 
       ctx.fillStyle = '#ffffff';
       ctx.strokeStyle = '#dfe6e9';
@@ -475,11 +554,13 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.75, w*0.15, h*0.45, w*0.3, h*0.3);
       ctx.fill(); ctx.stroke();
 
+      // Mask
       ctx.fillStyle = '#0984e3';
       ctx.beginPath();
       ctx.ellipse(w*0.5, h*0.36, w*0.22, h*0.07, 0, 0, Math.PI*2);
       ctx.fill();
 
+      // Eyes
       ctx.fillStyle = '#ffffff';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.36, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.58, h*0.36, 12, 0, Math.PI*2); ctx.fill();
@@ -487,12 +568,14 @@ const CHARACTERS = [
       ctx.beginPath(); ctx.arc(w*0.43, h*0.36, 6, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.57, h*0.36, 6, 0, Math.PI*2); ctx.fill();
 
+      // Big Smile
       ctx.lineWidth = 5;
       ctx.strokeStyle = '#d63031';
       ctx.beginPath();
       ctx.arc(w*0.5, h*0.46, 20, 0.1*Math.PI, 0.9*Math.PI);
       ctx.stroke();
 
+      // Hero Emblem
       ctx.fillStyle = '#fdcb6e';
       ctx.beginPath();
       ctx.arc(w*0.5, h*0.58, 22, 0, Math.PI*2);
@@ -502,20 +585,30 @@ const CHARACTERS = [
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('★', w*0.5, h*0.59);
+
+      ctx.restore();
     }
   },
   {
     id: "space_astro",
     name: "Space Astro Tooth 🚀",
-    draw(ctx, w, h) {
+    draw(ctx, w, h, time=0) {
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#0c2461');
       grad.addColorStop(1, '#4a69bd');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
+      // Rotating Planet
+      const planetX = w*0.8 + Math.cos(time)*10;
+      const planetY = h*0.2 + Math.sin(time)*10;
       ctx.fillStyle = '#e1b12c';
-      ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 40, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(planetX, planetY, 36, 0, Math.PI*2); ctx.fill();
+
+      // Tooth Body
+      const floatY = Math.sin(time * 2.5) * 10;
+      ctx.save();
+      ctx.translate(0, floatY);
 
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
@@ -527,6 +620,7 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
+      // Helmet Glass with Reflection
       ctx.fillStyle = 'rgba(120, 224, 143, 0.45)';
       ctx.strokeStyle = '#78e08f';
       ctx.lineWidth = 6;
@@ -539,23 +633,31 @@ const CHARACTERS = [
       ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 8, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#e84118';
       ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 12, 0, Math.PI); ctx.fill();
+
+      ctx.restore();
     }
   },
   {
     id: "fairy_magic",
     name: "Magic Fairy Tooth 🧚‍♀️",
-    draw(ctx, w, h) {
+    draw(ctx, w, h, time=0) {
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#ffafbd');
       grad.addColorStop(1, '#ffc3a0');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      // Flapping Wings
+      const wingFlap = Math.sin(time * 6) * 15;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
       ctx.beginPath();
-      ctx.ellipse(w*0.25, h*0.4, 60, 30, -Math.PI*0.25, 0, Math.PI*2);
-      ctx.ellipse(w*0.75, h*0.4, 60, 30, Math.PI*0.25, 0, Math.PI*2);
+      ctx.ellipse(w*0.25, h*0.4, 60 + wingFlap, 30, -Math.PI*0.25, 0, Math.PI*2);
+      ctx.ellipse(w*0.75, h*0.4, 60 + wingFlap, 30, Math.PI*0.25, 0, Math.PI*2);
       ctx.fill();
+
+      const floatY = Math.sin(time * 3) * 6;
+      ctx.save();
+      ctx.translate(0, floatY);
 
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
@@ -583,12 +685,14 @@ const CHARACTERS = [
       ctx.fillStyle = '#2d3436';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 6, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 6, 0, Math.PI*2); ctx.fill();
+
+      ctx.restore();
     }
   },
   {
     id: "dino_champ",
     name: "Dino Champ Tooth 🦕",
-    draw(ctx, w, h) {
+    draw(ctx, w, h, time=0) {
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#55efc4');
       grad.addColorStop(1, '#00b894');
@@ -597,9 +701,10 @@ const CHARACTERS = [
 
       ctx.fillStyle = '#fdcb6e';
       for(let i=0; i<4; i++) {
+        const spikeWiggle = Math.sin(time*4 + i)*4;
         ctx.beginPath();
         ctx.moveTo(w*0.25, h*(0.3+i*0.12));
-        ctx.lineTo(w*0.15, h*(0.34+i*0.12));
+        ctx.lineTo(w*0.15 + spikeWiggle, h*(0.34+i*0.12));
         ctx.lineTo(w*0.25, h*(0.38+i*0.12));
         ctx.fill();
       }
@@ -614,6 +719,10 @@ const CHARACTERS = [
       ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
       ctx.fill();
 
+      // Animated Toothbrush Motion
+      const brushMove = Math.sin(time * 5) * 10;
+      ctx.save();
+      ctx.translate(brushMove, 0);
       ctx.strokeStyle = '#e17055';
       ctx.lineWidth = 12;
       ctx.beginPath();
@@ -623,6 +732,7 @@ const CHARACTERS = [
 
       ctx.fillStyle = '#74b9ff';
       ctx.fillRect(w*0.84, h*0.3, 16, 24);
+      ctx.restore();
 
       ctx.fillStyle = '#2d3436';
       ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 7, 0, Math.PI*2); ctx.fill();
@@ -632,22 +742,23 @@ const CHARACTERS = [
   {
     id: "king_royal",
     name: "Royal King Tooth 👑",
-    draw(ctx, w, h) {
+    draw(ctx, w, h, time=0) {
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#a29bfe');
       grad.addColorStop(1, '#6c5ce7');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
+      const crownBounce = Math.sin(time * 3) * 6;
       ctx.fillStyle = '#ffeaa7';
       ctx.strokeStyle = '#fdcb6e';
       ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.25);
-      ctx.lineTo(w*0.35, h*0.12);
-      ctx.lineTo(w*0.5, h*0.22);
-      ctx.lineTo(w*0.65, h*0.12);
-      ctx.lineTo(w*0.7, h*0.25);
+      ctx.moveTo(w*0.3, h*0.25 + crownBounce);
+      ctx.lineTo(w*0.35, h*0.12 + crownBounce);
+      ctx.lineTo(w*0.5, h*0.22 + crownBounce);
+      ctx.lineTo(w*0.65, h*0.12 + crownBounce);
+      ctx.lineTo(w*0.7, h*0.25 + crownBounce);
       ctx.closePath();
       ctx.fill(); ctx.stroke();
 
@@ -678,6 +789,7 @@ let state = "idle"; // idle | running | paused | done
 let elapsed = 0;
 let animFrameId = null;
 let lastTime = null;
+let globalTime = 0;
 let currentCharacter = CHARACTERS[0];
 let unlockedIds = JSON.parse(localStorage.getItem('chika_unlocked_stickers') || '[]');
 
@@ -689,23 +801,24 @@ const effectCanvas = document.getElementById('effectCanvas');
 const effectCtx = effectCanvas.getContext('2d');
 
 let bubbleSchedule = [];
+let floatingParticles = [];
 
 function generateBubbleSchedule() {
   bubbleSchedule = [];
   const W = foamCanvas.width;
   const H = foamCanvas.height;
 
-  const rows = 12, cols = 12;
+  const rows = 14, cols = 14;
   const cellW = W / cols, cellH = H / rows;
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const baseX = c * cellW + cellW / 2;
       const baseY = r * cellH + cellH / 2;
-      const x = baseX + (Math.random() - 0.5) * cellW * 0.8;
-      const y = baseY + (Math.random() - 0.5) * cellH * 0.8;
-      const targetRadius = 35 + Math.random() * 30;
-      const triggerPercent = 0.02 + Math.random() * 0.92;
+      const x = baseX + (Math.random() - 0.5) * cellW * 0.85;
+      const y = baseY + (Math.random() - 0.5) * cellH * 0.85;
+      const targetRadius = 34 + Math.random() * 28;
+      const triggerPercent = 0.02 + Math.random() * 0.93;
       
       bubbleSchedule.push({
         x, y, targetRadius, triggerPercent, popped: false
@@ -715,12 +828,59 @@ function generateBubbleSchedule() {
   bubbleSchedule.sort((a, b) => a.triggerPercent - b.triggerPercent);
 }
 
+/* Spawn Sparkles and Floating Soap Suds on Effect Canvas */
+function spawnPoppingSparkles(x, y) {
+  for (let i = 0; i < 5; i++) {
+    floatingParticles.push({
+      x: x + (Math.random() - 0.5) * 20,
+      y: y + (Math.random() - 0.5) * 20,
+      vx: (Math.random() - 0.5) * 4,
+      vy: -1.5 - Math.random() * 3,
+      size: 4 + Math.random() * 6,
+      alpha: 1.0,
+      type: Math.random() > 0.4 ? 'bubble' : 'star',
+      color: ['#74b9ff', '#55efc4', '#ffffff', '#fdcb6e'][Math.floor(Math.random()*4)]
+    });
+  }
+}
+
+function updateAndRenderEffects() {
+  effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
+
+  for (let i = floatingParticles.length - 1; i >= 0; i--) {
+    const p = floatingParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.alpha -= 0.025;
+
+    if (p.alpha <= 0) {
+      floatingParticles.splice(i, 1);
+      continue;
+    }
+
+    effectCtx.save();
+    effectCtx.globalAlpha = p.alpha;
+    effectCtx.fillStyle = p.color;
+    effectCtx.strokeStyle = p.color;
+
+    if (p.type === 'bubble') {
+      effectCtx.beginPath();
+      effectCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      effectCtx.stroke();
+    } else {
+      effectCtx.font = `${Math.floor(p.size*2)}px sans-serif`;
+      effectCtx.fillText('✨', p.x, p.y);
+    }
+    effectCtx.restore();
+  }
+}
+
 /* ==========================================================================
    4. CANVAS MASKING ENGINE
    ========================================================================== */
-function drawCharacterBackground() {
+function drawCharacterBackground(time=0) {
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  currentCharacter.draw(bgCtx, bgCanvas.width, bgCanvas.height);
+  currentCharacter.draw(bgCtx, bgCanvas.width, bgCanvas.height, time);
 }
 
 function initFoamLayer() {
@@ -735,11 +895,11 @@ function initFoamLayer() {
   foamCtx.fillStyle = foamGrad;
   foamCtx.fillRect(0, 0, W, H);
 
-  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
   foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.6)';
   foamCtx.lineWidth = 3;
 
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 110; i++) {
     const x = (i * 73) % W;
     const y = (i * 91) % H;
     const r = 12 + (i % 25);
@@ -761,9 +921,10 @@ function updateFoamErasing(progress) {
       if (!item.popped && state === "running") {
         item.popped = true;
         playPopSound();
+        spawnPoppingSparkles(item.x, item.y);
       }
       const timeSinceTrigger = (progress - item.triggerPercent) / (1 - item.triggerPercent + 0.001);
-      const currentRadius = item.targetRadius * Math.min(1.2, 0.4 + timeSinceTrigger * 1.6);
+      const currentRadius = item.targetRadius * Math.min(1.25, 0.35 + timeSinceTrigger * 1.7);
 
       foamCtx.beginPath();
       foamCtx.arc(item.x, item.y, currentRadius, 0, Math.PI * 2);
@@ -783,6 +944,9 @@ function loop(timestamp) {
   if (!lastTime) lastTime = timestamp;
   const dt = (timestamp - lastTime) / 1000;
   lastTime = timestamp;
+  globalTime += dt;
+
+  drawCharacterBackground(globalTime);
 
   if (state === "running") {
     elapsed += dt;
@@ -801,9 +965,10 @@ function loop(timestamp) {
 
   const progress = Math.min(1, elapsed / TOTAL);
   updateFoamErasing(progress);
+  updateAndRenderEffects();
   renderUI();
 
-  if (state === "running") {
+  if (state === "running" || state === "idle" || state === "done") {
     animFrameId = requestAnimationFrame(loop);
   }
 }
@@ -811,13 +976,13 @@ function loop(timestamp) {
 function selectRandomCharacter() {
   const index = Math.floor(Math.random() * CHARACTERS.length);
   currentCharacter = CHARACTERS[index];
-  document.getElementById('characterTag').textContent = STRINGS.hiddenTag;
+  document.getElementById('characterTag').innerHTML = `<span>✨</span> ${STRINGS.hiddenTag}`;
 }
 
 function startBrushing() {
   if (state === "idle" || state === "done") {
     selectRandomCharacter();
-    drawCharacterBackground();
+    drawCharacterBackground(0);
     generateBubbleSchedule();
     initFoamLayer();
     elapsed = 0;
@@ -826,15 +991,17 @@ function startBrushing() {
 
   state = "running";
   lastTime = performance.now();
+  document.getElementById('stageWrapper').classList.add('active-glow');
   requestWakeLock();
   startMusic();
+  if (animFrameId) cancelAnimationFrame(animFrameId);
   animFrameId = requestAnimationFrame(loop);
   renderUI();
 }
 
 function pauseBrushing() {
   state = "paused";
-  if (animFrameId) cancelAnimationFrame(animFrameId);
+  document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
   stopMusic();
   renderUI();
@@ -842,7 +1009,7 @@ function pauseBrushing() {
 
 function stopBrushing() {
   state = "idle";
-  if (animFrameId) cancelAnimationFrame(animFrameId);
+  document.getElementById('stageWrapper').classList.remove('active-glow');
   elapsed = 0;
   releaseWakeLock();
   stopMusic();
@@ -852,11 +1019,11 @@ function stopBrushing() {
 
 function completeBrushing() {
   state = "done";
-  if (animFrameId) cancelAnimationFrame(animFrameId);
+  document.getElementById('stageWrapper').classList.remove('active-glow');
   releaseWakeLock();
   stopMusic();
   playFanfareSound();
-  launchConfetti();
+  launchFireworks();
 
   if (!unlockedIds.includes(currentCharacter.id)) {
     unlockedIds.push(currentCharacter.id);
@@ -864,13 +1031,13 @@ function completeBrushing() {
   }
 
   foamCtx.clearRect(0, 0, foamCanvas.width, foamCanvas.height);
-  document.getElementById('characterTag').textContent = `${STRINGS.unlockedTag} ${currentCharacter.name}`;
+  document.getElementById('characterTag').innerHTML = `<span>🎉</span> ${STRINGS.unlockedTag} ${currentCharacter.name}`;
 
   renderUI();
 }
 
 /* ==========================================================================
-   6. UI RENDERER
+   6. UI RENDERER & QUADRANT MAP
    ========================================================================== */
 function renderUI() {
   const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
@@ -885,6 +1052,15 @@ function renderUI() {
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const stopBtn = document.getElementById('stopBtn');
+
+  // Update Mouth Quadrant Sector Map
+  for (let i = 0; i < 4; i++) {
+    const sector = document.getElementById(`quad-${i}`);
+    if (sector) {
+      if (state === "running" && i === zoneIndex) sector.classList.add('active');
+      else sector.classList.remove('active');
+    }
+  }
 
   if (state === "idle") {
     document.getElementById('zone-title').textContent = STRINGS.idleTitle;
@@ -948,8 +1124,8 @@ function playNote(freq, when, dur, type="triangle", gainVal=0.12) {
 function playPopSound() {
   if (muted) return;
   const c = getAudioCtx();
-  const freq = 400 + Math.random() * 400;
-  playNote(freq, c.currentTime, 0.06, "sine", 0.05);
+  const freq = 450 + Math.random() * 350;
+  playNote(freq, c.currentTime, 0.05, "sine", 0.04);
 }
 
 function playChimeSound() {
@@ -992,7 +1168,7 @@ function stopMusic() {
 }
 
 /* ==========================================================================
-   8. WAKE LOCK & CONFETTI ENGINE
+   8. WAKE LOCK & GRAND FIREWORKS ENGINE
    ========================================================================== */
 let wakeLock = null;
 async function requestWakeLock() {
@@ -1006,49 +1182,54 @@ function releaseWakeLock() {
   if (wakeLock) { wakeLock.release(); wakeLock = null; }
 }
 
-function launchConfetti() {
-  effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
-  const particles = [];
-  const colors = ['#ff7675', '#74b9ff', '#55efc4', '#fdcb6e', '#a29bfe'];
+function launchFireworks() {
+  const colors = ['#ff7675', '#74b9ff', '#55efc4', '#fdcb6e', '#a29bfe', '#e84393'];
+  const fireworks = [];
 
-  for (let i = 0; i < 70; i++) {
-    particles.push({
-      x: effectCanvas.width * 0.5,
-      y: effectCanvas.height * 0.5,
-      vx: (Math.random() - 0.5) * 14,
-      vy: (Math.random() - 0.7) * 16,
-      size: 8 + Math.random() * 8,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rotation: Math.random() * 360,
-      vRot: (Math.random() - 0.5) * 10
-    });
+  for (let f = 0; f < 5; f++) {
+    setTimeout(() => {
+      const cx = effectCanvas.width * (0.2 + Math.random() * 0.6);
+      const cy = effectCanvas.height * (0.2 + Math.random() * 0.5);
+      
+      for (let i = 0; i < 40; i++) {
+        const angle = (i / 40) * Math.PI * 2;
+        const speed = 4 + Math.random() * 8;
+        fireworks.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1.0,
+          size: 6 + Math.random() * 6
+        });
+      }
+    }, f * 300);
   }
 
-  function renderParticles() {
-    effectCtx.clearRect(0, 0, effectCanvas.width, effectCanvas.height);
-    let activeCount = 0;
-
-    particles.forEach(p => {
+  function renderFireworks() {
+    let active = 0;
+    fireworks.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.3;
-      p.rotation += p.vRot;
+      p.vy += 0.15;
+      p.alpha -= 0.02;
 
-      if (p.y < effectCanvas.height) activeCount++;
-
-      effectCtx.save();
-      effectCtx.translate(p.x, p.y);
-      effectCtx.rotate((p.rotation * Math.PI) / 180);
-      effectCtx.fillStyle = p.color;
-      effectCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-      effectCtx.restore();
+      if (p.alpha > 0) {
+        active++;
+        effectCtx.save();
+        effectCtx.globalAlpha = p.alpha;
+        effectCtx.fillStyle = p.color;
+        effectCtx.beginPath();
+        effectCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        effectCtx.fill();
+        effectCtx.restore();
+      }
     });
 
-    if (activeCount > 0 && state === "done") {
-      requestAnimationFrame(renderParticles);
-    }
+    if (active > 0) requestAnimationFrame(renderFireworks);
   }
-  renderParticles();
+  setTimeout(renderFireworks, 50);
 }
 
 /* ==========================================================================
@@ -1078,7 +1259,7 @@ function renderStickerGrid() {
     canvas.width = 160;
     canvas.height = 160;
     const ctx = canvas.getContext('2d');
-    char.draw(ctx, 160, 160);
+    char.draw(ctx, 160, 160, 0);
 
     const name = document.createElement('div');
     name.className = 'sticker-name';
@@ -1111,8 +1292,9 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 document.getElementById('stopBtn').addEventListener('click', stopBrushing);
 
 selectRandomCharacter();
-drawCharacterBackground();
+drawCharacterBackground(0);
 initFoamLayer();
+animFrameId = requestAnimationFrame(loop);
 renderUI();
 </script>
 </body>
