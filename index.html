@@ -601,7 +601,7 @@ function updateAndRenderDino(dt) {
   // Dino Shadow
   gameCtx.fillStyle = 'rgba(0,0,0,0.2)';
   gameCtx.beginPath();
-  gameCtx.ellipse(0, 24, 30 - (GROUND_Y - dinoY)*0.2, 8, 0, 0, Math.PI * 2);
+  gameCtx.ellipse(0, 24, Math.max(4, 30 - (GROUND_Y - dinoY)*0.1), 8, 0, 0, Math.PI * 2);
   gameCtx.fill();
 
   // Dino Tail
