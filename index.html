@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — 2-Min Cinematic Brushing Adventure</title>
-<meta name="description" content="A 100% hands-free 2-minute animated adventure show for kids while brushing teeth!">
+<title>Chika — 2-Min Dino Tooth Runner</title>
+<meta name="description" content="An exciting 2-minute Dino Runner show for kids while brushing teeth! Watch Dino jump, collect stars, and explore 4 magic worlds!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -106,7 +106,7 @@
 
   @keyframes stagePulse {
     0% { box-shadow: 0 10px 30px rgba(51, 184, 166, 0.3); }
-    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 25px rgba(140, 204, 250, 0.6); }
+    100% { box-shadow: 0 15px 45px rgba(51, 184, 166, 0.6), 0 0 25px rgba(255, 211, 42, 0.6); }
   }
 
   .canvas-stack {
@@ -115,7 +115,7 @@
     height: 100%;
     border-radius: 24px;
     overflow: hidden;
-    background: #0f2027;
+    background: #55efc4;
   }
 
   canvas {
@@ -131,7 +131,7 @@
   #hudCanvas { z-index: 2; pointer-events: none; }
 
   /* HUD Overlay Badges */
-  .chapter-tag {
+  .world-tag {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -203,10 +203,10 @@
   .progress-bar-fg {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--mint) 0%, var(--sky) 50%, var(--purple) 100%);
+    background: linear-gradient(90deg, #55efc4 0%, #fd79a8 50%, #ffeaa7 100%);
     border-radius: 999px;
     transition: width 0.1s linear;
-    box-shadow: 0 0 10px rgba(51, 184, 166, 0.5);
+    box-shadow: 0 0 10px rgba(85, 239, 196, 0.6);
   }
 
   /* Brushing Zone Guide Card */
@@ -304,9 +304,9 @@
   button.ctl:active { transform: scale(0.96); }
 
   #startBtn {
-    background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+    background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
     color: #fff;
-    box-shadow: 0 6px 22px rgba(51,184,166,0.45);
+    box-shadow: 0 6px 22px rgba(0,184,148,0.45);
   }
 
   #pauseBtn {
@@ -333,16 +333,16 @@
 
 <header>
   <div class="brand">
-    <span>🎬</span> Chika Show
+    <span>🦖</span> Dino Runner
   </div>
   <div class="nav-btns">
     <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
   </div>
 </header>
 
-<!-- Stage Area (100% Hands-Free Animated Show) -->
+<!-- Stage Area (100% Hands-Free Dino Runner Show) -->
 <div class="stage-wrapper" id="stageWrapper">
-  <div class="chapter-tag" id="chapterTag"><span>🚀</span> Ch 1: Space Launch</div>
+  <div class="world-tag" id="worldTag"><span>🌴</span> World 1: Dino Jungle</div>
   <div class="hands-free-badge">📱 100% Hands-Free Show while Brushing!</div>
   <div class="canvas-stack">
     <canvas id="gameCanvas" width="600" height="600"></canvas>
@@ -350,13 +350,13 @@
   </div>
 </div>
 
-<!-- Live Timer Row -->
+<!-- Live Timer & Star Count -->
 <div class="timer-row">
   <div class="clock-display" id="clock">2:00</div>
   <div class="progress-bar-bg">
     <div class="progress-bar-fg" id="progressBar"></div>
   </div>
-  <div style="font-size: 1.4rem;">✨</div>
+  <div style="font-size: 1.3rem; font-weight: 900; color: var(--gold);" id="starCount">⭐ 0</div>
 </div>
 
 <!-- Zone Guide Card -->
@@ -368,56 +368,56 @@
     <div class="quad-sector" id="quad-3">LR</div>
   </div>
   <div class="zone-text-group">
-    <div id="zone-title">Start Brushing to Watch the Show!</div>
-    <div id="zone-tip">Place phone on mirror stand & watch the 2-minute animated adventure!</div>
+    <div id="zone-title">Start Brushing to Watch Dino Run!</div>
+    <div id="zone-tip">Watch Dino jump over obstacles & collect stars across 4 magic worlds in 2 minutes!</div>
   </div>
 </div>
 
 <!-- Controls -->
 <div id="controls">
-  <button class="ctl" id="startBtn">▶ Start Brushing Show</button>
+  <button class="ctl" id="startBtn">▶ Start Dino Runner</button>
   <button class="ctl" id="pauseBtn">⏸ Pause</button>
   <button class="ctl" id="stopBtn">⏹ Stop</button>
 </div>
 
 <footer>
-  Free 2-minute animated brushing show from your local dental clinic 💚
+  Free 2-minute Dino runner brushing show from your local dental clinic 💚
 </footer>
 
 <script>
 "use strict";
 
 /* ==========================================================================
-   1. STRINGS & 4 ANIMATED CHAPTERS
+   1. STRINGS & 4 WORLD CHAPTERS
    ========================================================================== */
 const STRINGS = {
-  idleTitle: "Start Brushing to Watch the Show!",
-  idleTip: "Place phone on mirror stand & watch the 2-minute animated adventure!",
-  doneTitle: "VICTORY! 2 Minutes Complete! 🎉",
-  doneTip: "Amazing job! Sparkling clean teeth! See you tonight!",
-  start: "▶ Start Brushing Show",
+  idleTitle: "Start Brushing to Watch Dino Run!",
+  idleTip: "Watch Dino jump over obstacles & collect stars across 4 magic worlds in 2 minutes!",
+  doneTitle: "VICTORY CHAMPION! 🏆",
+  doneTip: "2 minutes complete! Dino finished the Grand Rainbow Sprint (+500 Stars)!",
+  start: "▶ Start Dino Runner",
   again: "▶ Watch Again!",
   pause: "⏸ Pause",
-  resume: "▶ Resume Show",
+  resume: "▶ Resume Runner",
   stop: "⏹ Stop",
   now: "Now brushing:",
   zones: [
-    ["Upper Right 🪥", "Ch 1: Space Launch! Brush gently in small circles!"],
-    ["Upper Left ✨", "Ch 2: Defeat Germs! Don't forget back chewing surfaces!"],
-    ["Lower Left 🦷", "Ch 3: Crystal Castle! Softly clean tongue side!"],
-    ["Lower Right 🌟", "Ch 4: Grand Victory! Final sprint behind front teeth!"]
+    ["Upper Right 🪥", "World 1: Dino Jungle! Brush gently in small circles!"],
+    ["Upper Left ✨", "World 2: Candy Kingdom! Don't forget back chewing surfaces!"],
+    ["Lower Left 🦷", "World 3: Crystal Castle! Softly clean tongue side!"],
+    ["Lower Right 🌟", "World 4: Rainbow Sprint! Final sprint behind front teeth!"]
   ]
 };
 
-const CHAPTERS = [
-  { name: "Ch 1: Space Launch 🚀", bgTop: "#0f2027", bgBottom: "#203a43" },
-  { name: "Ch 2: Zap the Germs 👾", bgTop: "#2c3e50", bgBottom: "#000000" },
-  { name: "Ch 3: Crystal Castle 🏰", bgTop: "#4a00e0", bgBottom: "#8e2de2" },
-  { name: "Ch 4: Grand Celebration 🎉", bgTop: "#11998e", bgBottom: "#38ef7d" }
+const WORLDS = [
+  { name: "World 1: Dino Jungle 🌴", skyTop: "#55efc4", skyBottom: "#81ecec", ground: "#00b894", item: "🍓" },
+  { name: "World 2: Candy Kingdom 🍭", skyTop: "#ff7675", skyBottom: "#fd79a8", ground: "#e84393", item: "🍬" },
+  { name: "World 3: Crystal Castle 🏰", skyTop: "#a29bfe", skyBottom: "#6c5ce7", ground: "#3c40c6", item: "💎" },
+  { name: "World 4: Rainbow Sprint 🌈", skyTop: "#ffeaa7", skyBottom: "#fdcb6e", ground: "#e17055", item: "⭐" }
 ];
 
 /* ==========================================================================
-   2. APP STATE & ANIMATION ENGINE
+   2. APP STATE & DINO ENGINE
    ========================================================================== */
 const TOTAL = 120, ZONE_SEC = 30;
 let state = "idle";
@@ -425,170 +425,242 @@ let elapsed = 0;
 let animFrameId = null;
 let lastTime = null;
 let globalTime = 0;
+let totalStars = 0;
+
+// Dino Physics
+const GROUND_Y = 460;
+let dinoY = GROUND_Y;
+let dinoVy = 0;
+let isJumping = false;
 
 const gameCanvas = document.getElementById('gameCanvas');
 const gameCtx = gameCanvas.getContext('2d');
 const hudCanvas = document.getElementById('hudCanvas');
 const hudCtx = hudCanvas.getContext('2d');
 
+let runnerScroll = 0;
+let worldItems = [];
+let obstacles = [];
 let particles = [];
-let germMonsters = [];
+let popups = [];
 
-function spawnGermMonsters() {
-  germMonsters = [];
-  for(let i=0; i<6; i++) {
-    germMonsters.push({
-      x: 100 + Math.random()*400,
-      y: 100 + Math.random()*250,
-      size: 20 + Math.random()*15,
-      zapped: false,
-      color: ['#ff7675', '#fd79a8', '#a29bfe', '#55efc4'][i%4]
+function spawnWorldObjects() {
+  // Spawn Stars / Items
+  if (Math.random() < 0.08) {
+    worldItems.push({
+      x: gameCanvas.width + 40,
+      y: GROUND_Y - 50 - Math.random() * 90,
+      collected: false
+    });
+  }
+
+  // Spawn Obstacles (Rock / Donut / Bug)
+  if (Math.random() < 0.035 && obstacles.length < 2) {
+    obstacles.push({
+      x: gameCanvas.width + 60,
+      y: GROUND_Y - 20,
+      size: 32,
+      passed: false
     });
   }
 }
 
-function updateAndRenderShow(dt) {
+function updateAndRenderDino(dt) {
   const W = gameCanvas.width, H = gameCanvas.height;
-  const chapterIdx = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
-  const chapter = CHAPTERS[chapterIdx];
+  const worldIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
+  const world = WORLDS[worldIndex];
 
-  // 1. Draw Chapter Background Gradient
-  const grad = gameCtx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, chapter.bgTop);
-  grad.addColorStop(1, chapter.bgBottom);
-  gameCtx.fillStyle = grad;
-  gameCtx.fillRect(0, 0, W, H);
+  const scrollSpeed = state === "running" ? 320 : 80;
+  runnerScroll += scrollSpeed * dt;
 
-  // Floating Background Stars / Dust
-  gameCtx.fillStyle = '#ffffff';
-  for(let i=0; i<25; i++) {
-    const sx = (i * 47 + globalTime * 30) % W;
-    const sy = (i * 31 + Math.sin(globalTime + i)*10) % H;
+  // Auto Jump AI when approaching an obstacle
+  const nextObstacle = obstacles.find(obs => obs.x > 140 && obs.x < 240);
+  if (nextObstacle && !isJumping && state === "running") {
+    isJumping = true;
+    dinoVy = -17; // Launch Jump
+    playJumpSound();
+  }
+
+  // Dino Jump Physics
+  if (isJumping || dinoY < GROUND_Y) {
+    dinoY += dinoVy;
+    dinoVy += 0.9; // Gravity
+    if (dinoY >= GROUND_Y) {
+      dinoY = GROUND_Y;
+      dinoVy = 0;
+      isJumping = false;
+    }
+  }
+
+  // 1. Draw Parallax Background & Sky
+  const skyGrad = gameCtx.createLinearGradient(0, 0, 0, GROUND_Y);
+  skyGrad.addColorStop(0, world.skyTop);
+  skyGrad.addColorStop(1, world.skyBottom);
+  gameCtx.fillStyle = skyGrad;
+  gameCtx.fillRect(0, 0, W, GROUND_Y);
+
+  // Parallax Hills / Clouds
+  gameCtx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i * 140) - (runnerScroll * 0.3) % 140);
     gameCtx.beginPath();
-    gameCtx.arc(sx, sy, 2 + (i%3), 0, Math.PI * 2);
+    gameCtx.arc(cx, GROUND_Y - 60, 50, 0, Math.PI * 2);
     gameCtx.fill();
   }
 
-  // 2. Render Specific Animated Chapter Scenes
-  if (chapterIdx === 0) {
-    // CHAPTER 1: Space Rocket Launch
-    const rocketY = H*0.65 + Math.sin(globalTime*4)*12;
-    const rocketX = W*0.35 + Math.cos(globalTime*2)*20;
+  // 2. Draw Scrolling Ground
+  gameCtx.fillStyle = world.ground;
+  gameCtx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
 
-    // Rocket Exhaust Thruster Flames
-    const flame = 20 + Math.sin(globalTime*30)*15;
-    gameCtx.fillStyle = '#ff7675';
-    gameCtx.beginPath(); gameCtx.moveTo(rocketX-30, rocketY+10); gameCtx.lineTo(rocketX-30-flame, rocketY+20); gameCtx.lineTo(rocketX-30, rocketY+30); gameCtx.fill();
-    gameCtx.fillStyle = '#ffeaa7';
-    gameCtx.beginPath(); gameCtx.moveTo(rocketX-30, rocketY+14); gameCtx.lineTo(rocketX-30-flame*0.6, rocketY+20); gameCtx.lineTo(rocketX-30, rocketY+26); gameCtx.fill();
-
-    // Rocket Ship Body
-    gameCtx.fillStyle = '#ffffff';
-    gameCtx.beginPath(); gameCtx.ellipse(rocketX, rocketY+20, 40, 22, 0, 0, Math.PI*2); gameCtx.fill();
-    gameCtx.fillStyle = '#0984e3';
-    gameCtx.beginPath(); gameCtx.ellipse(rocketX+15, rocketY+20, 12, 12, 0, 0, Math.PI*2); gameCtx.fill();
-
-    // Tooth Hero inside Glass Dome
-    gameCtx.fillStyle = '#74b9ff';
-    gameCtx.beginPath(); gameCtx.arc(rocketX+15, rocketY+20, 10, 0, Math.PI*2); gameCtx.fill();
-
-  } else if (chapterIdx === 1) {
-    // CHAPTER 2: Defeat Cavity Germs with Toothbrush Laser
-    const heroX = 120;
-    const heroY = H*0.5 + Math.sin(globalTime*3)*15;
-
-    // Tooth Hero Body
-    gameCtx.fillStyle = '#ffffff';
-    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 40, 0, Math.PI*2); gameCtx.fill();
-    gameCtx.fillStyle = '#2d3436';
-    gameCtx.beginPath(); gameCtx.arc(heroX-10, heroY-6, 5, 0, Math.PI*2); gameCtx.fill();
-    gameCtx.beginPath(); gameCtx.arc(heroX+10, heroY-6, 5, 0, Math.PI*2); gameCtx.fill();
-
-    // Toothbrush Magic Laser Wand
-    gameCtx.strokeStyle = '#00cec9';
-    gameCtx.lineWidth = 6;
-    gameCtx.beginPath(); gameCtx.moveTo(heroX+30, heroY); gameCtx.lineTo(heroX+70, heroY-10); gameCtx.stroke();
-
-    // Laser Beam Firing
-    const laserBeamY = heroY - 10;
-    gameCtx.strokeStyle = '#ff7675';
-    gameCtx.lineWidth = 8;
-    gameCtx.shadowColor = '#ff7675';
-    gameCtx.shadowBlur = 15;
-    gameCtx.beginPath(); gameCtx.moveTo(heroX+70, laserBeamY); gameCtx.lineTo(W, laserBeamY); gameCtx.stroke();
-    gameCtx.shadowBlur = 0;
-
-    // Render Germ Monsters getting Zapped
-    if (germMonsters.length === 0) spawnGermMonsters();
-    germMonsters.forEach(monster => {
-      if (Math.abs(monster.y - laserBeamY) < 35 && !monster.zapped) {
-        monster.zapped = true;
-        playPopSound();
-        for(let p=0; p<8; p++) {
-          particles.push({
-            x: monster.x, y: monster.y,
-            vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10,
-            alpha: 1.0, color: monster.color
-          });
-        }
-      }
-
-      if (!monster.zapped) {
-        gameCtx.fillStyle = monster.color;
-        gameCtx.beginPath(); gameCtx.arc(monster.x, monster.y, monster.size, 0, Math.PI*2); gameCtx.fill();
-        gameCtx.fillStyle = '#ffffff';
-        gameCtx.beginPath(); gameCtx.arc(monster.x-6, monster.y-4, 4, 0, Math.PI*2); gameCtx.fill();
-        gameCtx.beginPath(); gameCtx.arc(monster.x+6, monster.y-4, 4, 0, Math.PI*2); gameCtx.fill();
-      }
-    });
-
-  } else if (chapterIdx === 2) {
-    // CHAPTER 3: Crystal Castle & Flying Dragon
-    const heroX = W*0.5 + Math.cos(globalTime*2)*80;
-    const heroY = H*0.45 + Math.sin(globalTime*3)*30;
-
-    // Crystal Castle in background
-    gameCtx.fillStyle = 'rgba(255,255,255,0.2)';
-    gameCtx.fillRect(W*0.2, H*0.5, 60, H*0.5);
-    gameCtx.fillRect(W*0.6, H*0.4, 80, H*0.6);
-
-    // Hero Flying with Wings
-    gameCtx.fillStyle = 'rgba(255,255,255,0.7)';
-    gameCtx.beginPath(); ctx.ellipse(heroX-30, heroY, 40, 18, -0.4, 0, Math.PI*2); gameCtx.fill();
-    gameCtx.beginPath(); ctx.ellipse(heroX+30, heroY, 40, 18, 0.4, 0, Math.PI*2); gameCtx.fill();
-
-    gameCtx.fillStyle = '#ffffff';
-    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 45, 0, Math.PI*2); gameCtx.fill();
-    gameCtx.fillStyle = '#ffeaa7';
-    gameCtx.beginPath(); gameCtx.arc(heroX, heroY-45, 15, 0, Math.PI*2); gameCtx.fill(); // Crown
-
-  } else if (chapterIdx === 3) {
-    // CHAPTER 4: Grand Victory & Trophy Celebration
-    const heroX = W*0.5;
-    const heroY = H*0.5 + Math.sin(globalTime*5)*10;
-
-    // Hero Victory Stance
-    gameCtx.fillStyle = '#ffffff';
-    gameCtx.beginPath(); gameCtx.arc(heroX, heroY, 60, 0, Math.PI*2); gameCtx.fill();
-
-    // Giant Trophy Held High
-    gameCtx.font = '64px sans-serif';
-    gameCtx.fillText('🏆', heroX - 32, heroY - 70);
+  // Ground Stripes
+  gameCtx.fillStyle = 'rgba(255,255,255,0.2)';
+  const stripeW = 40;
+  for (let x = -(runnerScroll % (stripeW * 2)); x < W; x += stripeW * 2) {
+    gameCtx.fillRect(x, GROUND_Y, stripeW, H - GROUND_Y);
   }
 
-  // Render Sparkle Particles
+  // 3. Update & Draw Items & Obstacles
+  if (state === "running") spawnWorldObjects();
+
+  const dinoX = 140;
+
+  // Items
+  for (let i = worldItems.length - 1; i >= 0; i--) {
+    const item = worldItems[i];
+    item.x -= scrollSpeed * dt;
+
+    if (!item.collected && Math.abs(item.x - dinoX) < 40 && Math.abs(item.y - (dinoY - 30)) < 40) {
+      item.collected = true;
+      totalStars += 15;
+      popups.push({ text: `+15 ${world.item}`, x: item.x, y: item.y, alpha: 1.0 });
+      playItemSound();
+
+      for (let p = 0; p < 8; p++) {
+        particles.push({
+          x: item.x, y: item.y,
+          vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
+          alpha: 1.0, color: '#ffd32a'
+        });
+      }
+    }
+
+    if (item.x < -40) { worldItems.splice(i, 1); continue; }
+
+    if (!item.collected) {
+      gameCtx.font = '28px sans-serif';
+      gameCtx.fillText(world.item, item.x, item.y);
+    }
+  }
+
+  // Obstacles
+  for (let i = obstacles.length - 1; i >= 0; i--) {
+    const obs = obstacles[i];
+    obs.x -= scrollSpeed * dt;
+
+    if (obs.x < -50) { obstacles.splice(i, 1); continue; }
+
+    // Draw Obstacle (Rock / Bush)
+    gameCtx.fillStyle = '#2d3436';
+    gameCtx.beginPath();
+    gameCtx.arc(obs.x, obs.y, 18, 0, Math.PI * 2);
+    gameCtx.fill();
+    gameCtx.fillStyle = '#636e72';
+    gameCtx.beginPath();
+    gameCtx.arc(obs.x - 4, obs.y - 4, 8, 0, Math.PI * 2);
+    gameCtx.fill();
+  }
+
+  // Render Particles & Popups
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.alpha -= 0.035;
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
     if (p.alpha <= 0) { particles.splice(i, 1); continue; }
     gameCtx.fillStyle = p.color;
     gameCtx.globalAlpha = p.alpha;
-    gameCtx.beginPath(); gameCtx.arc(p.x, p.y, 6, 0, Math.PI*2); gameCtx.fill();
+    gameCtx.beginPath(); gameCtx.arc(p.x, p.y, 6, 0, Math.PI * 2); gameCtx.fill();
     gameCtx.globalAlpha = 1.0;
   }
 
-  // Update HUD Tag
-  document.getElementById('chapterTag').innerHTML = `<span>🎬</span> ${chapter.name}`;
+  for (let i = popups.length - 1; i >= 0; i--) {
+    const pop = popups[i];
+    pop.y -= 1.5; pop.alpha -= 0.025;
+    if (pop.alpha <= 0) { popups.splice(i, 1); continue; }
+    gameCtx.save();
+    gameCtx.globalAlpha = pop.alpha;
+    gameCtx.font = '900 18px sans-serif';
+    gameCtx.fillStyle = '#ffd32a';
+    gameCtx.fillText(pop.text, pop.x, pop.y);
+    gameCtx.restore();
+  }
+
+  // 4. Draw Cute Animated Baby Dino
+  const runLegAngle = Math.sin(globalTime * 18) * 0.4;
+  gameCtx.save();
+  gameCtx.translate(dinoX, dinoY - 24);
+
+  // Dino Shadow
+  gameCtx.fillStyle = 'rgba(0,0,0,0.2)';
+  gameCtx.beginPath();
+  gameCtx.ellipse(0, 24, 30 - (GROUND_Y - dinoY)*0.2, 8, 0, 0, Math.PI * 2);
+  gameCtx.fill();
+
+  // Dino Tail
+  gameCtx.fillStyle = '#00b894';
+  gameCtx.beginPath();
+  gameCtx.moveTo(-20, -5);
+  gameCtx.lineTo(-42, -15 + Math.sin(globalTime * 12) * 5);
+  gameCtx.lineTo(-20, 10);
+  gameCtx.fill();
+
+  // Dino Back Spikes
+  gameCtx.fillStyle = '#fdcb6e';
+  for (let s = 0; s < 3; s++) {
+    gameCtx.beginPath();
+    gameCtx.moveTo(-15 + s * 12, -22);
+    gameCtx.lineTo(-10 + s * 12, -34);
+    gameCtx.lineTo(-5 + s * 12, -22);
+    gameCtx.fill();
+  }
+
+  // Dino Body
+  gameCtx.fillStyle = '#55efc4';
+  gameCtx.beginPath();
+  gameCtx.arc(0, -5, 26, 0, Math.PI * 2);
+  gameCtx.fill();
+
+  // Dino Head
+  gameCtx.beginPath();
+  gameCtx.arc(14, -22, 20, 0, Math.PI * 2);
+  gameCtx.fill();
+
+  // Cute Big Eye
+  gameCtx.fillStyle = '#2d3436';
+  gameCtx.beginPath(); gameCtx.arc(18, -25, 6, 0, Math.PI * 2); gameCtx.fill();
+  gameCtx.fillStyle = '#ffffff';
+  gameCtx.beginPath(); gameCtx.arc(16, -27, 2.5, 0, Math.PI * 2); gameCtx.fill();
+
+  // Cute Rosy Cheek
+  gameCtx.fillStyle = 'rgba(255, 118, 117, 0.5)';
+  gameCtx.beginPath(); gameCtx.arc(22, -16, 6, 0, Math.PI * 2); gameCtx.fill();
+
+  // Running Legs
+  gameCtx.lineWidth = 6;
+  gameCtx.strokeStyle = '#00b894';
+  gameCtx.beginPath();
+  gameCtx.moveTo(-8, 10);
+  gameCtx.lineTo(-8 + Math.cos(runLegAngle) * 15, 24 + Math.sin(runLegAngle) * 10);
+  gameCtx.stroke();
+
+  gameCtx.beginPath();
+  gameCtx.moveTo(8, 10);
+  gameCtx.lineTo(8 - Math.cos(runLegAngle) * 15, 24 - Math.sin(runLegAngle) * 10);
+  gameCtx.stroke();
+
+  gameCtx.restore();
+
+  // Update HUD
+  document.getElementById('worldTag').innerHTML = `<span>🦖</span> ${world.name}`;
+  document.getElementById('starCount').textContent = `⭐ ${totalStars}`;
 }
 
 /* ==========================================================================
@@ -617,7 +689,7 @@ function loop(timestamp) {
     }
   }
 
-  updateAndRenderShow(dt);
+  updateAndRenderDino(dt);
   renderUI();
 
   if (state === "running" || state === "idle" || state === "done") {
@@ -629,7 +701,9 @@ function startShow() {
   if (state === "idle" || state === "done") {
     elapsed = 0;
     lastZoneIndex = -1;
-    spawnGermMonsters();
+    worldItems = [];
+    obstacles = [];
+    totalStars = 0;
   }
 
   state = "running";
@@ -666,6 +740,8 @@ function completeShow() {
   stopMusic();
   playFanfareSound();
   launchFireworks();
+
+  totalStars += 500;
   renderUI();
 }
 
@@ -753,10 +829,18 @@ function playNote(freq, when, dur, type="triangle", gainVal=0.12) {
   osc.stop(when + dur + 0.05);
 }
 
-function playPopSound() {
+function playItemSound() {
   if (muted) return;
   const c = getAudioCtx();
-  playNote(600, c.currentTime, 0.08, "sine", 0.12);
+  playNote(987.77, c.currentTime, 0.08, "sine", 0.15);
+  playNote(1318.51, c.currentTime + 0.06, 0.12, "sine", 0.18);
+}
+
+function playJumpSound() {
+  if (muted) return;
+  const c = getAudioCtx();
+  playNote(400, c.currentTime, 0.15, "sine", 0.2);
+  playNote(750, c.currentTime + 0.08, 0.2, "sine", 0.2);
 }
 
 function playChimeSound() {
@@ -776,7 +860,7 @@ function playFanfareSound() {
 
 const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
 function scheduleBar(startTime) {
-  const beat = 0.26;
+  const beat = 0.24; // Upbeat Tempo!
   MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "triangle", 0.08));
   return MELODY.length * beat;
 }
@@ -869,7 +953,6 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 });
 document.getElementById('stopBtn').addEventListener('click', stopShow);
 
-spawnGermMonsters();
 animFrameId = requestAnimationFrame(loop);
 renderUI();
 </script>
