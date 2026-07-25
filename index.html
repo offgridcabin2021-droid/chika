@@ -80,7 +80,7 @@
   }
   .icon-btn:active { transform: scale(0.92); }
 
-  /* Main Display Stage Container with Glow Ring */
+  /* Stage Wrapper */
   .stage-wrapper {
     position: relative;
     width: 100%;
@@ -189,7 +189,7 @@
     box-shadow: 0 0 10px rgba(51, 184, 166, 0.5);
   }
 
-  /* Brushing Zone Map & Guide Card */
+  /* Brushing Zone Card */
   #zone-card {
     background: var(--mint-light);
     border: 2px solid rgba(51, 184, 166, 0.25);
@@ -206,7 +206,6 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
   }
 
-  /* 4-Quadrant Mouth Map Visualizer */
   .quadrant-map {
     width: 56px;
     height: 56px;
@@ -506,28 +505,293 @@ const STRINGS = {
 };
 
 /* ==========================================================================
-   2. CHARACTERS (Vector Canvas Drawing Routines)
+   2. ADORABLE KIDS MASCOT CHARACTERS (Rich Detailed Canvas Vector Artwork)
    ========================================================================== */
 const CHARACTERS = [
   {
-    id: "super_hero",
-    name: "Super Tooth Hero 🦸‍♂️",
+    id: "magic_unicorn",
+    name: "Sparkle Unicorn 🦄",
     draw(ctx, w, h, time=0) {
+      // Magic Rainbow Sky Backdrop
       const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#74b9ff');
-      grad.addColorStop(1, '#a29bfe');
+      grad.addColorStop(0, '#ffafbd');
+      grad.addColorStop(0.5, '#ffc3a0');
+      grad.addColorStop(1, '#e0c3fc');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Sparkling Background Stars
-      ctx.fillStyle = '#fff';
-      for(let i=0; i<18; i++) {
-        const x = (i * 37) % w;
-        const y = (i * 41 + Math.sin(time*2 + i)*5) % (h * 0.7);
-        ctx.beginPath(); ctx.arc(x, y, 3 + (i%3), 0, Math.PI*2); ctx.fill();
+      // Floating Stars & Clouds
+      ctx.fillStyle = '#ffffff';
+      for(let i=0; i<16; i++) {
+        const x = (i * 41) % w;
+        const y = (i * 37 + Math.sin(time*2 + i)*6) % (h * 0.7);
+        ctx.beginPath(); ctx.arc(x, y, 4 + (i%4), 0, Math.PI*2); ctx.fill();
       }
 
-      // Waving Cape
+      const floatY = Math.sin(time * 3) * 8;
+      ctx.save();
+      ctx.translate(0, floatY);
+
+      // Cute Unicorn Head Body
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(w*0.5, h*0.52, 110, 0, Math.PI*2);
+      ctx.fill();
+
+      // Fluffy Ears
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.ellipse(w*0.35, h*0.28, 22, 45, -0.3, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(w*0.65, h*0.28, 22, 45, 0.3, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.ellipse(w*0.35, h*0.28, 12, 28, -0.3, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(w*0.65, h*0.28, 12, 28, 0.3, 0, Math.PI*2); ctx.fill();
+
+      // Golden Magic Horn
+      const hornGrad = ctx.createLinearGradient(w*0.5, h*0.1, w*0.5, h*0.35);
+      hornGrad.addColorStop(0, '#ffeaa7');
+      hornGrad.addColorStop(1, '#fdcb6e');
+      ctx.fillStyle = hornGrad;
+      ctx.beginPath();
+      ctx.moveTo(w*0.5, h*0.12);
+      ctx.lineTo(w*0.44, h*0.32);
+      ctx.lineTo(w*0.56, h*0.32);
+      ctx.closePath();
+      ctx.fill();
+
+      // Rainbow Hair Mane
+      const hairColors = ['#ff7675', '#fdcb6e', '#55efc4', '#74b9ff', '#a29bfe'];
+      for(let i=0; i<5; i++) {
+        ctx.fillStyle = hairColors[i];
+        ctx.beginPath();
+        ctx.arc(w*0.36 + i*8, h*0.34 + i*4, 16, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // Snout
+      ctx.fillStyle = '#ffeaa7';
+      ctx.beginPath();
+      ctx.ellipse(w*0.5, h*0.62, 50, 32, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // Cute Eyes (Big Anime Eyes)
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.48, 14, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.48, 14, 0, Math.PI*2); ctx.fill();
+      // Eye Highlights
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.45, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.56, h*0.45, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.44, h*0.51, 3, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.51, 3, 0, Math.PI*2); ctx.fill();
+
+      // Rosy Cheeks
+      ctx.fillStyle = 'rgba(255, 118, 117, 0.45)';
+      ctx.beginPath(); ctx.arc(w*0.34, h*0.55, 14, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.66, h*0.55, 14, 0, Math.PI*2); ctx.fill();
+
+      // Smile
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#d63031';
+      ctx.beginPath();
+      ctx.arc(w*0.5, h*0.62, 12, 0.1*Math.PI, 0.9*Math.PI);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+  },
+  {
+    id: "astro_bunny",
+    name: "Cosmic Astro Bunny 🚀",
+    draw(ctx, w, h, time=0) {
+      // Cosmic Space Gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#0c2461');
+      grad.addColorStop(0.6, '#1e3799');
+      grad.addColorStop(1, '#4a69bd');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Stars & Saturn Planet
+      ctx.fillStyle = '#fdcb6e';
+      ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 28, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = '#ffeaa7';
+      ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.ellipse(w*0.8, h*0.2, 48, 12, -0.4, 0, Math.PI*2); ctx.stroke();
+
+      const floatY = Math.sin(time * 2.5) * 10;
+      ctx.save();
+      ctx.translate(0, floatY);
+
+      // Bunny Ears inside suit
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.ellipse(w*0.38, h*0.22, 18, 55, -0.2, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(w*0.62, h*0.22, 18, 55, 0.2, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.ellipse(w*0.38, h*0.22, 10, 38, -0.2, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(w*0.62, h*0.22, 10, 38, 0.2, 0, Math.PI*2); ctx.fill();
+
+      // Bunny Head
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 95, 0, Math.PI*2); ctx.fill();
+
+      // Glass Helmet Visor
+      ctx.fillStyle = 'rgba(120, 224, 143, 0.35)';
+      ctx.strokeStyle = '#78e08f';
+      ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 115, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+      // Cute Eyes
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.42, h*0.48, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.48, 12, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.45, 5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.56, h*0.45, 5, 0, Math.PI*2); ctx.fill();
+
+      // Bunny Nose & Mouth
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.54, 7, 0, Math.PI*2); ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.46, h*0.58, 8, 0, Math.PI*0.8); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w*0.54, h*0.58, 8, 0.2*Math.PI, Math.PI); ctx.stroke();
+
+      ctx.restore();
+    }
+  },
+  {
+    id: "teddy_captain",
+    name: "Teddy Captain 🧸",
+    draw(ctx, w, h, time=0) {
+      // Warm Yellow Sunburst Backdrop
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#ffeaa7');
+      grad.addColorStop(1, '#fab1a0');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      const floatY = Math.sin(time * 3) * 6;
+      ctx.save();
+      ctx.translate(0, floatY);
+
+      // Bear Ears
+      ctx.fillStyle = '#e17055';
+      ctx.beginPath(); ctx.arc(w*0.33, h*0.34, 34, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.67, h*0.34, 34, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fab1a0';
+      ctx.beginPath(); ctx.arc(w*0.33, h*0.34, 20, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.67, h*0.34, 20, 0, Math.PI*2); ctx.fill();
+
+      // Bear Head
+      ctx.fillStyle = '#e17055';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.54, 100, 0, Math.PI*2); ctx.fill();
+
+      // Captain Hat
+      ctx.fillStyle = '#0984e3';
+      ctx.fillRect(w*0.36, h*0.22, w*0.28, 30);
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.32, 60, 12, 0, 0, Math.PI*2); ctx.fill();
+
+      // Snout
+      ctx.fillStyle = '#ffeaa7';
+      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.6, 42, 30, 0, 0, Math.PI*2); ctx.fill();
+
+      // Eyes & Nose
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 12, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.38, h*0.45, 5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.45, 5, 0, Math.PI*2); ctx.fill();
+
+      ctx.fillStyle = '#6c5ce7';
+      ctx.beginPath(); ctx.ellipse(w*0.5, h*0.56, 12, 8, 0, 0, Math.PI*2); ctx.fill();
+
+      // Smile
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.62, 14, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
+
+      ctx.restore();
+    }
+  },
+  {
+    id: "baby_dino",
+    name: "Baby Dino Champ 🦕",
+    draw(ctx, w, h, time=0) {
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#55efc4');
+      grad.addColorStop(1, '#00b894');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Dino Spikes
+      ctx.fillStyle = '#fdcb6e';
+      for(let i=0; i<4; i++) {
+        const spikeWiggle = Math.sin(time*4 + i)*5;
+        ctx.beginPath();
+        ctx.moveTo(w*0.25, h*(0.3+i*0.12));
+        ctx.lineTo(w*0.12 + spikeWiggle, h*(0.34+i*0.12));
+        ctx.lineTo(w*0.25, h*(0.38+i*0.12));
+        ctx.fill();
+      }
+
+      const floatY = Math.sin(time * 3) * 8;
+      ctx.save();
+      ctx.translate(0, floatY);
+
+      // Dino Head
+      ctx.fillStyle = '#81ecec';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.52, 100, 0, Math.PI*2); ctx.fill();
+
+      // Golden Crown
+      const crownBounce = Math.sin(time * 4) * 4;
+      ctx.fillStyle = '#ffeaa7';
+      ctx.strokeStyle = '#fdcb6e';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(w*0.38, h*0.28 + crownBounce);
+      ctx.lineTo(w*0.42, h*0.16 + crownBounce);
+      ctx.lineTo(w*0.5, h*0.24 + crownBounce);
+      ctx.lineTo(w*0.58, h*0.16 + crownBounce);
+      ctx.lineTo(w*0.62, h*0.28 + crownBounce);
+      ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      // Big Cute Eyes
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 14, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 14, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(w*0.38, h*0.44, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.58, h*0.44, 6, 0, Math.PI*2); ctx.fill();
+
+      // Cheeks & Snout
+      ctx.fillStyle = 'rgba(255, 118, 117, 0.4)';
+      ctx.beginPath(); ctx.arc(w*0.32, h*0.55, 14, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.68, h*0.55, 14, 0, Math.PI*2); ctx.fill();
+
+      // Big Happy Smile with 1 Little Tooth
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.fillRect(w*0.48, h*0.6, 10, 10); ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.6, 18, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
+
+      ctx.restore();
+    }
+  },
+  {
+    id: "cat_hero",
+    name: "Sparkle Hero Cat 🐱",
+    draw(ctx, w, h, time=0) {
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#a29bfe');
+      grad.addColorStop(1, '#6c5ce7');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Hero Cape
       const capeWave = Math.sin(time * 4) * 12;
       ctx.fillStyle = '#ff7675';
       ctx.beginPath();
@@ -537,246 +801,48 @@ const CHARACTERS = [
       ctx.quadraticCurveTo(w*0.9, h*0.8, w*0.7, h*0.5);
       ctx.fill();
 
-      // Floating Tooth Body
       const floatY = Math.sin(time * 3) * 8;
       ctx.save();
       ctx.translate(0, floatY);
 
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#dfe6e9';
-      ctx.lineWidth = 8;
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.3);
-      ctx.bezierCurveTo(w*0.3, h*0.15, w*0.7, h*0.15, w*0.7, h*0.3);
-      ctx.bezierCurveTo(w*0.85, h*0.45, w*0.8, h*0.75, w*0.65, h*0.85);
-      ctx.lineTo(w*0.5, h*0.65);
-      ctx.lineTo(w*0.35, h*0.85);
-      ctx.bezierCurveTo(w*0.2, h*0.75, w*0.15, h*0.45, w*0.3, h*0.3);
-      ctx.fill(); ctx.stroke();
-
-      // Mask
-      ctx.fillStyle = '#0984e3';
-      ctx.beginPath();
-      ctx.ellipse(w*0.5, h*0.36, w*0.22, h*0.07, 0, 0, Math.PI*2);
-      ctx.fill();
-
-      // Eyes
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.36, 12, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.36, 12, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.43, h*0.36, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.57, h*0.36, 6, 0, Math.PI*2); ctx.fill();
-
-      // Big Smile
-      ctx.lineWidth = 5;
-      ctx.strokeStyle = '#d63031';
-      ctx.beginPath();
-      ctx.arc(w*0.5, h*0.46, 20, 0.1*Math.PI, 0.9*Math.PI);
-      ctx.stroke();
-
-      // Hero Emblem
-      ctx.fillStyle = '#fdcb6e';
-      ctx.beginPath();
-      ctx.arc(w*0.5, h*0.58, 22, 0, Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle = '#d63031';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('★', w*0.5, h*0.59);
-
-      ctx.restore();
-    }
-  },
-  {
-    id: "space_astro",
-    name: "Space Astro Tooth 🚀",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#0c2461');
-      grad.addColorStop(1, '#4a69bd');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Rotating Planet
-      const planetX = w*0.8 + Math.cos(time)*10;
-      const planetY = h*0.2 + Math.sin(time)*10;
-      ctx.fillStyle = '#e1b12c';
-      ctx.beginPath(); ctx.arc(planetX, planetY, 36, 0, Math.PI*2); ctx.fill();
-
-      // Tooth Body
-      const floatY = Math.sin(time * 2.5) * 10;
-      ctx.save();
-      ctx.translate(0, floatY);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.35);
-      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
-      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
-      ctx.lineTo(w*0.5, h*0.7);
-      ctx.lineTo(w*0.35, h*0.88);
-      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
-      ctx.fill();
-
-      // Helmet Glass with Reflection
-      ctx.fillStyle = 'rgba(120, 224, 143, 0.45)';
-      ctx.strokeStyle = '#78e08f';
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.arc(w*0.5, h*0.42, 85, 0, Math.PI*2);
-      ctx.fill(); ctx.stroke();
-
-      ctx.fillStyle = '#2c3e50';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 8, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 8, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#e84118';
-      ctx.beginPath(); ctx.arc(w*0.5, h*0.5, 12, 0, Math.PI); ctx.fill();
-
-      ctx.restore();
-    }
-  },
-  {
-    id: "fairy_magic",
-    name: "Magic Fairy Tooth 🧚‍♀️",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#ffafbd');
-      grad.addColorStop(1, '#ffc3a0');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Flapping Wings
-      const wingFlap = Math.sin(time * 6) * 15;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-      ctx.beginPath();
-      ctx.ellipse(w*0.25, h*0.4, 60 + wingFlap, 30, -Math.PI*0.25, 0, Math.PI*2);
-      ctx.ellipse(w*0.75, h*0.4, 60 + wingFlap, 30, Math.PI*0.25, 0, Math.PI*2);
-      ctx.fill();
-
-      const floatY = Math.sin(time * 3) * 6;
-      ctx.save();
-      ctx.translate(0, floatY);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.35);
-      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
-      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
-      ctx.lineTo(w*0.5, h*0.7);
-      ctx.lineTo(w*0.35, h*0.88);
-      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
-      ctx.fill();
-
-      ctx.fillStyle = '#f1c40f';
-      ctx.beginPath();
-      ctx.moveTo(w*0.38, h*0.22);
-      ctx.lineTo(w*0.42, h*0.14);
-      ctx.lineTo(w*0.5, h*0.22);
-      ctx.lineTo(w*0.58, h*0.14);
-      ctx.lineTo(w*0.62, h*0.22);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#ff7675';
-      ctx.beginPath(); ctx.arc(w*0.36, h*0.46, 10, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.64, h*0.46, 10, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 6, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 6, 0, Math.PI*2); ctx.fill();
-
-      ctx.restore();
-    }
-  },
-  {
-    id: "dino_champ",
-    name: "Dino Champ Tooth 🦕",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#55efc4');
-      grad.addColorStop(1, '#00b894');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.fillStyle = '#fdcb6e';
-      for(let i=0; i<4; i++) {
-        const spikeWiggle = Math.sin(time*4 + i)*4;
-        ctx.beginPath();
-        ctx.moveTo(w*0.25, h*(0.3+i*0.12));
-        ctx.lineTo(w*0.15 + spikeWiggle, h*(0.34+i*0.12));
-        ctx.lineTo(w*0.25, h*(0.38+i*0.12));
-        ctx.fill();
-      }
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.35);
-      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
-      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
-      ctx.lineTo(w*0.5, h*0.7);
-      ctx.lineTo(w*0.35, h*0.88);
-      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
-      ctx.fill();
-
-      // Animated Toothbrush Motion
-      const brushMove = Math.sin(time * 5) * 10;
-      ctx.save();
-      ctx.translate(brushMove, 0);
-      ctx.strokeStyle = '#e17055';
-      ctx.lineWidth = 12;
-      ctx.beginPath();
-      ctx.moveTo(w*0.65, h*0.6);
-      ctx.lineTo(w*0.88, h*0.35);
-      ctx.stroke();
-
-      ctx.fillStyle = '#74b9ff';
-      ctx.fillRect(w*0.84, h*0.3, 16, 24);
-      ctx.restore();
-
-      ctx.fillStyle = '#2d3436';
-      ctx.beginPath(); ctx.arc(w*0.42, h*0.42, 7, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(w*0.58, h*0.42, 7, 0, Math.PI*2); ctx.fill();
-    }
-  },
-  {
-    id: "king_royal",
-    name: "Royal King Tooth 👑",
-    draw(ctx, w, h, time=0) {
-      const grad = ctx.createLinearGradient(0, 0, 0, h);
-      grad.addColorStop(0, '#a29bfe');
-      grad.addColorStop(1, '#6c5ce7');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      const crownBounce = Math.sin(time * 3) * 6;
+      // Cat Ears
       ctx.fillStyle = '#ffeaa7';
-      ctx.strokeStyle = '#fdcb6e';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.25 + crownBounce);
-      ctx.lineTo(w*0.35, h*0.12 + crownBounce);
-      ctx.lineTo(w*0.5, h*0.22 + crownBounce);
-      ctx.lineTo(w*0.65, h*0.12 + crownBounce);
-      ctx.lineTo(w*0.7, h*0.25 + crownBounce);
-      ctx.closePath();
-      ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.28, h*0.4); ctx.lineTo(w*0.34, h*0.22); ctx.lineTo(w*0.44, h*0.34); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(w*0.72, h*0.4); ctx.lineTo(w*0.66, h*0.22); ctx.lineTo(w*0.56, h*0.34); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.moveTo(w*0.3, h*0.38); ctx.lineTo(w*0.34, h*0.26); ctx.lineTo(w*0.42, h*0.34); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(w*0.7, h*0.38); ctx.lineTo(w*0.66, h*0.26); ctx.lineTo(w*0.58, h*0.34); ctx.closePath(); ctx.fill();
 
+      // Cat Head
+      ctx.fillStyle = '#ffeaa7';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.52, 95, 0, Math.PI*2); ctx.fill();
+
+      // Big Eyes
+      ctx.fillStyle = '#00b894';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 16, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2d3436';
+      ctx.beginPath(); ctx.arc(w*0.4, h*0.48, 8, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.6, h*0.48, 8, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w*0.3, h*0.35);
-      ctx.bezierCurveTo(w*0.3, h*0.2, w*0.7, h*0.2, w*0.7, h*0.35);
-      ctx.bezierCurveTo(w*0.85, h*0.5, w*0.8, h*0.8, w*0.65, h*0.88);
-      ctx.lineTo(w*0.5, h*0.7);
-      ctx.lineTo(w*0.35, h*0.88);
-      ctx.bezierCurveTo(w*0.2, h*0.8, w*0.15, h*0.5, w*0.3, h*0.35);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.37, h*0.44, 5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.57, h*0.44, 5, 0, Math.PI*2); ctx.fill();
 
+      // Whiskers
+      ctx.lineWidth = 3;
       ctx.strokeStyle = '#2d3436';
-      ctx.lineWidth = 5;
-      ctx.beginPath(); ctx.arc(w*0.4, h*0.42, 16, 0, Math.PI*2); ctx.stroke();
-      ctx.beginPath(); ctx.arc(w*0.6, h*0.42, 16, 0, Math.PI*2); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(w*0.46, h*0.42); ctx.lineTo(w*0.54, h*0.42); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.24, h*0.52); ctx.lineTo(w*0.34, h*0.54); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.24, h*0.6); ctx.lineTo(w*0.34, h*0.58); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.76, h*0.52); ctx.lineTo(w*0.66, h*0.54); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(w*0.76, h*0.6); ctx.lineTo(w*0.66, h*0.58); ctx.stroke();
+
+      // Nose & Smile
+      ctx.fillStyle = '#ff7675';
+      ctx.beginPath(); ctx.arc(w*0.5, h*0.56, 6, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w*0.46, h*0.6, 8, 0, Math.PI*0.8); ctx.stroke();
+      ctx.beginPath(); ctx.arc(w*0.54, h*0.6, 8, 0.2*Math.PI, Math.PI); ctx.stroke();
+
+      ctx.restore();
     }
   }
 ];
@@ -817,7 +883,7 @@ function generateBubbleSchedule() {
       const baseY = r * cellH + cellH / 2;
       const x = baseX + (Math.random() - 0.5) * cellW * 0.85;
       const y = baseY + (Math.random() - 0.5) * cellH * 0.85;
-      const targetRadius = 34 + Math.random() * 28;
+      const targetRadius = 35 + Math.random() * 30;
       const triggerPercent = 0.02 + Math.random() * 0.93;
       
       bubbleSchedule.push({
@@ -828,18 +894,21 @@ function generateBubbleSchedule() {
   bubbleSchedule.sort((a, b) => a.triggerPercent - b.triggerPercent);
 }
 
-/* Spawn Sparkles and Floating Soap Suds on Effect Canvas */
+/* HIGHLY VISIBLE 3D SOAP BUBBLES & SHINING MAGIC SPARKLES */
 function spawnPoppingSparkles(x, y) {
-  for (let i = 0; i < 5; i++) {
+  // Spawn 12 large, highly visible soap bubbles & glowing stars per pop!
+  for (let i = 0; i < 12; i++) {
     floatingParticles.push({
-      x: x + (Math.random() - 0.5) * 20,
-      y: y + (Math.random() - 0.5) * 20,
-      vx: (Math.random() - 0.5) * 4,
-      vy: -1.5 - Math.random() * 3,
-      size: 4 + Math.random() * 6,
+      x: x + (Math.random() - 0.5) * 35,
+      y: y + (Math.random() - 0.5) * 35,
+      vx: (Math.random() - 0.5) * 6,
+      vy: -2.5 - Math.random() * 4,
+      size: 14 + Math.random() * 22,
       alpha: 1.0,
-      type: Math.random() > 0.4 ? 'bubble' : 'star',
-      color: ['#74b9ff', '#55efc4', '#ffffff', '#fdcb6e'][Math.floor(Math.random()*4)]
+      rotation: Math.random() * 360,
+      vRot: (Math.random() - 0.5) * 8,
+      type: i % 3 === 0 ? 'star' : 'bubble',
+      color: ['#00cec9', '#74b9ff', '#ff7675', '#fdcb6e', '#a29bfe', '#ffffff'][Math.floor(Math.random()*6)]
     });
   }
 }
@@ -849,26 +918,47 @@ function updateAndRenderEffects() {
 
   for (let i = floatingParticles.length - 1; i >= 0; i--) {
     const p = floatingParticles[i];
-    p.x += p.vx;
+    p.x += p.vx + Math.sin(globalTime * 4 + i) * 1.5;
     p.y += p.vy;
-    p.alpha -= 0.025;
+    p.alpha -= 0.014; // Longer visibility!
+    p.rotation += p.vRot;
 
-    if (p.alpha <= 0) {
+    if (p.alpha <= 0 || p.y < -30) {
       floatingParticles.splice(i, 1);
       continue;
     }
 
     effectCtx.save();
     effectCtx.globalAlpha = p.alpha;
-    effectCtx.fillStyle = p.color;
-    effectCtx.strokeStyle = p.color;
 
     if (p.type === 'bubble') {
+      // 3D Iridescent Soap Bubble with Shine Highlight
+      const bGrad = effectCtx.createRadialGradient(p.x - p.size*0.3, p.y - p.size*0.3, 2, p.x, p.y, p.size);
+      bGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      bGrad.addColorStop(0.4, p.color);
+      bGrad.addColorStop(1, 'rgba(255, 255, 255, 0.2)');
+
+      effectCtx.fillStyle = bGrad;
       effectCtx.beginPath();
       effectCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      effectCtx.fill();
+
+      // Outer Bubble Ring
+      effectCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      effectCtx.lineWidth = 2.5;
       effectCtx.stroke();
+
+      // Bubble Shine Specular Dot
+      effectCtx.fillStyle = '#ffffff';
+      effectCtx.beginPath();
+      effectCtx.arc(p.x - p.size*0.35, p.y - p.size*0.35, p.size*0.25, 0, Math.PI * 2);
+      effectCtx.fill();
     } else {
-      effectCtx.font = `${Math.floor(p.size*2)}px sans-serif`;
+      // Sparkling Glowing Magic Star
+      effectCtx.fillStyle = p.color;
+      effectCtx.font = `bold ${Math.floor(p.size*1.8)}px sans-serif`;
+      effectCtx.textAlign = 'center';
+      effectCtx.textBaseline = 'middle';
       effectCtx.fillText('✨', p.x, p.y);
     }
     effectCtx.restore();
@@ -888,21 +978,21 @@ function initFoamLayer() {
   foamCtx.globalCompositeOperation = 'source-over';
   foamCtx.clearRect(0, 0, W, H);
 
-  const foamGrad = foamCtx.createRadialGradient(W*0.5, H*0.5, 50, W*0.5, H*0.5, W*0.7);
+  const foamGrad = foamCtx.createRadialGradient(W*0.5, H*0.5, 50, W*0.5, H*0.5, W*0.75);
   foamGrad.addColorStop(0, '#ffffff');
   foamGrad.addColorStop(0.7, '#f0faf8');
   foamGrad.addColorStop(1, '#d8f3ee');
   foamCtx.fillStyle = foamGrad;
   foamCtx.fillRect(0, 0, W, H);
 
-  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-  foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.6)';
-  foamCtx.lineWidth = 3;
+  foamCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  foamCtx.strokeStyle = 'rgba(180, 230, 220, 0.65)';
+  foamCtx.lineWidth = 3.5;
 
   for (let i = 0; i < 110; i++) {
     const x = (i * 73) % W;
     const y = (i * 91) % H;
-    const r = 12 + (i % 25);
+    const r = 14 + (i % 26);
     foamCtx.beginPath();
     foamCtx.arc(x, y, r, 0, Math.PI * 2);
     foamCtx.fill();
@@ -1053,7 +1143,6 @@ function renderUI() {
   const pauseBtn = document.getElementById('pauseBtn');
   const stopBtn = document.getElementById('stopBtn');
 
-  // Update Mouth Quadrant Sector Map
   for (let i = 0; i < 4; i++) {
     const sector = document.getElementById(`quad-${i}`);
     if (sector) {

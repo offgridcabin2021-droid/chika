@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chika-timer-v3';
+const CACHE_NAME = 'chika-timer-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -29,7 +29,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Network First strategy so updates reflect immediately
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
