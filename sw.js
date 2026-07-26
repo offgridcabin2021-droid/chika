@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chika-timer-v13';
+const CACHE_NAME = 'chika-timer-v14';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', (event) => {

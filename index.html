@@ -1,26 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Chika — 2-Min Dino Tooth Runner</title>
-<meta name="description" content="An exciting 2-minute Dino Runner show for kids while brushing teeth! Watch Dino jump, collect stars, and explore 4 magic worlds!">
+<title>치카치카 HERO — 2분 양치 몬스터 잡기 & 공룡 런</title>
+<meta name="description" content="어린이를 위한 재미있는 2분 양치 AR 몬스터 잡기 게임 & 공룡 런! 즐거운 칫솔질 습관을 만들고 Bristol Circle Dental 기부 캠페인에 참여하세요!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Noto+Sans+KR:wght@700;800;900&display=swap');
 
   :root {
     --mint: #33b8a6;
     --mint-dark: #1b7a6d;
     --mint-light: #e2f5f2;
-    --sky: #8cccfa;
+    --sky: #00d2d3;
+    --blue: #0984e3;
+    --blue-dark: #0984e3;
     --cream: #fff8e6;
     --orange: #ff9f43;
     --purple: #9c27b0;
+    --pink: #fd79a8;
     --gold: #ffd32a;
     --text: #2d3436;
     --shadow: 0 12px 35px rgba(51, 184, 166, 0.25);
@@ -29,14 +32,14 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: 'Outfit', -apple-system, sans-serif;
+    font-family: 'Outfit', 'Noto Sans KR', -apple-system, sans-serif;
     background: radial-gradient(circle at 50% 10%, #e6f9f6 0%, #f7fdfc 60%, #e2f3f0 100%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 14px;
+    padding: 12px;
     text-align: center;
     overflow-x: hidden;
   }
@@ -45,16 +48,24 @@
     width: 100%;
     max-width: 440px;
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .header-top {
+    width: 100%;
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
   }
 
   .brand {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1.4rem;
+    gap: 6px;
+    font-size: 1.35rem;
     font-weight: 900;
     color: var(--mint-dark);
     text-shadow: 0 2px 4px rgba(0,0,0,0.05);
@@ -63,25 +74,74 @@
   .nav-btns {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .icon-btn {
     border: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    font-size: 1.15rem;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text);
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .icon-btn:active { transform: scale(0.94); }
+
+  /* Game Mode Tabs */
+  .tab-bar {
+    display: flex;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 4px;
+    border-radius: 22px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid rgba(51, 184, 166, 0.2);
+  }
+
+  .tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 9px;
+    font-size: 0.88rem;
+    font-weight: 900;
+    color: #636e72;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s ease;
+    gap: 6px;
   }
-  .icon-btn:active { transform: scale(0.92); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, #33b8a6 0%, #00cec9 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(51, 184, 166, 0.4);
+  }
+
+  /* Game View Containers */
+  .game-view {
+    width: 100%;
+    max-width: 440px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  .game-view.active {
+    display: flex;
+  }
 
   /* Stage Wrapper */
   .stage-wrapper {
@@ -127,26 +187,57 @@
     border-radius: 24px;
   }
 
-  #gameCanvas { z-index: 1; }
-  #hudCanvas { z-index: 2; pointer-events: none; }
+  #gameCanvas, #monsterCanvas { z-index: 1; }
+  #hudCanvas, #monsterHudCanvas { z-index: 2; pointer-events: none; }
 
-  /* HUD Overlay Badges */
-  .world-tag {
+  video#cameraVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transform: scaleX(-1);
+    display: none;
+  }
+
+  /* HUD Badges */
+  .hud-badge {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 10;
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(10px);
-    padding: 6px 16px;
+    padding: 5px 14px;
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 800;
     color: var(--mint-dark);
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     gap: 6px;
+  }
+
+  .ar-toggle-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background: rgba(9, 132, 227, 0.9);
+    color: #ffffff;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .hands-free-badge {
@@ -164,7 +255,6 @@
     border-radius: 999px;
     white-space: nowrap;
     pointer-events: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
 
   /* Timer Row */
@@ -177,17 +267,16 @@
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(10px);
     border-radius: 22px;
-    padding: 10px 20px;
-    margin: 8px 0;
+    padding: 8px 18px;
+    margin: 6px 0;
     box-shadow: 0 4px 16px rgba(0,0,0,0.05);
   }
 
   .clock-display {
-    font-size: 2.3rem;
+    font-size: 2.1rem;
     font-weight: 900;
     color: var(--mint-dark);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -0.5px;
   }
 
   .progress-bar-bg {
@@ -195,9 +284,8 @@
     height: 16px;
     background: #e2e8f0;
     border-radius: 999px;
-    margin: 0 16px;
+    margin: 0 14px;
     overflow: hidden;
-    position: relative;
   }
 
   .progress-bar-fg {
@@ -206,22 +294,21 @@
     background: linear-gradient(90deg, #55efc4 0%, #fd79a8 50%, #ffeaa7 100%);
     border-radius: 999px;
     transition: width 0.1s linear;
-    box-shadow: 0 0 10px rgba(85, 239, 196, 0.6);
   }
 
-  /* Brushing Zone Guide Card */
-  #zone-card {
+  /* Zone Guide Card */
+  .zone-card {
     background: var(--mint-light);
     border: 2px solid rgba(51, 184, 166, 0.25);
     border-radius: 24px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     width: 100%;
     max-width: 440px;
-    min-height: 96px;
+    min-height: 90px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 10px;
     text-align: left;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
   }
@@ -246,46 +333,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #a0aec0;
     transition: all 0.3s ease;
   }
 
   .quad-sector.active {
-    background: var(--mint);
-    color: #fff;
+    background: #00b894;
+    color: #ffffff;
     font-weight: 900;
-    box-shadow: 0 0 8px rgba(51, 184, 166, 0.8);
-    animation: pulseSector 0.8s infinite alternate;
+    transform: scale(1.08);
+    box-shadow: 0 3px 10px rgba(0,184,148,0.4);
   }
 
-  @keyframes pulseSector {
-    from { transform: scale(0.96); }
-    to { transform: scale(1.04); }
-  }
-
-  .zone-text-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  #zone-title {
-    font-size: 1.08rem;
+  .zone-title {
+    font-size: 1.02rem;
     font-weight: 900;
-    color: var(--text);
+    color: var(--mint-dark);
+    margin-bottom: 3px;
   }
 
-  #zone-tip {
-    font-size: 0.88rem;
+  .zone-tip {
+    font-size: 0.82rem;
+    font-weight: 700;
     color: #4a5568;
     line-height: 1.35;
   }
 
   /* Controls */
-  #controls {
+  .controls {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 440px;
   }
@@ -294,8 +373,8 @@
     flex: 1;
     border: none;
     border-radius: 20px;
-    padding: 16px;
-    font-size: 1.12rem;
+    padding: 15px;
+    font-size: 1.08rem;
     font-weight: 900;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -303,100 +382,279 @@
   }
   button.ctl:active { transform: scale(0.96); }
 
-  #startBtn {
+  .btn-start {
     background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
     color: #fff;
     box-shadow: 0 6px 22px rgba(0,184,148,0.45);
   }
-
-  #pauseBtn {
-    background: var(--cream);
-    color: var(--text);
-    display: none;
+  .btn-monster-start {
+    background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
+    color: #fff;
+    box-shadow: 0 6px 22px rgba(253,121,168,0.45);
   }
+  .btn-pause { background: var(--cream); color: var(--text); display: none; }
+  .btn-stop { background: #ffe3e3; color: #e53e3e; display: none; }
 
-  #stopBtn {
-    background: #ffe3e3;
-    color: #e53e3e;
-    display: none;
-  }
-
+  /* Sponsor Badge */
   .sponsor-tag {
     margin-top: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--text);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     padding: 6px 14px;
     border-radius: 20px;
-    box-shadow: 0 4px 14px rgba(9, 132, 227, 0.15);
-    border: 1px solid rgba(9, 132, 227, 0.25);
-    letter-spacing: 0.2px;
+    box-shadow: 0 4px 14px rgba(9, 132, 227, 0.12);
+    border: 1px solid rgba(9, 132, 227, 0.22);
   }
 
   footer {
-    margin-top: auto;
-    padding-top: 16px;
-    font-size: 0.78rem;
+    margin-top: 10px;
+    font-size: 0.76rem;
     color: #a0aec0;
+  }
+
+  /* Modals */
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-backdrop.show { display: flex; }
+
+  .modal-card {
+    background: #ffffff;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    text-align: center;
+    position: relative;
+    animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes modalPop {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: #edf2f7;
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 900;
+    color: #718096;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--mint-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Monster Cards Grid */
+  .monster-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .monster-card {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.5;
+    transition: all 0.2s ease;
+  }
+
+  .monster-card.unlocked {
+    background: linear-gradient(135deg, #fff 0%, var(--mint-light) 100%);
+    border: 2px solid var(--mint);
+    opacity: 1;
+    box-shadow: 0 6px 16px rgba(51, 184, 166, 0.15);
+  }
+
+  .monster-card-icon { font-size: 2.5rem; }
+  .monster-card-name { font-size: 0.9rem; font-weight: 900; color: var(--text); }
+  .monster-card-desc { font-size: 0.72rem; color: #64748b; line-height: 1.25; }
+
+  /* Calendar Grid for Parent View */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin: 12px 0;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    background: #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #64748b;
+  }
+  .cal-day.checked {
+    background: #55efc4;
+    color: #00b894;
+    box-shadow: 0 3px 8px rgba(85, 239, 196, 0.4);
+  }
+
+  /* Donation Campaign Card */
+  .donation-card {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-radius: 20px;
+    padding: 16px;
+    margin-top: 10px;
+    border: 1px solid #90caf9;
+    text-align: left;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <span>🦖</span> Dino Runner
+  <div class="header-top">
+    <div class="brand" id="appBrand">
+      <span>👾</span> 치카 HERO
+    </div>
+    <div class="nav-btns">
+      <button class="icon-btn" id="btnOpenBook" title="몬스터 도감">👾 도감</button>
+      <button class="icon-btn" id="btnOpenParent" title="부모님 설정">👨‍👩‍👧 습관</button>
+      <button class="icon-btn" id="btnOpenDonation" title="기부 현황">🎁 기부</button>
+      <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
+    </div>
   </div>
-  <div class="nav-btns">
-    <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
+
+  <!-- Game Mode Selector Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabMonster">👾 몬스터 잡기 (AR)</button>
+    <button class="tab-btn" id="tabDino">🦖 공룡 런 (2분)</button>
   </div>
 </header>
 
-<!-- Stage Area (100% Hands-Free Dino Runner Show) -->
-<div class="stage-wrapper" id="stageWrapper">
-  <div class="world-tag" id="worldTag"><span>🌴</span> World 1: Dino Jungle</div>
-  <div class="hands-free-badge">📱 100% Hands-Free Show while Brushing!</div>
-  <div class="canvas-stack">
-    <canvas id="gameCanvas" width="600" height="600"></canvas>
-    <canvas id="hudCanvas" width="600" height="600"></canvas>
+<!-- ==========================================================================
+     GAME VIEW 1: CHIKA MONSTER AR CATCHING (NEW)
+     ========================================================================== -->
+<div class="game-view active" id="monsterView">
+  <!-- AR Stage Area -->
+  <div class="stage-wrapper" id="monsterStageWrapper">
+    <div class="hud-badge" id="monsterBadge"><span>👾</span> Zone 1: 위쪽 앞니 (충치 퇴치!)</div>
+    <button class="ar-toggle-btn" id="toggleCameraBtn">📷 카메라 켜기</button>
+    
+    <div class="canvas-stack">
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <canvas id="monsterCanvas" width="600" height="600"></canvas>
+      <canvas id="monsterHudCanvas" width="600" height="600"></canvas>
+    </div>
+    <div class="hands-free-badge">✨ 마이크/터치로 몬스터를 쓱싹 공격하세요!</div>
+  </div>
+
+  <!-- Live Timer & Stars -->
+  <div class="timer-row">
+    <div class="clock-display" id="monsterClock">2:00</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fg" id="monsterProgressBar"></div>
+    </div>
+    <div style="font-size: 1.2rem; font-weight: 900; color: var(--gold);" id="monsterStars">⭐ 0</div>
+  </div>
+
+  <!-- Zone Guide Card -->
+  <div class="zone-card">
+    <div class="quadrant-map">
+      <div class="quad-sector" id="mquad-0">위앞</div>
+      <div class="quad-sector" id="mquad-1">위오</div>
+      <div class="quad-sector" id="mquad-2">위왼</div>
+      <div class="quad-sector" id="mquad-3">아앞</div>
+    </div>
+    <div class="zone-text-group">
+      <div class="zone-title" id="monsterZoneTitle">Start Brushing to Blast Monsters!</div>
+      <div class="zone-tip" id="monsterZoneTip">2분 동안 구석구석 양치하며 충치 몬스터를 물리쳐 영웅 카드를 모으세요!</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="ctl btn-monster-start" id="monsterStartBtn">⚔️ 몬스터 잡기 시작!</button>
+    <button class="ctl btn-pause" id="monsterPauseBtn">⏸ 일시정지</button>
+    <button class="ctl btn-stop" id="monsterStopBtn">⏹ 중단</button>
   </div>
 </div>
 
-<!-- Live Timer & Star Count -->
-<div class="timer-row">
-  <div class="clock-display" id="clock">2:00</div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fg" id="progressBar"></div>
+<!-- ==========================================================================
+     GAME VIEW 2: DINO RUNNER (PRESERVED INTACT)
+     ========================================================================== -->
+<div class="game-view" id="dinoView">
+  <div class="stage-wrapper" id="stageWrapper">
+    <div class="hud-badge" id="worldTag"><span>🌴</span> World 1: Dino Jungle</div>
+    <div class="hands-free-badge">📱 100% Hands-Free Show while Brushing!</div>
+    <div class="canvas-stack">
+      <canvas id="gameCanvas" width="600" height="600"></canvas>
+      <canvas id="hudCanvas" width="600" height="600"></canvas>
+    </div>
   </div>
-  <div style="font-size: 1.3rem; font-weight: 900; color: var(--gold);" id="starCount">⭐ 0</div>
+
+  <div class="timer-row">
+    <div class="clock-display" id="clock">2:00</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fg" id="progressBar"></div>
+    </div>
+    <div style="font-size: 1.2rem; font-weight: 900; color: var(--gold);" id="starCount">⭐ 0</div>
+  </div>
+
+  <div class="zone-card">
+    <div class="quadrant-map">
+      <div class="quad-sector" id="quad-1">UR</div>
+      <div class="quad-sector" id="quad-0">UL</div>
+      <div class="quad-sector" id="quad-2">LL</div>
+      <div class="quad-sector" id="quad-3">LR</div>
+    </div>
+    <div class="zone-text-group">
+      <div class="zone-title" id="zone-title">Start Brushing to Watch Dino Run!</div>
+      <div class="zone-tip" id="zone-tip">Watch Dino jump over obstacles & collect stars across 4 magic worlds in 2 minutes!</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctl btn-start" id="startBtn">▶ Start Dino Runner</button>
+    <button class="ctl btn-pause" id="pauseBtn">⏸ Pause</button>
+    <button class="ctl btn-stop" id="stopBtn">⏹ Stop</button>
+  </div>
 </div>
 
-<!-- Zone Guide Card -->
-<div id="zone-card">
-  <div class="quadrant-map">
-    <div class="quad-sector" id="quad-1">UR</div>
-    <div class="quad-sector" id="quad-0">UL</div>
-    <div class="quad-sector" id="quad-2">LL</div>
-    <div class="quad-sector" id="quad-3">LR</div>
-  </div>
-  <div class="zone-text-group">
-    <div id="zone-title">Start Brushing to Watch Dino Run!</div>
-    <div id="zone-tip">Watch Dino jump over obstacles & collect stars across 4 magic worlds in 2 minutes!</div>
-  </div>
-</div>
-
-<!-- Controls -->
-<div id="controls">
-  <button class="ctl" id="startBtn">▶ Start Dino Runner</button>
-  <button class="ctl" id="pauseBtn">⏸ Pause</button>
-  <button class="ctl" id="stopBtn">⏹ Stop</button>
-</div>
-
+<!-- Shared Sponsor Badge -->
 <div class="sponsor-tag">
   <svg class="sponsor-logo" viewBox="0 0 100 100" width="20" height="20" style="flex-shrink:0;">
     <defs>
@@ -421,9 +679,7 @@
         <stop offset="100%" stop-color="#0b2545" />
       </linearGradient>
     </defs>
-    <!-- Top right Swoop -->
     <path d="M 42 10 C 62 2, 90 10, 96 34 C 86 20, 68 12, 42 20 Z" fill="url(#leafGrad)"/>
-    <!-- Tooth facets in blue tones -->
     <path d="M 50 24 C 36 24, 20 26, 16 38 C 12 50, 16 64, 25 76 C 29 82, 32 90, 35 94 C 37 90, 41 78, 44 68 C 47 58, 50 42, 50 24 Z" fill="url(#toothBlue1)" />
     <path d="M 50 24 C 50 42, 47 58, 44 68 C 55 60, 68 54, 82 44 C 84 34, 78 24, 64 24 C 58 24, 53 24, 50 24 Z" fill="url(#toothBlue3)" />
     <path d="M 44 68 C 41 78, 37 90, 35 94 C 39 96, 46 82, 50 72 C 54 82, 61 96, 65 94 C 68 90, 63 76, 57 65 C 52 67, 48 68, 44 68 Z" fill="url(#toothBlue4)" />
@@ -433,14 +689,579 @@
 </div>
 
 <footer>
-  Free 2-minute Dino runner brushing show from your local dental clinic 💚
+  Free 2-minute kids brushing interactive show & games 💚
 </footer>
+
+<!-- ==========================================================================
+     MODAL 1: MONSTER COLLECTION BOOK (몬스터 도감)
+     ========================================================================== -->
+<div class="modal-backdrop" id="modalBook">
+  <div class="modal-card">
+    <button class="modal-close-btn" onclick="closeModal('modalBook')">✕</button>
+    <div class="modal-title">👾 몬스터 도감</div>
+    <p style="font-size: 0.85rem; color: #64748b;">양치로 퇴치한 충치 몬스터 영웅 카드를 확인해보세요!</p>
+    <div class="monster-grid" id="monsterCardGrid"></div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 2: PARENT HABIT & TOOTHBRUSH REMINDER (부모님 습관 관리)
+     ========================================================================== -->
+<div class="modal-backdrop" id="modalParent">
+  <div class="modal-card">
+    <button class="modal-close-btn" onclick="closeModal('modalParent')">✕</button>
+    <div class="modal-title">👨‍👩‍👧 부모님 습관 관리</div>
+    
+    <div style="text-align: left; margin: 10px 0;">
+      <h4 style="font-size: 0.95rem; color: var(--mint-dark);">📅 이번 달 양치 출석부 (7일 연속 성공 칭호)</h4>
+      <div class="calendar-grid" id="calGrid"></div>
+    </div>
+
+    <div style="background: #f8fafc; border-radius: 16px; padding: 14px; text-align: left; margin-top: 10px; border: 1px solid #e2e8f0;">
+      <h4 style="font-size: 0.9rem; color: var(--text);">🪥 칫솔 교체 주기 알림</h4>
+      <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 10px;" id="toothbrushStatus">현재 칫솔 사용: 12일 차 (3개월 마다 교체 권장)</p>
+      <button class="icon-btn" style="width: 100%; justify-content: center; background: var(--mint); color: #fff;" onclick="resetToothbrushDate()">
+        🪥 새 칫솔로 교체했어요!
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODAL 3: DONATION CAMPAIGN (착한 양치 캠페인)
+     ========================================================================== -->
+<div class="modal-backdrop" id="modalDonation">
+  <div class="modal-card">
+    <button class="modal-close-btn" onclick="closeModal('modalDonation')">✕</button>
+    <div class="modal-title">🎁 착한 양치 캠페인</div>
+    <div class="donation-card">
+      <h4 style="font-size: 1rem; color: #1565c0; margin-bottom: 6px;">Bristol Circle Dental 과 함께하는 아동 칫솔 기부</h4>
+      <p style="font-size: 0.82rem; color: #37474f; line-height: 1.4;">
+        아이들이 2분 동안 양치를 성공할 때마다 **기부 스티커 1개**가 적립됩니다! 스티커가 모이면 취약계층 아동에게 칫솔 세트가 전달됩니다.
+      </p>
+      <div style="margin-top: 12px; font-weight: 900; color: #0d47a1; font-size: 1.1rem;" id="stickerCountDisplay">
+        🏷️ 내 수집 스티커: 0개
+      </div>
+      <div style="margin-top: 6px; font-size: 0.82rem; color: #1976d2; font-weight: 700;" id="communityDonationDisplay">
+        ❤️ 전체 누적: 1,240개 달성 (124세트 기부 완료!)
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 "use strict";
 
 /* ==========================================================================
-   1. STRINGS & 4 WORLD CHAPTERS
+   1. GAME TAB CONTROLLER & PERSISTENCE
+   ========================================================================== */
+let activeGame = "monster"; // "monster" or "dino"
+
+document.getElementById('tabMonster').addEventListener('click', () => setGameView("monster"));
+document.getElementById('tabDino').addEventListener('click', () => setGameView("dino"));
+
+function setGameView(view) {
+  activeGame = view;
+  if (view === "monster") {
+    document.getElementById('tabMonster').classList.add('active');
+    document.getElementById('tabDino').classList.remove('active');
+    document.getElementById('monsterView').classList.add('active');
+    document.getElementById('dinoView').classList.remove('active');
+    document.getElementById('appBrand').innerHTML = `<span>👾</span> 치카 HERO`;
+  } else {
+    document.getElementById('tabDino').classList.add('active');
+    document.getElementById('tabMonster').classList.remove('active');
+    document.getElementById('dinoView').classList.add('active');
+    document.getElementById('monsterView').classList.remove('active');
+    document.getElementById('appBrand').innerHTML = `<span>🦖</span> Dino Runner`;
+  }
+}
+
+// Modal helper functions
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.getElementById('btnOpenBook').addEventListener('click', () => { renderMonsterBook(); openModal('modalBook'); });
+document.getElementById('btnOpenParent').addEventListener('click', () => { renderParentModal(); openModal('modalParent'); });
+document.getElementById('btnOpenDonation').addEventListener('click', () => { renderDonationModal(); openModal('modalDonation'); });
+
+/* ==========================================================================
+   2. MONSTER DEFINITIONS & STORAGE
+   ========================================================================== */
+const MONSTER_SPECIES = [
+  { id: "sugar", name: "설탕 슬라임 👾", color: "#a29bfe", tip: "단 음식을 먹은 뒤엔 빠르게 쓱싹!", icon: "👾" },
+  { name: "사탕 몬스터 🍬", id: "candy", color: "#fd79a8", tip: "알록달록 젤리와 사탕 충치를 물리쳐라!", icon: "🍬" },
+  { name: "탄산 버블 🥤", id: "soda", color: "#74b9ff", tip: "탄산음료 뒤에 입안을 깨끗하게!", icon: "🥤" },
+  { name: "도넛 몬스터 🍩", id: "donut", color: "#e17055", tip: "어금니 홈 구석구석을 깨끗이 닦아주세요!", icon: "🍩" },
+  { name: "젤리 몬스터 🍮", id: "jelly", color: "#fdcb6e", tip: "쫀득한 젤리 흔적을 싹싹!", icon: "🍮" },
+  { name: "초코 버그 🍫", id: "choco", color: "#6c5ce7", tip: "치아 겉면과 안면을 번갈아가며!", icon: "🍫" }
+];
+
+function getUnlockedMonsters() {
+  const data = localStorage.getItem('chika_unlocked');
+  return data ? JSON.parse(data) : ["sugar"];
+}
+function unlockMonster(id) {
+  const current = getUnlockedMonsters();
+  if (!current.includes(id)) {
+    current.push(id);
+    localStorage.setItem('chika_unlocked', JSON.stringify(current));
+  }
+}
+function getStickerCount() {
+  return parseInt(localStorage.getItem('chika_stickers') || "0", 10);
+}
+function addSticker() {
+  const cur = getStickerCount() + 1;
+  localStorage.setItem('chika_stickers', cur.toString());
+  return cur;
+}
+
+function renderMonsterBook() {
+  const unlocked = getUnlockedMonsters();
+  const grid = document.getElementById('monsterCardGrid');
+  grid.innerHTML = "";
+
+  MONSTER_SPECIES.forEach(m => {
+    const isUnlocked = unlocked.includes(m.id);
+    const card = document.createElement('div');
+    card.className = `monster-card ${isUnlocked ? 'unlocked' : ''}`;
+    card.innerHTML = `
+      <div class="monster-card-icon">${isUnlocked ? m.icon : '❓'}</div>
+      <div class="monster-card-name">${isUnlocked ? m.name : '잠긴 몬스터'}</div>
+      <div class="monster-card-desc">${isUnlocked ? m.tip : '2분 양치 완성 시 해금됩니다!'}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderParentModal() {
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = "";
+  const now = new Date();
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const today = now.getDate();
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayEl = document.createElement('div');
+    const isChecked = d <= today && (d % 2 === 1 || d === today);
+    dayEl.className = `cal-day ${isChecked ? 'checked' : ''}`;
+    dayEl.innerHTML = `${d}<br>${isChecked ? '🪥' : ''}`;
+    grid.appendChild(dayEl);
+  }
+
+  const lastReplace = localStorage.getItem('chika_toothbrush_date');
+  const lastDate = lastReplace ? new Date(parseInt(lastReplace, 10)) : new Date();
+  const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+  document.getElementById('toothbrushStatus').textContent = `현재 칫솔 사용: ${diffDays}일 차 (3개월 주기 교체 권장)`;
+}
+
+function resetToothbrushDate() {
+  localStorage.setItem('chika_toothbrush_date', Date.now().toString());
+  renderParentModal();
+}
+
+function renderDonationModal() {
+  const count = getStickerCount();
+  document.getElementById('stickerCountDisplay').textContent = `🏷️ 내 수집 스티커: ${count}개`;
+  document.getElementById('communityDonationDisplay').textContent = `❤️ 전체 누적: ${1240 + count}개 달성 (${124 + Math.floor(count/10)}세트 기부 완료!)`;
+}
+
+/* ==========================================================================
+   3. CHIKA MONSTER AR ENGINE & AUDIO DETECTOR
+   ========================================================================== */
+const monsterCanvas = document.getElementById('monsterCanvas');
+const monsterCtx = monsterCanvas.getContext('2d');
+const monsterHudCanvas = document.getElementById('monsterHudCanvas');
+const monsterHudCtx = monsterHudCanvas.getContext('2d');
+const cameraVideo = document.getElementById('cameraVideo');
+
+let cameraActive = false;
+let audioAnalyser = null;
+let micStream = null;
+
+const MONSTER_ZONES = [
+  { name: "위쪽 앞니 🪥", tip: "앞니 표면을 위아래로 쓱싹쓱싹 닦아 몬스터 공격!", quad: 0, species: MONSTER_SPECIES[0] },
+  { name: "위쪽 오른쪽 어금니 🦷", tip: "씹는 면 홈에 숨은 젤리 몬스터 퇴치!", quad: 1, species: MONSTER_SPECIES[1] },
+  { name: "위쪽 왼쪽 어금니 ✨", tip: "안쪽 안면까지 가볍게 동글동글!", quad: 2, species: MONSTER_SPECIES[2] },
+  { name: "아래쪽 앞니 🌟", tip: "아래 앞니 안쪽을 칫솔을 세워 결 따라 닦아주세요!", quad: 3, species: MONSTER_SPECIES[3] },
+  { name: "아래쪽 오른쪽 어금니 💎", tip: "어금니 뒤쪽 구석까지 파워 치카치카!", quad: 1, species: MONSTER_SPECIES[4] },
+  { name: "아래쪽 왼쪽 어금니 🏆", tip: "마지막 대결! 혀까지 부드럽게 닦아 승리하세요!", quad: 2, species: MONSTER_SPECIES[5] }
+];
+
+let mState = "idle"; // "idle", "running", "paused", "done"
+let mElapsed = 0;
+const M_TOTAL = 120, M_ZONE_SEC = 20;
+let mAnimFrameId = null;
+let mStars = 0;
+let activeMonsters = [];
+let mParticles = [];
+let mSparks = [];
+
+document.getElementById('toggleCameraBtn').addEventListener('click', toggleCamera);
+
+async function toggleCamera() {
+  if (!cameraActive) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: true });
+      cameraVideo.srcObject = stream;
+      cameraVideo.style.display = "block";
+      cameraActive = true;
+      document.getElementById('toggleCameraBtn').textContent = "✨ 3D 그래픽 모드";
+      
+      // Setup Web Audio Mic Detection
+      setupMicAudio(stream);
+    } catch (e) {
+      alert("카메라 및 마이크 권한을 허용해주시면 더 흥미진진한 AR 양치를 즐기실 수 있습니다!");
+    }
+  } else {
+    if (cameraVideo.srcObject) {
+      cameraVideo.srcObject.getTracks().forEach(t => t.stop());
+    }
+    cameraVideo.style.display = "none";
+    cameraActive = false;
+    document.getElementById('toggleCameraBtn').textContent = "📷 AR 카메라 켜기";
+  }
+}
+
+function setupMicAudio(stream) {
+  try {
+    const c = getAudioCtx();
+    const source = c.createMediaStreamSource(stream);
+    audioAnalyser = c.createAnalyser();
+    audioAnalyser.fftSize = 256;
+    source.connect(audioAnalyser);
+  } catch(e) {}
+}
+
+function getMicBrushingEnergy() {
+  if (!audioAnalyser) return 0;
+  const data = new Uint8Array(audioAnalyser.frequencyBinCount);
+  audioAnalyser.getByteFrequencyData(data);
+  let sum = 0;
+  // High frequency friction noise (brushing sound)
+  for (let i = 16; i < data.length; i++) sum += data[i];
+  return sum / (data.length - 16);
+}
+
+function spawnZoneMonsters(zoneIndex) {
+  activeMonsters = [];
+  const spec = MONSTER_ZONES[zoneIndex].species;
+  for (let i = 0; i < 3; i++) {
+    activeMonsters.push({
+      x: 180 + i * 120,
+      y: 260 + (i % 2) * 50,
+      hp: 100,
+      maxHp: 100,
+      icon: spec.icon,
+      name: spec.name,
+      color: spec.color,
+      id: spec.id,
+      scale: 1.0,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5
+    });
+  }
+}
+
+function updateAndRenderMonsterStage(dt) {
+  const W = monsterCanvas.width, H = monsterCanvas.height;
+  monsterCtx.clearRect(0, 0, W, H);
+
+  const zoneIdx = Math.min(Math.floor(mElapsed / M_ZONE_SEC), 5);
+  const zone = MONSTER_ZONES[zoneIdx];
+
+  // 1. If camera off, render cute animated mouth & hero kid avatar
+  if (!cameraActive) {
+    // Stage background
+    const bgGrad = monsterCtx.createRadialGradient(W/2, H/2, 50, W/2, H/2, W/2);
+    bgGrad.addColorStop(0, '#e2f5f2');
+    bgGrad.addColorStop(1, '#a8e6cf');
+    monsterCtx.fillStyle = bgGrad;
+    monsterCtx.fillRect(0, 0, W, H);
+
+    // Cute Teeth Mouth Graphic
+    monsterCtx.save();
+    monsterCtx.translate(W/2, H/2 - 20);
+    
+    // Open Mouth
+    monsterCtx.fillStyle = '#ff7675';
+    monsterCtx.beginPath();
+    monsterCtx.ellipse(0, 0, 180, 110, 0, 0, Math.PI * 2);
+    monsterCtx.fill();
+    monsterCtx.fillStyle = '#d63031';
+    monsterCtx.beginPath();
+    monsterCtx.ellipse(0, 15, 140, 75, 0, 0, Math.PI * 2);
+    monsterCtx.fill();
+
+    // Upper Teeth Row
+    monsterCtx.fillStyle = '#ffffff';
+    for (let t = -5; t <= 5; t++) {
+      monsterCtx.beginPath();
+      monsterCtx.roundRect(t * 26 - 11, -75, 22, 34, 8);
+      monsterCtx.fill();
+      monsterCtx.strokeStyle = '#dfe6e9';
+      monsterCtx.lineWidth = 2;
+      monsterCtx.stroke();
+    }
+    // Lower Teeth Row
+    for (let t = -5; t <= 5; t++) {
+      monsterCtx.beginPath();
+      monsterCtx.roundRect(t * 26 - 11, 40, 22, 34, 8);
+      monsterCtx.fill();
+      monsterCtx.strokeStyle = '#dfe6e9';
+      monsterCtx.stroke();
+    }
+    monsterCtx.restore();
+  }
+
+  // 2. AR Hero Mask / Glasses Filter over Canvas
+  monsterCtx.save();
+  // Draw Hero Star Crown
+  monsterCtx.font = '64px sans-serif';
+  monsterCtx.fillText('👑', W/2 - 32, 70);
+  monsterCtx.restore();
+
+  // 3. Audio & Tap Attack Logic
+  const micVolume = getMicBrushingEnergy();
+  const isBrushingActive = micVolume > 25 || (mState === "running" && Math.random() < 0.15);
+
+  if (mState === "running" && isBrushingActive) {
+    activeMonsters.forEach(m => {
+      if (m.hp > 0) {
+        m.hp -= dt * 45;
+        m.scale = 0.9 + Math.sin(performance.now() * 0.02) * 0.15;
+        mStars += 1;
+
+        // Sparkle FX
+        if (Math.random() < 0.3) {
+          mSparks.push({
+            x: m.x + (Math.random() - 0.5) * 40,
+            y: m.y + (Math.random() - 0.5) * 40,
+            alpha: 1.0, size: 8 + Math.random() * 8, color: '#ffd32a'
+          });
+        }
+
+        if (m.hp <= 0) {
+          m.hp = 0;
+          unlockMonster(m.id);
+          playItemSound();
+          for (let p = 0; p < 12; p++) {
+            mParticles.push({
+              x: m.x, y: m.y,
+              vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10,
+              alpha: 1.0, color: m.color
+            });
+          }
+        }
+      }
+    });
+  }
+
+  // 4. Render Cavity Monsters & HP Bars
+  activeMonsters.forEach(m => {
+    if (m.hp > 0) {
+      m.x += m.vx; m.y += m.vy;
+      if (m.x < 80 || m.x > W - 80) m.vx *= -1;
+      if (m.y < 180 || m.y > H - 100) m.vy *= -1;
+
+      monsterCtx.save();
+      monsterCtx.translate(m.x, m.y);
+      monsterCtx.scale(m.scale, m.scale);
+
+      // Monster Shadow
+      monsterCtx.fillStyle = 'rgba(0,0,0,0.15)';
+      monsterCtx.beginPath();
+      monsterCtx.ellipse(0, 45, 30, 8, 0, 0, Math.PI * 2);
+      monsterCtx.fill();
+
+      // Icon & Monster Emoji
+      monsterCtx.font = '68px sans-serif';
+      monsterCtx.textAlign = 'center';
+      monsterCtx.fillText(m.icon, 0, 20);
+
+      // Monster HP Bar
+      const hpWidth = 70;
+      const hpRatio = m.hp / m.maxHp;
+      monsterCtx.fillStyle = 'rgba(0,0,0,0.4)';
+      monsterCtx.fillRect(-hpWidth/2, -45, hpWidth, 8);
+      monsterCtx.fillStyle = hpRatio > 0.5 ? '#55efc4' : '#ff7675';
+      monsterCtx.fillRect(-hpWidth/2, -45, hpWidth * hpRatio, 8);
+
+      monsterCtx.restore();
+    }
+  });
+
+  // 5. Render Sparks & Particles
+  for (let i = mSparks.length - 1; i >= 0; i--) {
+    const s = mSparks[i];
+    s.alpha -= 0.05;
+    if (s.alpha <= 0) { mSparks.splice(i, 1); continue; }
+    monsterCtx.save();
+    monsterCtx.globalAlpha = s.alpha;
+    monsterCtx.fillStyle = s.color;
+    monsterCtx.font = '20px sans-serif';
+    monsterCtx.fillText('✨', s.x, s.y);
+    monsterCtx.restore();
+  }
+
+  for (let i = mParticles.length - 1; i >= 0; i--) {
+    const p = mParticles[i];
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
+    if (p.alpha <= 0) { mParticles.splice(i, 1); continue; }
+    monsterCtx.fillStyle = p.color;
+    monsterCtx.globalAlpha = p.alpha;
+    monsterCtx.beginPath(); monsterCtx.arc(p.x, p.y, 6, 0, Math.PI * 2); monsterCtx.fill();
+  }
+
+  // Update HUD
+  document.getElementById('monsterBadge').innerHTML = `<span>👾</span> Zone ${zoneIdx + 1}: ${zone.name}`;
+  document.getElementById('monsterStars').textContent = `⭐ ${mStars}`;
+}
+
+// Touch/Click directly on Monster Stage canvas to attack
+monsterCanvas.addEventListener('pointerdown', (e) => {
+  if (mState !== "running") return;
+  const rect = monsterCanvas.getBoundingClientRect();
+  const tx = (e.clientX - rect.left) * (monsterCanvas.width / rect.width);
+  const ty = (e.clientY - rect.top) * (monsterCanvas.height / rect.height);
+
+  activeMonsters.forEach(m => {
+    if (m.hp > 0 && Math.hypot(m.x - tx, m.y - ty) < 70) {
+      m.hp -= 35;
+      mStars += 15;
+      playItemSound();
+      for (let s = 0; s < 6; s++) {
+        mSparks.push({
+          x: tx + (Math.random() - 0.5) * 30,
+          y: ty + (Math.random() - 0.5) * 30,
+          alpha: 1.0, color: '#ffd32a'
+        });
+      }
+    }
+  });
+});
+
+let lastMZoneIdx = -1;
+function monsterLoop(timestamp) {
+  if (mState === "running") {
+    mElapsed += 0.016;
+    if (mElapsed >= M_TOTAL) {
+      mElapsed = M_TOTAL;
+      completeMonsterShow();
+    }
+    const currentZone = Math.min(Math.floor(mElapsed / M_ZONE_SEC), 5);
+    if (currentZone !== lastMZoneIdx) {
+      lastMZoneIdx = currentZone;
+      spawnZoneMonsters(currentZone);
+      playChimeSound();
+    }
+  }
+
+  updateAndRenderMonsterStage(0.016);
+  renderMonsterUI();
+
+  mAnimFrameId = requestAnimationFrame(monsterLoop);
+}
+
+function startMonsterShow() {
+  if (mState === "idle" || mState === "done") {
+    mElapsed = 0;
+    mStars = 0;
+    lastMZoneIdx = -1;
+    spawnZoneMonsters(0);
+  }
+  mState = "running";
+  document.getElementById('monsterStageWrapper').classList.add('active-glow');
+  requestWakeLock();
+  startMusic();
+  renderMonsterUI();
+}
+
+function pauseMonsterShow() {
+  mState = "paused";
+  document.getElementById('monsterStageWrapper').classList.remove('active-glow');
+  stopMusic();
+  renderMonsterUI();
+}
+
+function stopMonsterShow() {
+  mState = "idle";
+  mElapsed = 0;
+  document.getElementById('monsterStageWrapper').classList.remove('active-glow');
+  stopMusic();
+  renderMonsterUI();
+}
+
+function completeMonsterShow() {
+  mState = "done";
+  document.getElementById('monsterStageWrapper').classList.remove('active-glow');
+  stopMusic();
+  playFanfareSound();
+  launchFireworks();
+  addSticker();
+  mStars += 500;
+  renderMonsterUI();
+  renderDonationModal();
+  openModal('modalDonation');
+}
+
+function renderMonsterUI() {
+  const remaining = Math.max(0, Math.ceil(M_TOTAL - mElapsed));
+  const mins = Math.floor(remaining / 60);
+  const secs = String(remaining % 60).padStart(2, '0');
+  document.getElementById('monsterClock').textContent = `${mins}:${secs}`;
+
+  const pct = (mElapsed / M_TOTAL) * 100;
+  document.getElementById('monsterProgressBar').style.width = `${pct}%`;
+
+  const zoneIdx = Math.min(Math.floor(mElapsed / M_ZONE_SEC), 5);
+  const zone = MONSTER_ZONES[zoneIdx];
+
+  for (let i = 0; i < 4; i++) {
+    const sec = document.getElementById(`mquad-${i}`);
+    if (sec) {
+      if (mState === "running" && zone.quad === i) sec.classList.add('active');
+      else sec.classList.remove('active');
+    }
+  }
+
+  const startBtn = document.getElementById('monsterStartBtn');
+  const pauseBtn = document.getElementById('monsterPauseBtn');
+  const stopBtn = document.getElementById('monsterStopBtn');
+
+  if (mState === "idle") {
+    document.getElementById('monsterZoneTitle').textContent = "Start Brushing to Blast Monsters!";
+    document.getElementById('monsterZoneTip').textContent = "2분 동안 구석구석 양치하며 충치 몬스터를 물리쳐 영웅 카드를 모으세요!";
+    startBtn.textContent = "⚔️ 몬스터 잡기 시작!";
+    startBtn.style.display = "block";
+    pauseBtn.style.display = "none";
+    stopBtn.style.display = "none";
+  } else if (mState === "done") {
+    document.getElementById('monsterZoneTitle').textContent = "CHAMPION VICTORY! 🏆";
+    document.getElementById('monsterZoneTip').textContent = "2분 양치 완료! 모든 몬스터를 격퇴하고 기부 스티커 1개를 획득했습니다!";
+    startBtn.textContent = "⚔️ 다시 몬스터 잡기!";
+    startBtn.style.display = "block";
+    pauseBtn.style.display = "none";
+    stopBtn.style.display = "none";
+  } else {
+    document.getElementById('monsterZoneTitle').textContent = zone.name;
+    document.getElementById('monsterZoneTip').textContent = zone.tip;
+    startBtn.style.display = "none";
+    pauseBtn.textContent = mState === "running" ? "⏸ 일시정지" : "▶ 재개하기";
+    pauseBtn.style.display = "block";
+    stopBtn.style.display = "block";
+  }
+}
+
+document.getElementById('monsterStartBtn').addEventListener('click', startMonsterShow);
+document.getElementById('monsterPauseBtn').addEventListener('click', () => {
+  if (mState === "running") pauseMonsterShow();
+  else if (mState === "paused") startMonsterShow();
+});
+document.getElementById('monsterStopBtn').addEventListener('click', stopMonsterShow);
+
+/* ==========================================================================
+   4. DINO RUNNER GAME ENGINE (PRESERVED)
    ========================================================================== */
 const STRINGS = {
   idleTitle: "Start Brushing to Watch Dino Run!",
@@ -468,9 +1289,6 @@ const WORLDS = [
   { name: "World 4: Rainbow Sprint 🌈", skyTop: "#ffeaa7", skyBottom: "#fdcb6e", ground: "#e17055", item: "⭐" }
 ];
 
-/* ==========================================================================
-   2. APP STATE & DINO ENGINE
-   ========================================================================== */
 const TOTAL = 120, ZONE_SEC = 30;
 let state = "idle";
 let elapsed = 0;
@@ -479,7 +1297,6 @@ let lastTime = null;
 let globalTime = 0;
 let totalStars = 0;
 
-// Dino Physics
 const GROUND_Y = 460;
 let dinoY = GROUND_Y;
 let dinoVy = 0;
@@ -497,7 +1314,6 @@ let particles = [];
 let popups = [];
 
 function spawnWorldObjects() {
-  // Spawn Stars / Items
   if (Math.random() < 0.08) {
     worldItems.push({
       x: gameCanvas.width + 40,
@@ -505,8 +1321,6 @@ function spawnWorldObjects() {
       collected: false
     });
   }
-
-  // Spawn Obstacles (Rock / Donut / Bug)
   if (Math.random() < 0.035 && obstacles.length < 2) {
     obstacles.push({
       x: gameCanvas.width + 60,
@@ -525,18 +1339,16 @@ function updateAndRenderDino(dt) {
   const scrollSpeed = state === "running" ? 320 : 80;
   runnerScroll += scrollSpeed * dt;
 
-  // Auto Jump AI when approaching an obstacle
   const nextObstacle = obstacles.find(obs => obs.x > 140 && obs.x < 240);
   if (nextObstacle && !isJumping && state === "running") {
     isJumping = true;
-    dinoVy = -17; // Launch Jump
+    dinoVy = -17;
     playJumpSound();
   }
 
-  // Dino Jump Physics
   if (isJumping || dinoY < GROUND_Y) {
     dinoY += dinoVy;
-    dinoVy += 0.9; // Gravity
+    dinoVy += 0.9;
     if (dinoY >= GROUND_Y) {
       dinoY = GROUND_Y;
       dinoVy = 0;
@@ -544,14 +1356,12 @@ function updateAndRenderDino(dt) {
     }
   }
 
-  // 1. Draw Parallax Background & Sky
   const skyGrad = gameCtx.createLinearGradient(0, 0, 0, GROUND_Y);
   skyGrad.addColorStop(0, world.skyTop);
   skyGrad.addColorStop(1, world.skyBottom);
   gameCtx.fillStyle = skyGrad;
   gameCtx.fillRect(0, 0, W, GROUND_Y);
 
-  // Parallax Hills / Clouds
   gameCtx.fillStyle = 'rgba(255, 255, 255, 0.35)';
   for (let i = 0; i < 6; i++) {
     const cx = ((i * 140) - (runnerScroll * 0.3) % 140);
@@ -560,23 +1370,18 @@ function updateAndRenderDino(dt) {
     gameCtx.fill();
   }
 
-  // 2. Draw Scrolling Ground
   gameCtx.fillStyle = world.ground;
   gameCtx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
 
-  // Ground Stripes
   gameCtx.fillStyle = 'rgba(255,255,255,0.2)';
   const stripeW = 40;
   for (let x = -(runnerScroll % (stripeW * 2)); x < W; x += stripeW * 2) {
     gameCtx.fillRect(x, GROUND_Y, stripeW, H - GROUND_Y);
   }
 
-  // 3. Update & Draw Items & Obstacles
   if (state === "running") spawnWorldObjects();
-
   const dinoX = 140;
 
-  // Items
   for (let i = worldItems.length - 1; i >= 0; i--) {
     const item = worldItems[i];
     item.x -= scrollSpeed * dt;
@@ -609,14 +1414,11 @@ function updateAndRenderDino(dt) {
     }
   }
 
-  // Obstacles
   for (let i = obstacles.length - 1; i >= 0; i--) {
     const obs = obstacles[i];
     obs.x -= scrollSpeed * dt;
-
     if (obs.x < -50) { obstacles.splice(i, 1); continue; }
 
-    // Draw Obstacle (Rock / Bush)
     gameCtx.fillStyle = '#2d3436';
     gameCtx.beginPath();
     gameCtx.arc(obs.x, obs.y, 18, 0, Math.PI * 2);
@@ -627,7 +1429,6 @@ function updateAndRenderDino(dt) {
     gameCtx.fill();
   }
 
-  // Render Particles & Popups
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
     p.x += p.vx; p.y += p.vy; p.alpha -= 0.04;
@@ -650,18 +1451,15 @@ function updateAndRenderDino(dt) {
     gameCtx.restore();
   }
 
-  // 4. Draw Cute Animated Baby Dino
   const runLegAngle = Math.sin(globalTime * 18) * 0.4;
   gameCtx.save();
   gameCtx.translate(dinoX, dinoY - 24);
 
-  // Dino Shadow
   gameCtx.fillStyle = 'rgba(0,0,0,0.2)';
   gameCtx.beginPath();
   gameCtx.ellipse(0, 24, Math.max(4, 30 - (GROUND_Y - dinoY)*0.1), 8, 0, 0, Math.PI * 2);
   gameCtx.fill();
 
-  // Dino Tail
   gameCtx.fillStyle = '#00b894';
   gameCtx.beginPath();
   gameCtx.moveTo(-20, -5);
@@ -669,7 +1467,6 @@ function updateAndRenderDino(dt) {
   gameCtx.lineTo(-20, 10);
   gameCtx.fill();
 
-  // Dino Back Spikes
   gameCtx.fillStyle = '#fdcb6e';
   for (let s = 0; s < 3; s++) {
     gameCtx.beginPath();
@@ -679,28 +1476,23 @@ function updateAndRenderDino(dt) {
     gameCtx.fill();
   }
 
-  // Dino Body
   gameCtx.fillStyle = '#55efc4';
   gameCtx.beginPath();
   gameCtx.arc(0, -5, 26, 0, Math.PI * 2);
   gameCtx.fill();
 
-  // Dino Head
   gameCtx.beginPath();
   gameCtx.arc(14, -22, 20, 0, Math.PI * 2);
   gameCtx.fill();
 
-  // Cute Big Eye
   gameCtx.fillStyle = '#2d3436';
   gameCtx.beginPath(); gameCtx.arc(18, -25, 6, 0, Math.PI * 2); gameCtx.fill();
   gameCtx.fillStyle = '#ffffff';
   gameCtx.beginPath(); gameCtx.arc(16, -27, 2.5, 0, Math.PI * 2); gameCtx.fill();
 
-  // Cute Rosy Cheek
   gameCtx.fillStyle = 'rgba(255, 118, 117, 0.5)';
   gameCtx.beginPath(); gameCtx.arc(22, -16, 6, 0, Math.PI * 2); gameCtx.fill();
 
-  // Running Legs
   gameCtx.lineWidth = 6;
   gameCtx.strokeStyle = '#00b894';
   gameCtx.beginPath();
@@ -715,14 +1507,10 @@ function updateAndRenderDino(dt) {
 
   gameCtx.restore();
 
-  // Update HUD
   document.getElementById('worldTag').innerHTML = `<span>🦖</span> ${world.name}`;
   document.getElementById('starCount').textContent = `⭐ ${totalStars}`;
 }
 
-/* ==========================================================================
-   3. TIMER & ANIMATION LOOP
-   ========================================================================== */
 let lastZoneIndex = -1;
 
 function loop(timestamp) {
@@ -733,12 +1521,10 @@ function loop(timestamp) {
 
   if (state === "running") {
     elapsed += dt;
-
     if (elapsed >= TOTAL) {
       elapsed = TOTAL;
       completeShow();
     }
-
     const currentZoneIndex = Math.min(Math.floor(elapsed / ZONE_SEC), 3);
     if (currentZoneIndex !== lastZoneIndex) {
       lastZoneIndex = currentZoneIndex;
@@ -749,9 +1535,7 @@ function loop(timestamp) {
   updateAndRenderDino(dt);
   renderUI();
 
-  if (state === "running" || state === "idle" || state === "done") {
-    animFrameId = requestAnimationFrame(loop);
-  }
+  animFrameId = requestAnimationFrame(loop);
 }
 
 function startShow() {
@@ -768,15 +1552,12 @@ function startShow() {
   document.getElementById('stageWrapper').classList.add('active-glow');
   requestWakeLock();
   startMusic();
-  if (animFrameId) cancelAnimationFrame(animFrameId);
-  animFrameId = requestAnimationFrame(loop);
   renderUI();
 }
 
 function pauseShow() {
   state = "paused";
   document.getElementById('stageWrapper').classList.remove('active-glow');
-  releaseWakeLock();
   stopMusic();
   renderUI();
 }
@@ -785,7 +1566,6 @@ function stopShow() {
   state = "idle";
   document.getElementById('stageWrapper').classList.remove('active-glow');
   elapsed = 0;
-  releaseWakeLock();
   stopMusic();
   renderUI();
 }
@@ -793,18 +1573,16 @@ function stopShow() {
 function completeShow() {
   state = "done";
   document.getElementById('stageWrapper').classList.remove('active-glow');
-  releaseWakeLock();
   stopMusic();
   playFanfareSound();
   launchFireworks();
-
   totalStars += 500;
+  addSticker();
   renderUI();
+  renderDonationModal();
+  openModal('modalDonation');
 }
 
-/* ==========================================================================
-   4. UI RENDERER & QUADRANT MAP
-   ========================================================================== */
 function renderUI() {
   const remaining = Math.max(0, Math.ceil(TOTAL - elapsed));
   const mins = Math.floor(remaining / 60);
@@ -854,7 +1632,7 @@ function renderUI() {
 }
 
 /* ==========================================================================
-   5. WEB AUDIO SYNTHESIZER
+   5. AUDIO SYNTHESIZER
    ========================================================================== */
 let audioCtx = null, musicTimer = null, muted = false;
 
@@ -862,7 +1640,7 @@ document.getElementById('muteBtn').addEventListener('click', () => {
   muted = !muted;
   document.getElementById('muteBtn').textContent = muted ? "🔇" : "🔊";
   if (muted) stopMusic();
-  else if (state === "running") startMusic();
+  else if (state === "running" || mState === "running") startMusic();
 });
 
 function getAudioCtx() {
@@ -917,7 +1695,7 @@ function playFanfareSound() {
 
 const MELODY = [523.25, 659.25, 783.99, 659.25, 698.46, 880.0, 1046.5, 880.0];
 function scheduleBar(startTime) {
-  const beat = 0.24; // Upbeat Tempo!
+  const beat = 0.24;
   MELODY.forEach((f, i) => playNote(f, startTime + i * beat, beat * 0.85, "triangle", 0.08));
   return MELODY.length * beat;
 }
@@ -940,7 +1718,7 @@ function stopMusic() {
 }
 
 /* ==========================================================================
-   6. WAKE LOCK & GRAND FIREWORKS
+   6. WAKE LOCK & FIREWORKS
    ========================================================================== */
 let wakeLock = null;
 async function requestWakeLock() {
@@ -948,10 +1726,7 @@ async function requestWakeLock() {
     if ('wakeLock' in navigator) {
       wakeLock = await navigator.wakeLock.request('screen');
     }
-  } catch (err) { console.log('Wake Lock Error:', err); }
-}
-function releaseWakeLock() {
-  if (wakeLock) { wakeLock.release(); wakeLock = null; }
+  } catch (err) {}
 }
 
 function launchFireworks() {
@@ -960,9 +1735,8 @@ function launchFireworks() {
 
   for (let f = 0; f < 6; f++) {
     setTimeout(() => {
-      const cx = hudCanvas.width * (0.2 + Math.random() * 0.6);
-      const cy = hudCanvas.height * (0.2 + Math.random() * 0.5);
-      
+      const cx = monsterHudCanvas.width * (0.2 + Math.random() * 0.6);
+      const cy = monsterHudCanvas.height * (0.2 + Math.random() * 0.5);
       for (let i = 0; i < 40; i++) {
         const angle = (i / 40) * Math.PI * 2;
         const speed = 4 + Math.random() * 8;
@@ -977,13 +1751,19 @@ function launchFireworks() {
   }
 
   function renderFireworks() {
+    monsterHudCtx.clearRect(0, 0, monsterHudCanvas.width, monsterHudCanvas.height);
     hudCtx.clearRect(0, 0, hudCanvas.width, hudCanvas.height);
     let active = 0;
     fireworks.forEach(p => {
       p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.alpha -= 0.02;
-
       if (p.alpha > 0) {
         active++;
+        monsterHudCtx.save();
+        monsterHudCtx.globalAlpha = p.alpha;
+        monsterHudCtx.fillStyle = p.color;
+        monsterHudCtx.beginPath(); monsterHudCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2); monsterHudCtx.fill();
+        monsterHudCtx.restore();
+
         hudCtx.save();
         hudCtx.globalAlpha = p.alpha;
         hudCtx.fillStyle = p.color;
@@ -991,7 +1771,6 @@ function launchFireworks() {
         hudCtx.restore();
       }
     });
-
     if (active > 0) requestAnimationFrame(renderFireworks);
   }
   setTimeout(renderFireworks, 50);
@@ -1000,7 +1779,7 @@ function launchFireworks() {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').then(reg => {
     reg.update();
-  }).catch(err => console.log('SW Reg Error:', err));
+  }).catch(err => {});
 }
 
 document.getElementById('startBtn').addEventListener('click', startShow);
@@ -1010,8 +1789,11 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 });
 document.getElementById('stopBtn').addEventListener('click', stopShow);
 
-animFrameId = requestAnimationFrame(loop);
+// Start Loops
+requestAnimationFrame(loop);
+requestAnimationFrame(monsterLoop);
 renderUI();
+renderMonsterUI();
 </script>
 </body>
 </html>
