@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>치카치카 HERO — 2분 양치 몬스터 잡기 & 공룡 런</title>
-<meta name="description" content="어린이를 위한 재미있는 2분 양치 AR 몬스터 잡기 게임 & 공룡 런! 즐거운 칫솔질 습관을 만들고 Bristol Circle Dental 기부 캠페인에 참여하세요!">
+<title>Chika Hero — 2-Min Tooth Brushing Monster Catcher & Dino Runner</title>
+<meta name="description" content="An exciting 2-minute AR Tooth Brushing Monster Catcher & Dino Runner game for kids! Build healthy brushing habits with Bristol Circle Dental sponsorship!">
 <meta name="theme-color" content="#33b8a6">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Noto+Sans+KR:wght@700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&display=swap');
 
   :root {
     --mint: #33b8a6;
@@ -32,7 +32,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body {
-    font-family: 'Outfit', 'Noto Sans KR', -apple-system, sans-serif;
+    font-family: 'Outfit', -apple-system, sans-serif;
     background: radial-gradient(circle at 50% 10%, #e6f9f6 0%, #f7fdfc 60%, #e2f3f0 100%);
     color: var(--text);
     min-height: 100vh;
@@ -96,7 +96,7 @@
   }
   .icon-btn:active { transform: scale(0.94); }
 
-  /* Game Mode Tabs */
+  /* Game Mode Selector Bar */
   .tab-bar {
     display: flex;
     width: 100%;
@@ -548,38 +548,38 @@
 <header>
   <div class="header-top">
     <div class="brand" id="appBrand">
-      <span>👾</span> 치카 HERO
+      <span>👾</span> Chika HERO
     </div>
     <div class="nav-btns">
-      <button class="icon-btn" id="btnOpenBook" title="몬스터 도감">👾 도감</button>
-      <button class="icon-btn" id="btnOpenParent" title="부모님 설정">👨‍👩‍👧 습관</button>
-      <button class="icon-btn" id="btnOpenDonation" title="기부 현황">🎁 기부</button>
+      <button class="icon-btn" id="btnOpenBook" title="Monster Dex">👾 Dex</button>
+      <button class="icon-btn" id="btnOpenParent" title="Parents Habit Log">👨‍👩‍👧 Habits</button>
+      <button class="icon-btn" id="btnOpenDonation" title="Donation Campaign">🎁 Donate</button>
       <button id="muteBtn" class="icon-btn" aria-label="Mute Audio">🔊</button>
     </div>
   </div>
 
   <!-- Game Mode Selector Bar -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tabMonster">👾 몬스터 잡기 (AR)</button>
-    <button class="tab-btn" id="tabDino">🦖 공룡 런 (2분)</button>
+    <button class="tab-btn active" id="tabMonster">👾 Monster Catch (AR)</button>
+    <button class="tab-btn" id="tabDino">🦖 Dino Runner (2 Min)</button>
   </div>
 </header>
 
 <!-- ==========================================================================
-     GAME VIEW 1: CHIKA MONSTER AR CATCHING (NEW)
+     GAME VIEW 1: CHIKA MONSTER AR CATCHING (DEFAULT)
      ========================================================================== -->
 <div class="game-view active" id="monsterView">
   <!-- AR Stage Area -->
   <div class="stage-wrapper" id="monsterStageWrapper">
-    <div class="hud-badge" id="monsterBadge"><span>👾</span> Zone 1: 위쪽 앞니 (충치 퇴치!)</div>
-    <button class="ar-toggle-btn" id="toggleCameraBtn">📷 카메라 켜기</button>
+    <div class="hud-badge" id="monsterBadge"><span>👾</span> Zone 1: Upper Front (Defeat Monsters!)</div>
+    <button class="ar-toggle-btn" id="toggleCameraBtn">📷 Enable AR Camera</button>
     
     <div class="canvas-stack">
       <video id="cameraVideo" autoplay playsinline muted></video>
       <canvas id="monsterCanvas" width="600" height="600"></canvas>
       <canvas id="monsterHudCanvas" width="600" height="600"></canvas>
     </div>
-    <div class="hands-free-badge">✨ 마이크/터치로 몬스터를 쓱싹 공격하세요!</div>
+    <div class="hands-free-badge">✨ Use Mic sound or Tap screen to blast cavity monsters!</div>
   </div>
 
   <!-- Live Timer & Stars -->
@@ -594,27 +594,27 @@
   <!-- Zone Guide Card -->
   <div class="zone-card">
     <div class="quadrant-map">
-      <div class="quad-sector" id="mquad-0">위앞</div>
-      <div class="quad-sector" id="mquad-1">위오</div>
-      <div class="quad-sector" id="mquad-2">위왼</div>
-      <div class="quad-sector" id="mquad-3">아앞</div>
+      <div class="quad-sector" id="mquad-0">UF</div>
+      <div class="quad-sector" id="mquad-1">UR</div>
+      <div class="quad-sector" id="mquad-2">UL</div>
+      <div class="quad-sector" id="mquad-3">LF</div>
     </div>
     <div class="zone-text-group">
       <div class="zone-title" id="monsterZoneTitle">Start Brushing to Blast Monsters!</div>
-      <div class="zone-tip" id="monsterZoneTip">2분 동안 구석구석 양치하며 충치 몬스터를 물리쳐 영웅 카드를 모으세요!</div>
+      <div class="zone-tip" id="monsterZoneTip">Brush every corner for 2 minutes to defeat cavity monsters and collect Hero Cards!</div>
     </div>
   </div>
 
   <!-- Controls -->
   <div class="controls">
-    <button class="ctl btn-monster-start" id="monsterStartBtn">⚔️ 몬스터 잡기 시작!</button>
-    <button class="ctl btn-pause" id="monsterPauseBtn">⏸ 일시정지</button>
-    <button class="ctl btn-stop" id="monsterStopBtn">⏹ 중단</button>
+    <button class="ctl btn-monster-start" id="monsterStartBtn">⚔️ Start Monster Battle!</button>
+    <button class="ctl btn-pause" id="monsterPauseBtn">⏸ Pause</button>
+    <button class="ctl btn-stop" id="monsterStopBtn">⏹ Stop</button>
   </div>
 </div>
 
 <!-- ==========================================================================
-     GAME VIEW 2: DINO RUNNER (PRESERVED INTACT)
+     GAME VIEW 2: DINO RUNNER
      ========================================================================== -->
 <div class="game-view" id="dinoView">
   <div class="stage-wrapper" id="stageWrapper">
@@ -693,57 +693,57 @@
 </footer>
 
 <!-- ==========================================================================
-     MODAL 1: MONSTER COLLECTION BOOK (몬스터 도감)
+     MODAL 1: MONSTER COLLECTION BOOK (DEX)
      ========================================================================== -->
 <div class="modal-backdrop" id="modalBook">
   <div class="modal-card">
     <button class="modal-close-btn" onclick="closeModal('modalBook')">✕</button>
-    <div class="modal-title">👾 몬스터 도감</div>
-    <p style="font-size: 0.85rem; color: #64748b;">양치로 퇴치한 충치 몬스터 영웅 카드를 확인해보세요!</p>
+    <div class="modal-title">👾 Cavity Monster Dex</div>
+    <p style="font-size: 0.85rem; color: #64748b;">Check out your unlocked Cavity Monster Hero Cards!</p>
     <div class="monster-grid" id="monsterCardGrid"></div>
   </div>
 </div>
 
 <!-- ==========================================================================
-     MODAL 2: PARENT HABIT & TOOTHBRUSH REMINDER (부모님 습관 관리)
+     MODAL 2: PARENT HABIT & TOOTHBRUSH REMINDER
      ========================================================================== -->
 <div class="modal-backdrop" id="modalParent">
   <div class="modal-card">
     <button class="modal-close-btn" onclick="closeModal('modalParent')">✕</button>
-    <div class="modal-title">👨‍👩‍👧 부모님 습관 관리</div>
+    <div class="modal-title">👨‍👩‍👧 Parent Habit Tracker</div>
     
     <div style="text-align: left; margin: 10px 0;">
-      <h4 style="font-size: 0.95rem; color: var(--mint-dark);">📅 이번 달 양치 출석부 (7일 연속 성공 칭호)</h4>
+      <h4 style="font-size: 0.95rem; color: var(--mint-dark);">📅 Monthly Brushing Log (7-Day Streak Badge)</h4>
       <div class="calendar-grid" id="calGrid"></div>
     </div>
 
     <div style="background: #f8fafc; border-radius: 16px; padding: 14px; text-align: left; margin-top: 10px; border: 1px solid #e2e8f0;">
-      <h4 style="font-size: 0.9rem; color: var(--text);">🪥 칫솔 교체 주기 알림</h4>
-      <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 10px;" id="toothbrushStatus">현재 칫솔 사용: 12일 차 (3개월 마다 교체 권장)</p>
+      <h4 style="font-size: 0.9rem; color: var(--text);">🪥 Toothbrush Replacement Alert</h4>
+      <p style="font-size: 0.8rem; color: #64748b; margin: 4px 0 10px;" id="toothbrushStatus">Current Toothbrush: 12 Days Used (Replace every 3 months recommended)</p>
       <button class="icon-btn" style="width: 100%; justify-content: center; background: var(--mint); color: #fff;" onclick="resetToothbrushDate()">
-        🪥 새 칫솔로 교체했어요!
+        🪥 Replaced with a New Toothbrush!
       </button>
     </div>
   </div>
 </div>
 
 <!-- ==========================================================================
-     MODAL 3: DONATION CAMPAIGN (착한 양치 캠페인)
+     MODAL 3: DONATION CAMPAIGN
      ========================================================================== -->
 <div class="modal-backdrop" id="modalDonation">
   <div class="modal-card">
     <button class="modal-close-btn" onclick="closeModal('modalDonation')">✕</button>
-    <div class="modal-title">🎁 착한 양치 캠페인</div>
+    <div class="modal-title">🎁 Good Brushing Campaign</div>
     <div class="donation-card">
-      <h4 style="font-size: 1rem; color: #1565c0; margin-bottom: 6px;">Bristol Circle Dental 과 함께하는 아동 칫솔 기부</h4>
+      <h4 style="font-size: 1rem; color: #1565c0; margin-bottom: 6px;">Toothbrush Donation Sponsored by Bristol Circle Dental</h4>
       <p style="font-size: 0.82rem; color: #37474f; line-height: 1.4;">
-        아이들이 2분 동안 양치를 성공할 때마다 **기부 스티커 1개**가 적립됩니다! 스티커가 모이면 취약계층 아동에게 칫솔 세트가 전달됩니다.
+        Every time kids complete a 2-minute brushing session, 1 Donation Sticker is awarded! Accumulated stickers provide toothbrush kits to children in need.
       </p>
       <div style="margin-top: 12px; font-weight: 900; color: #0d47a1; font-size: 1.1rem;" id="stickerCountDisplay">
-        🏷️ 내 수집 스티커: 0개
+        🏷️ My Collected Stickers: 0
       </div>
       <div style="margin-top: 6px; font-size: 0.82rem; color: #1976d2; font-weight: 700;" id="communityDonationDisplay">
-        ❤️ 전체 누적: 1,240개 달성 (124세트 기부 완료!)
+        ❤️ Community Goal: 1,240 Stickers Earned (124 Kits Donated!)
       </div>
     </div>
   </div>
@@ -767,7 +767,7 @@ function setGameView(view) {
     document.getElementById('tabDino').classList.remove('active');
     document.getElementById('monsterView').classList.add('active');
     document.getElementById('dinoView').classList.remove('active');
-    document.getElementById('appBrand').innerHTML = `<span>👾</span> 치카 HERO`;
+    document.getElementById('appBrand').innerHTML = `<span>👾</span> Chika HERO`;
   } else {
     document.getElementById('tabDino').classList.add('active');
     document.getElementById('tabMonster').classList.remove('active');
@@ -788,12 +788,12 @@ document.getElementById('btnOpenDonation').addEventListener('click', () => { ren
    2. MONSTER DEFINITIONS & STORAGE
    ========================================================================== */
 const MONSTER_SPECIES = [
-  { id: "sugar", name: "설탕 슬라임 👾", color: "#a29bfe", tip: "단 음식을 먹은 뒤엔 빠르게 쓱싹!", icon: "👾" },
-  { name: "사탕 몬스터 🍬", id: "candy", color: "#fd79a8", tip: "알록달록 젤리와 사탕 충치를 물리쳐라!", icon: "🍬" },
-  { name: "탄산 버블 🥤", id: "soda", color: "#74b9ff", tip: "탄산음료 뒤에 입안을 깨끗하게!", icon: "🥤" },
-  { name: "도넛 몬스터 🍩", id: "donut", color: "#e17055", tip: "어금니 홈 구석구석을 깨끗이 닦아주세요!", icon: "🍩" },
-  { name: "젤리 몬스터 🍮", id: "jelly", color: "#fdcb6e", tip: "쫀득한 젤리 흔적을 싹싹!", icon: "🍮" },
-  { name: "초코 버그 🍫", id: "choco", color: "#6c5ce7", tip: "치아 겉면과 안면을 번갈아가며!", icon: "🍫" }
+  { id: "sugar", name: "Sugar Slime 👾", color: "#a29bfe", tip: "Brush fast right after eating sweets!", icon: "👾" },
+  { id: "candy", name: "Candy Monster 🍬", color: "#fd79a8", tip: "Blast away sticky candy cavity bugs!", icon: "🍬" },
+  { id: "soda", name: "Soda Bubble 🥤", color: "#74b9ff", tip: "Clean teeth thoroughly after fizzy drinks!", icon: "🥤" },
+  { id: "donut", name: "Donut Monster 🍩", color: "#e17055", tip: "Clean deep inside molar grooves!", icon: "🍩" },
+  { id: "jelly", name: "Jelly Slime 🍮", color: "#fdcb6e", tip: "Scrub off sticky jelly residue!", icon: "🍮" },
+  { id: "choco", name: "Choco Bug 🍫", color: "#6c5ce7", tip: "Brush outer and inner tooth surfaces!", icon: "🍫" }
 ];
 
 function getUnlockedMonsters() {
@@ -827,8 +827,8 @@ function renderMonsterBook() {
     card.className = `monster-card ${isUnlocked ? 'unlocked' : ''}`;
     card.innerHTML = `
       <div class="monster-card-icon">${isUnlocked ? m.icon : '❓'}</div>
-      <div class="monster-card-name">${isUnlocked ? m.name : '잠긴 몬스터'}</div>
-      <div class="monster-card-desc">${isUnlocked ? m.tip : '2분 양치 완성 시 해금됩니다!'}</div>
+      <div class="monster-card-name">${isUnlocked ? m.name : 'Locked Monster'}</div>
+      <div class="monster-card-desc">${isUnlocked ? m.tip : 'Unlocked after 2-min brushing!'}</div>
     `;
     grid.appendChild(card);
   });
@@ -852,7 +852,7 @@ function renderParentModal() {
   const lastReplace = localStorage.getItem('chika_toothbrush_date');
   const lastDate = lastReplace ? new Date(parseInt(lastReplace, 10)) : new Date();
   const diffDays = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
-  document.getElementById('toothbrushStatus').textContent = `현재 칫솔 사용: ${diffDays}일 차 (3개월 주기 교체 권장)`;
+  document.getElementById('toothbrushStatus').textContent = `Current Toothbrush: ${diffDays} Days Used (Replace every 3 months recommended)`;
 }
 
 function resetToothbrushDate() {
@@ -862,8 +862,8 @@ function resetToothbrushDate() {
 
 function renderDonationModal() {
   const count = getStickerCount();
-  document.getElementById('stickerCountDisplay').textContent = `🏷️ 내 수집 스티커: ${count}개`;
-  document.getElementById('communityDonationDisplay').textContent = `❤️ 전체 누적: ${1240 + count}개 달성 (${124 + Math.floor(count/10)}세트 기부 완료!)`;
+  document.getElementById('stickerCountDisplay').textContent = `🏷️ My Collected Stickers: ${count}`;
+  document.getElementById('communityDonationDisplay').textContent = `❤️ Community Goal: ${1240 + count} Stickers Earned (${124 + Math.floor(count/10)} Kits Donated!)`;
 }
 
 /* ==========================================================================
@@ -880,12 +880,12 @@ let audioAnalyser = null;
 let micStream = null;
 
 const MONSTER_ZONES = [
-  { name: "위쪽 앞니 🪥", tip: "앞니 표면을 위아래로 쓱싹쓱싹 닦아 몬스터 공격!", quad: 0, species: MONSTER_SPECIES[0] },
-  { name: "위쪽 오른쪽 어금니 🦷", tip: "씹는 면 홈에 숨은 젤리 몬스터 퇴치!", quad: 1, species: MONSTER_SPECIES[1] },
-  { name: "위쪽 왼쪽 어금니 ✨", tip: "안쪽 안면까지 가볍게 동글동글!", quad: 2, species: MONSTER_SPECIES[2] },
-  { name: "아래쪽 앞니 🌟", tip: "아래 앞니 안쪽을 칫솔을 세워 결 따라 닦아주세요!", quad: 3, species: MONSTER_SPECIES[3] },
-  { name: "아래쪽 오른쪽 어금니 💎", tip: "어금니 뒤쪽 구석까지 파워 치카치카!", quad: 1, species: MONSTER_SPECIES[4] },
-  { name: "아래쪽 왼쪽 어금니 🏆", tip: "마지막 대결! 혀까지 부드럽게 닦아 승리하세요!", quad: 2, species: MONSTER_SPECIES[5] }
+  { name: "Upper Front Teeth 🪥", tip: "Brush upper front teeth vertically up and down to blast monsters!", quad: 0, species: MONSTER_SPECIES[0] },
+  { name: "Upper Right Molars 🦷", tip: "Clean deep inside upper right chewing surfaces!", quad: 1, species: MONSTER_SPECIES[1] },
+  { name: "Upper Left Molars ✨", tip: "Gentle circular motions on upper left molars!", quad: 2, species: MONSTER_SPECIES[2] },
+  { name: "Lower Front Teeth 🌟", tip: "Brush behind lower front teeth with vertical strokes!", quad: 3, species: MONSTER_SPECIES[3] },
+  { name: "Lower Right Molars 💎", tip: "Blast hidden cavity bugs on lower right chewing grooves!", quad: 1, species: MONSTER_SPECIES[4] },
+  { name: "Lower Left Molars 🏆", tip: "Final stage! Clean lower left molars and tongue softly to win!", quad: 2, species: MONSTER_SPECIES[5] }
 ];
 
 let mState = "idle"; // "idle", "running", "paused", "done"
@@ -906,12 +906,10 @@ async function toggleCamera() {
       cameraVideo.srcObject = stream;
       cameraVideo.style.display = "block";
       cameraActive = true;
-      document.getElementById('toggleCameraBtn').textContent = "✨ 3D 그래픽 모드";
-      
-      // Setup Web Audio Mic Detection
+      document.getElementById('toggleCameraBtn').textContent = "✨ 3D Graphics Mode";
       setupMicAudio(stream);
     } catch (e) {
-      alert("카메라 및 마이크 권한을 허용해주시면 더 흥미진진한 AR 양치를 즐기실 수 있습니다!");
+      alert("Please allow camera and mic access for full AR monster catching experience!");
     }
   } else {
     if (cameraVideo.srcObject) {
@@ -919,7 +917,7 @@ async function toggleCamera() {
     }
     cameraVideo.style.display = "none";
     cameraActive = false;
-    document.getElementById('toggleCameraBtn').textContent = "📷 AR 카메라 켜기";
+    document.getElementById('toggleCameraBtn').textContent = "📷 Enable AR Camera";
   }
 }
 
@@ -938,7 +936,6 @@ function getMicBrushingEnergy() {
   const data = new Uint8Array(audioAnalyser.frequencyBinCount);
   audioAnalyser.getByteFrequencyData(data);
   let sum = 0;
-  // High frequency friction noise (brushing sound)
   for (let i = 16; i < data.length; i++) sum += data[i];
   return sum / (data.length - 16);
 }
@@ -970,20 +967,16 @@ function updateAndRenderMonsterStage(dt) {
   const zoneIdx = Math.min(Math.floor(mElapsed / M_ZONE_SEC), 5);
   const zone = MONSTER_ZONES[zoneIdx];
 
-  // 1. If camera off, render cute animated mouth & hero kid avatar
   if (!cameraActive) {
-    // Stage background
     const bgGrad = monsterCtx.createRadialGradient(W/2, H/2, 50, W/2, H/2, W/2);
     bgGrad.addColorStop(0, '#e2f5f2');
     bgGrad.addColorStop(1, '#a8e6cf');
     monsterCtx.fillStyle = bgGrad;
     monsterCtx.fillRect(0, 0, W, H);
 
-    // Cute Teeth Mouth Graphic
     monsterCtx.save();
     monsterCtx.translate(W/2, H/2 - 20);
     
-    // Open Mouth
     monsterCtx.fillStyle = '#ff7675';
     monsterCtx.beginPath();
     monsterCtx.ellipse(0, 0, 180, 110, 0, 0, Math.PI * 2);
@@ -993,7 +986,6 @@ function updateAndRenderMonsterStage(dt) {
     monsterCtx.ellipse(0, 15, 140, 75, 0, 0, Math.PI * 2);
     monsterCtx.fill();
 
-    // Upper Teeth Row
     monsterCtx.fillStyle = '#ffffff';
     for (let t = -5; t <= 5; t++) {
       monsterCtx.beginPath();
@@ -1003,7 +995,6 @@ function updateAndRenderMonsterStage(dt) {
       monsterCtx.lineWidth = 2;
       monsterCtx.stroke();
     }
-    // Lower Teeth Row
     for (let t = -5; t <= 5; t++) {
       monsterCtx.beginPath();
       monsterCtx.roundRect(t * 26 - 11, 40, 22, 34, 8);
@@ -1014,14 +1005,11 @@ function updateAndRenderMonsterStage(dt) {
     monsterCtx.restore();
   }
 
-  // 2. AR Hero Mask / Glasses Filter over Canvas
   monsterCtx.save();
-  // Draw Hero Star Crown
   monsterCtx.font = '64px sans-serif';
   monsterCtx.fillText('👑', W/2 - 32, 70);
   monsterCtx.restore();
 
-  // 3. Audio & Tap Attack Logic
   const micVolume = getMicBrushingEnergy();
   const isBrushingActive = micVolume > 25 || (mState === "running" && Math.random() < 0.15);
 
@@ -1032,7 +1020,6 @@ function updateAndRenderMonsterStage(dt) {
         m.scale = 0.9 + Math.sin(performance.now() * 0.02) * 0.15;
         mStars += 1;
 
-        // Sparkle FX
         if (Math.random() < 0.3) {
           mSparks.push({
             x: m.x + (Math.random() - 0.5) * 40,
@@ -1057,7 +1044,6 @@ function updateAndRenderMonsterStage(dt) {
     });
   }
 
-  // 4. Render Cavity Monsters & HP Bars
   activeMonsters.forEach(m => {
     if (m.hp > 0) {
       m.x += m.vx; m.y += m.vy;
@@ -1068,18 +1054,15 @@ function updateAndRenderMonsterStage(dt) {
       monsterCtx.translate(m.x, m.y);
       monsterCtx.scale(m.scale, m.scale);
 
-      // Monster Shadow
       monsterCtx.fillStyle = 'rgba(0,0,0,0.15)';
       monsterCtx.beginPath();
       monsterCtx.ellipse(0, 45, 30, 8, 0, 0, Math.PI * 2);
       monsterCtx.fill();
 
-      // Icon & Monster Emoji
       monsterCtx.font = '68px sans-serif';
       monsterCtx.textAlign = 'center';
       monsterCtx.fillText(m.icon, 0, 20);
 
-      // Monster HP Bar
       const hpWidth = 70;
       const hpRatio = m.hp / m.maxHp;
       monsterCtx.fillStyle = 'rgba(0,0,0,0.4)';
@@ -1091,7 +1074,6 @@ function updateAndRenderMonsterStage(dt) {
     }
   });
 
-  // 5. Render Sparks & Particles
   for (let i = mSparks.length - 1; i >= 0; i--) {
     const s = mSparks[i];
     s.alpha -= 0.05;
@@ -1113,12 +1095,10 @@ function updateAndRenderMonsterStage(dt) {
     monsterCtx.beginPath(); monsterCtx.arc(p.x, p.y, 6, 0, Math.PI * 2); monsterCtx.fill();
   }
 
-  // Update HUD
   document.getElementById('monsterBadge').innerHTML = `<span>👾</span> Zone ${zoneIdx + 1}: ${zone.name}`;
   document.getElementById('monsterStars').textContent = `⭐ ${mStars}`;
 }
 
-// Touch/Click directly on Monster Stage canvas to attack
 monsterCanvas.addEventListener('pointerdown', (e) => {
   if (mState !== "running") return;
   const rect = monsterCanvas.getBoundingClientRect();
@@ -1142,7 +1122,7 @@ monsterCanvas.addEventListener('pointerdown', (e) => {
 });
 
 let lastMZoneIdx = -1;
-function monsterLoop(timestamp) {
+function monsterLoop() {
   if (mState === "running") {
     mElapsed += 0.016;
     if (mElapsed >= M_TOTAL) {
@@ -1231,15 +1211,15 @@ function renderMonsterUI() {
 
   if (mState === "idle") {
     document.getElementById('monsterZoneTitle').textContent = "Start Brushing to Blast Monsters!";
-    document.getElementById('monsterZoneTip').textContent = "2분 동안 구석구석 양치하며 충치 몬스터를 물리쳐 영웅 카드를 모으세요!";
-    startBtn.textContent = "⚔️ 몬스터 잡기 시작!";
+    document.getElementById('monsterZoneTip').textContent = "Brush every corner for 2 minutes to defeat cavity monsters and collect Hero Cards!";
+    startBtn.textContent = "⚔️ Start Monster Battle!";
     startBtn.style.display = "block";
     pauseBtn.style.display = "none";
     stopBtn.style.display = "none";
   } else if (mState === "done") {
     document.getElementById('monsterZoneTitle').textContent = "CHAMPION VICTORY! 🏆";
-    document.getElementById('monsterZoneTip').textContent = "2분 양치 완료! 모든 몬스터를 격퇴하고 기부 스티커 1개를 획득했습니다!";
-    startBtn.textContent = "⚔️ 다시 몬스터 잡기!";
+    document.getElementById('monsterZoneTip').textContent = "2 minutes complete! All monsters defeated (+1 Donation Sticker earned)!";
+    startBtn.textContent = "⚔️ Battle Again!";
     startBtn.style.display = "block";
     pauseBtn.style.display = "none";
     stopBtn.style.display = "none";
@@ -1247,7 +1227,7 @@ function renderMonsterUI() {
     document.getElementById('monsterZoneTitle').textContent = zone.name;
     document.getElementById('monsterZoneTip').textContent = zone.tip;
     startBtn.style.display = "none";
-    pauseBtn.textContent = mState === "running" ? "⏸ 일시정지" : "▶ 재개하기";
+    pauseBtn.textContent = mState === "running" ? "⏸ Pause" : "▶ Resume";
     pauseBtn.style.display = "block";
     stopBtn.style.display = "block";
   }
@@ -1261,7 +1241,7 @@ document.getElementById('monsterPauseBtn').addEventListener('click', () => {
 document.getElementById('monsterStopBtn').addEventListener('click', stopMonsterShow);
 
 /* ==========================================================================
-   4. DINO RUNNER GAME ENGINE (PRESERVED)
+   4. DINO RUNNER GAME ENGINE
    ========================================================================== */
 const STRINGS = {
   idleTitle: "Start Brushing to Watch Dino Run!",
@@ -1789,7 +1769,6 @@ document.getElementById('pauseBtn').addEventListener('click', () => {
 });
 document.getElementById('stopBtn').addEventListener('click', stopShow);
 
-// Start Loops
 requestAnimationFrame(loop);
 requestAnimationFrame(monsterLoop);
 renderUI();
